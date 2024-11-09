@@ -21,12 +21,10 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
-
     sourceSets {
         main {
             java {
                 srcDir 'src/main/java'  // define the main source directory
-                exclude '**/team22256/2023/**'  // exclude this directory and all its contents
             }
         }
     }
@@ -36,3 +34,4 @@ dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }
+
