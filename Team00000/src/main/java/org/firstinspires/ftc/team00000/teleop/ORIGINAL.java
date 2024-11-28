@@ -1,18 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team00000.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robot.RobotState;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.IMU;
 
-@TeleOp
-
-public class Drivetraintest extends LinearOpMode {
+@TeleOp(name="ORIGINAL", group="teleop")
+//@Disabled
+public class ORIGINAL extends LinearOpMode {
     private DcMotor BLMotor;
     private DcMotor BRMotor;
     private DcMotor FLMotor;
@@ -111,7 +113,6 @@ public class Drivetraintest extends LinearOpMode {
             if(gamepad1.left_bumper) IntakeServo.setPower(-1);
             else if(gamepad1.right_bumper) IntakeServo.setPower(1);
             else IntakeServo.setPower(0);
-            
             
             telemetry.update();
         }
