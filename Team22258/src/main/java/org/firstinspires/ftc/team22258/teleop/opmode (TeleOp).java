@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot:
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.0.13]")
-public class opmode__TeleOp___1_0_13_ extends LinearOpMode {
+@TeleOp(name = "Opmode (TeleOp) [1.0.14]")
+public class opmode__TeleOp___1_0_14_ extends LinearOpMode {
 
   private DcMotor Arm;
   private DcMotor FLMotor;
@@ -120,7 +120,7 @@ public class opmode__TeleOp___1_0_13_ extends LinearOpMode {
     }
     if (true) {
       // Power Control
-      MotorPowerNormalizer = ( Math.max( Math.abs(gamepad1.left_stick_x), Math.abs(gamepad1.left_stick_y), Math.abs(gamepad1.right_stick_x) ) / ( (double) Math.max( Math.abs(FLMotorPower), Math.abs(FRMotorPower), Math.abs(BLMotorPower), Math.abs(BRMotorPower) ) ) );
+      MotorPowerNormalizer = ( Math.max( (double) Math.abs(gamepad1.left_stick_x), (double) Math.abs(gamepad1.left_stick_y), (double) Math.abs(gamepad1.right_stick_x) ) / ( Math.max( (double) Math.abs(FLMotorPower), (double) Math.abs(FRMotorPower), (double) Math.abs(BLMotorPower), (double) Math.abs(BRMotorPower) ) ) );
       FLMotorPower = (int) (FLMotorPower * MotorPowerNormalizer);
       FRMotorPower = (int) (FRMotorPower * MotorPowerNormalizer);
       BLMotorPower = (int) (BLMotorPower * MotorPowerNormalizer);
