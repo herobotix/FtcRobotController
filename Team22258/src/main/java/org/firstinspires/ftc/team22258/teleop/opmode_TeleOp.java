@@ -10,7 +10,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
 @TeleOp(name = "Opmode (TeleOp) [1.0.14]")
-public class opmode__TeleOp___1_0_14_ extends LinearOpMode {
+public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
   private DcMotor FLMotor;
