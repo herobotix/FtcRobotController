@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.0.14]")
+@TeleOp(name = "Opmode (TeleOp) [1.0.15]")
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
@@ -99,24 +99,24 @@ public class opmode_TeleOp extends LinearOpMode {
 
     if (true) {
       // Drive
-      FLMotorPower += gamepad1.left_stick_y * 1;
-      FRMotorPower += gamepad1.left_stick_y * 1;
-      BLMotorPower += gamepad1.left_stick_y * 1;
-      BRMotorPower += gamepad1.left_stick_y * 1;
+      FLMotorPower += gamepad1.left_stick_y * 1.0;
+      FRMotorPower += gamepad1.left_stick_y * 1.0;
+      BLMotorPower += gamepad1.left_stick_y * 1.0;
+      BRMotorPower += gamepad1.left_stick_y * 1.0;
     }
     if (true) {
       // Strafe
-      FLMotorPower += gamepad1.left_stick_x * -1;
-      FRMotorPower += gamepad1.left_stick_x * 1;
-      BLMotorPower += gamepad1.left_stick_x * 1;
-      BRMotorPower += gamepad1.left_stick_x * -1;
+      FLMotorPower += gamepad1.left_stick_x * -1.0;
+      FRMotorPower += gamepad1.left_stick_x * 1.0;
+      BLMotorPower += gamepad1.left_stick_x * 1.0;
+      BRMotorPower += gamepad1.left_stick_x * -1.0;
     }
     if (true) {
       // Rotate
-      FLMotorPower += gamepad1.right_stick_x * -1;
-      FRMotorPower += gamepad1.right_stick_x * 1;
-      BLMotorPower += gamepad1.right_stick_x * -1;
-      BRMotorPower += gamepad1.right_stick_x * 1;
+      FLMotorPower += gamepad1.right_stick_x * -1.0;
+      FRMotorPower += gamepad1.right_stick_x * 1.0;
+      BLMotorPower += gamepad1.right_stick_x * -1.0;
+      BRMotorPower += gamepad1.right_stick_x * 1.0;
     }
     if (true) {
       // Power Control
