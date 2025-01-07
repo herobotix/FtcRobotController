@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot:
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
 @TeleOp(name = "Opmode (TeleOp) [1.0.14]")
@@ -215,7 +215,7 @@ public class opmode__TeleOp___1_0_14_ extends LinearOpMode {
     telemetry.addData("ArmTiltPower", ArmTiltPower);
     telemetry.addData("LClawPos", LClaw.getPosition());
     telemetry.addData("RClawPos", RClaw.getPosition());
-    telemetry.F_Update();
+    telemetry.update();
   }
 
   /**
