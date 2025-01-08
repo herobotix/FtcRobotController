@@ -120,6 +120,10 @@ public class opmode_TeleOp extends LinearOpMode {
     }
     if (true) {
       // Power Control
+		telemetry.addData("FLMotorPower OLD", FLMotorPower);
+		telemetry.addData("FLMotorPower OLD", FRMotorPower);
+		telemetry.addData("BLMotorPower OLD", BLMotorPower);
+		telemetry.addData("BRMotorPower OLD", BRMotorPower);
       MotorPowerNormalizer =  (double) ( 
 		Math.max( 
 		  Math.max( Math.abs(gamepad1.left_stick_x), Math.abs(gamepad1.left_stick_y) ), 
