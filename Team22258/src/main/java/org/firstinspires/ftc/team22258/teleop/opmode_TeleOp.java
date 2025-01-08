@@ -133,10 +133,10 @@ public class opmode_TeleOp extends LinearOpMode {
 		  Math.max( Math.abs(BLMotorPower), Math.abs(BRMotorPower) ) 
 		) ) 
 	  );
-      FLMotorPower = (int) (FLMotorPower * MotorPowerNormalizer);
-      FRMotorPower = (int) (FRMotorPower * MotorPowerNormalizer);
-      BLMotorPower = (int) (BLMotorPower * MotorPowerNormalizer);
-      BRMotorPower = (int) (BRMotorPower * MotorPowerNormalizer);
+      FLMotorPower = (FLMotorPower * MotorPowerNormalizer);
+      FRMotorPower = (FRMotorPower * MotorPowerNormalizer);
+      BLMotorPower = (BLMotorPower * MotorPowerNormalizer);
+      BRMotorPower = (BRMotorPower * MotorPowerNormalizer);
     }
   }
 
