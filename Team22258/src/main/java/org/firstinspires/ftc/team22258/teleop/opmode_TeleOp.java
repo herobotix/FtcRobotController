@@ -120,7 +120,15 @@ public class opmode_TeleOp extends LinearOpMode {
     }
     if (true) {
       // Power Control
-      MotorPowerNormalizer =  (double) ( Math.max( Math.max( Math.abs(gamepad1.left_stick_x), Math.abs(gamepad1.left_stick_y) ), Math.abs(gamepad1.right_stick_x) ) / ( Math.max( Math.max( Math.abs(FLMotorPower), Math.abs(FRMotorPower) ), Math.max( Math.abs(BLMotorPower), Math.abs(BRMotorPower) ) ) ) );
+      MotorPowerNormalizer =  (double) ( 
+		Math.max( 
+		  Math.max( Math.abs(gamepad1.left_stick_x), Math.abs(gamepad1.left_stick_y) ), 
+		  Math.abs(gamepad1.right_stick_x) 
+		)/ ( Math.max( 
+		  Math.max( Math.abs(FLMotorPower), Math.abs(FRMotorPower) ), 
+		  Math.max( Math.abs(BLMotorPower), Math.abs(BRMotorPower) ) 
+		) ) 
+	  );
       FLMotorPower = (int) (FLMotorPower * MotorPowerNormalizer);
       FRMotorPower = (int) (FRMotorPower * MotorPowerNormalizer);
       BLMotorPower = (int) (BLMotorPower * MotorPowerNormalizer);
