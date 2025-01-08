@@ -33,6 +33,8 @@ public class opmode_TeleOp extends LinearOpMode {
   int FRMotorPower;
   int BLMotorPower;
   int BRMotorPower;
+  
+  double MotorPowerNormalizer;
 
   private IMU imu;
   
@@ -95,8 +97,6 @@ public class opmode_TeleOp extends LinearOpMode {
    * Describe this function...
    */
   private void F_Move() {
-    double MotorPowerNormalizer;
-
     if (true) {
       // Drive
       FLMotorPower += gamepad1.left_stick_y * 1.0;
