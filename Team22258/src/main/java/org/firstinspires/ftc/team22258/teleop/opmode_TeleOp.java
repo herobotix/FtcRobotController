@@ -204,6 +204,11 @@ public class opmode_TeleOp extends LinearOpMode {
    * Describe this function...
    */
   private void F_Telemetry() {
+	telemetry.addData("MPN", MotorPowerNormalizer);
+	telemetry.addData("FLMotorPower", FLMotorPower);
+	telemetry.addData("FLMotorPower", FRMotorPower);
+	telemetry.addData("BLMotorPower", BLMotorPower);
+	telemetry.addData("BRMotorPower", BRMotorPower);
     telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
     telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
     telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
