@@ -82,9 +82,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private void F_Startup() {
     Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     ClawState = 0;
-    ArmState = 0;
     Clawn = 0;
-	Armon = 0;
   }
 
   private void F_Misc() {
@@ -179,36 +177,8 @@ public class opmode_TeleOp extends LinearOpMode {
    */
   private void F_Arm() {
     ArmInput = gamepad2.left_trigger - gamepad2.right_trigger;
-    if (ArmInput != 0) {
-      F_NewWriston();
-      ArmTiltPower += ArmInput * (Armon == 1 ? 1 : 0.8);
-      // Turn Arm
-    }
-  }
-
-  /**
-   * Toggles Arm
-   */
-  private void F_NewWriston() {
-    if (ArmState == 0 && gamepad2.dpad_left) {
-      // claw closed
-      ArmState = 1;
-      // claw open
-    } else if (ArmState == 1 && !gamepad2.dpad_left) {
-      ArmState = 2;
-      // claw open
-    } else if (ArmState == 2 && gamepad2.dpad_left) {
-      // claw open
-      ArmState = 3;
-      // claw closed
-    } else if (ArmState == 3 && !gamepad2.dpad_left) {
-      ArmState = 0;
-      // claw closed
-    }
-    if (ArmState == 0 || ArmState == 3) {
-      Armon = 0;
-    } else {
-      Armon = 1;
+    ArmTiltPower += ArmInput;
+    // Turn Arm
     }
   }
 
