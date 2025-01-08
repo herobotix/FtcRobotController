@@ -29,10 +29,10 @@ public class opmode_TeleOp extends LinearOpMode {
   
   int ArmTiltPower;
   
-  int FLMotorPower;
-  int FRMotorPower;
-  int BLMotorPower;
-  int BRMotorPower;
+  double FLMotorPower;
+  double FRMotorPower;
+  double BLMotorPower;
+  double BRMotorPower;
   
   double MotorPowerNormalizer;
 
