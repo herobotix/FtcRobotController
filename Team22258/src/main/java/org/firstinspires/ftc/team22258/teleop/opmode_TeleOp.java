@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.0.15]")
+@TeleOp(name = "Opmode (TeleOp) [1.0.16]")
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
@@ -177,9 +177,8 @@ public class opmode_TeleOp extends LinearOpMode {
    */
   private void F_Arm() {
     ArmInput = gamepad2.left_trigger - gamepad2.right_trigger;
-    ArmTiltPower += ArmInput;
+    ArmTiltPower += ArmInput * 0.8;
     // Turn Arm
-    }
   }
 
   /**
