@@ -212,9 +212,9 @@ public class opmode_TeleOp extends LinearOpMode {
    * Describe this function...
    */
   private void F_Telemetry() {
-	telemetry.addData("LStickX", left_stick_x);
-	telemetry.addData("LStickY", left_stick_y);
-	telemetry.addData("RStickX", right_stick_x);
+	telemetry.addData("LStickX", gamepad1.left_stick_x);
+	telemetry.addData("LStickY", gamepad1.left_stick_y);
+	telemetry.addData("RStickX", gamepad1.right_stick_x);
 	telemetry.addData("MPN", MotorPowerNormalizer);
 	telemetry.addData("FLMotorPower", FLMotorPower);
 	telemetry.addData("FLMotorPower", FRMotorPower);
