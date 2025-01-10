@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.0.16]")
+@TeleOp(name = "Opmode (TeleOp) [1.0.17]")
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
@@ -26,8 +26,6 @@ public class opmode_TeleOp extends LinearOpMode {
   
   int ClawState;
   int Clawn;
-  
-  int ArmTiltPower;
   
   double FLMotorPower;
   double FRMotorPower;
@@ -143,7 +141,7 @@ public class opmode_TeleOp extends LinearOpMode {
    */
   private void F_Clawrm() {
     F_Clawggle();
-    F_Arm();
+    FArmInput = 0.8(gamepad2.left_trigger - gamepad2.right_trigger);
   }
 
   /**
@@ -170,15 +168,6 @@ public class opmode_TeleOp extends LinearOpMode {
     } else {
       Clawn = 1;
     }
-  }
-
-  /**
-   * Moves Arm
-   */
-  private void F_Arm() {
-    ArmInput = gamepad2.left_trigger - gamepad2.right_trigger;
-    ArmTiltPower += ArmInput * 0.8;
-    // Turn Arm
   }
 
   /**
@@ -215,7 +204,7 @@ public class opmode_TeleOp extends LinearOpMode {
     FRMotor.setPower(FRMotorPower * -1);
     BLMotor.setPower(BLMotorPower * -1);
     BRMotor.setPower(BRMotorPower * -1);
-    Arm.setPower(ArmTiltPower);
+    Arm.setPower(FArmInput);
     LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
     RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
     FLMotorPower = 0;
