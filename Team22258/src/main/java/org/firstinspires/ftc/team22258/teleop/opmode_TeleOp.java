@@ -20,7 +20,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private Servo LClaw;
   private Servo RClaw;
 
-  double ArmInput;
+  double FArmInput;
   int ArmState;
   int Armon;
   
@@ -141,7 +141,7 @@ public class opmode_TeleOp extends LinearOpMode {
    */
   private void F_Clawrm() {
     F_Clawggle();
-    FArmInput = 0.8(gamepad2.left_trigger - gamepad2.right_trigger);
+    FArmInput = 0.8*(gamepad2.left_trigger - gamepad2.right_trigger);
   }
 
   /**
@@ -188,9 +188,8 @@ public class opmode_TeleOp extends LinearOpMode {
     telemetry.addData("ClawState", ClawState);
     telemetry.addData("ArmState", ArmState);
     telemetry.addData("Clawn", Clawn);
-    telemetry.addData("ArmInput", ArmInput);
+    telemetry.addData("FArmInput", FArmInput);
     telemetry.addData("Armon", Armon);
-    telemetry.addData("ArmTiltPower", ArmTiltPower);
     telemetry.addData("LClawPos", LClaw.getPosition());
     telemetry.addData("RClawPos", RClaw.getPosition());
     telemetry.update();
@@ -211,7 +210,6 @@ public class opmode_TeleOp extends LinearOpMode {
     FRMotorPower = 0;
     BLMotorPower = 0;
     BRMotorPower = 0;
-    ArmTiltPower = 0;
   }
   
 }
