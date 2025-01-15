@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.0.17]")
+@Autonomous(name = "Opmode (Auto) [1.0.0]") //[1.0.17]
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
@@ -20,7 +20,6 @@ public class opmode_TeleOp extends LinearOpMode {
   private Servo LClaw;
   private Servo RClaw;
 
-  double FArmInput;
   int ArmState;
   int Armon;
   
@@ -50,13 +49,10 @@ public class opmode_TeleOp extends LinearOpMode {
 	  F_Startup();
       waitForStart();
     if (opModeIsActive()) {
-      while (opModeIsActive()) {
-		F_Misc();
-        F_Move();
-        F_Clawrm();
-        F_Telemetry();
-        F_Update();
-      }
+      F_Move();
+      F_Clawrm();
+      F_Telemetry();
+      F_Update();
     }
   }
 
@@ -79,48 +75,43 @@ public class opmode_TeleOp extends LinearOpMode {
    */
   private void F_Startup() {
     Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    ClawState = 0;
     Clawn = 0;
-  }
-
-  private void F_Misc() {
-    if (gamepad1.options) { //Reset facing direction to robot's orientation.
-		imu.resetYaw();
-	}
   }
 
   /**
    * Describe this function...
    */
-  private void F_Move() {
+  private void F_Move(double Lynn, double Lake, double Rick) {
     if (true) {
       // Drive
-      FLMotorPower += gamepad1.left_stick_y * 1.0;
-      FRMotorPower += gamepad1.left_stick_y * 1.0;
-      BLMotorPower += gamepad1.left_stick_y * 1.0;
-      BRMotorPower += gamepad1.left_stick_y * 1.0;
+      FLMotorPower += Lynn * 1.0;
+      FRMotorPower += Lynn * 1.0;
+      BLMotorPower += Lynn * 1.0;
+      BRMotorPower += Lynn * 1.0;
     }
     if (true) {
       // Strafe
-      FLMotorPower += gamepad1.left_stick_x * -1.0;
-      FRMotorPower += gamepad1.left_stick_x * 1.0;
-      BLMotorPower += gamepad1.left_stick_x * 1.0;
-      BRMotorPower += gamepad1.left_stick_x * -1.0;
+      FLMotorPower += Lake * -1.0;
+      FRMotorPower += Lake * 1.0;
+      BLMotorPower += Lake * 1.0;
+      BRMotorPower += Lake * -1.0;
     }
     if (true) {
       // Rotate
-      FLMotorPower += gamepad1.right_stick_x * -1.0;
-      FRMotorPower += gamepad1.right_stick_x * 1.0;
-      BLMotorPower += gamepad1.right_stick_x * -1.0;
-      BRMotorPower += gamepad1.right_stick_x * 1.0;
+      FLMotorPower += Rick * -1.0;
+      FRMotorPower += Rick * 1.0;
+      BLMotorPower += Rick * -1.0;
+      BRMotorPower += Rick * 1.0;
     }
     if (true) {
-      // Power Control
-		telemetry.addData("FLMotorPower OLD", FLMotorPower);
+	  
+	  //telemetry
+	    telemetry.addData("FLMotorPower OLD", FLMotorPower);
 		telemetry.addData("FLMotorPower OLD", FRMotorPower);
 		telemetry.addData("BLMotorPower OLD", BLMotorPower);
 		telemetry.addData("BRMotorPower OLD", BRMotorPower);
-      MotorPowerNormalizer = ( 
+	  
+      MotorPowerNormalizer = ( // Power Control
 		Math.max( 
 		  Math.max( Math.abs(gamepad1.left_stick_x), Math.abs(gamepad1.left_stick_y) ), 
 		  Math.abs(gamepad1.right_stick_x) 
@@ -129,59 +120,35 @@ public class opmode_TeleOp extends LinearOpMode {
 		  Math.max( Math.abs(BLMotorPower), Math.abs(BRMotorPower) ) 
 		) ) 
 	  );
-      FLMotorPower = (FLMotorPower * MotorPowerNormalizer);
-      FRMotorPower = (FRMotorPower * MotorPowerNormalizer);
-      BLMotorPower = (BLMotorPower * MotorPowerNormalizer);
-      BRMotorPower = (BRMotorPower * MotorPowerNormalizer);
+	  
+	  FLMotor.setPower(FLMotorPower * MotorPowerNormalizer);
+      FRMotor.setPower(FRMotorPower * -MotorPowerNormalizer);
+      BLMotor.setPower(BLMotorPower * -MotorPowerNormalizer);
+      BRMotor.setPower(BRMotorPower * -MotorPowerNormalizer);
+	  
+	  //telemetry
+		telemetry.addData("Lynn", Lynn);
+		telemetry.addData("Lake", Lake);
+		telemetry.addData("Rick", Rick);
+		telemetry.addData("MPN", MotorPowerNormalizer);
+		telemetry.addData("FLMotorPower", FLMotorPower);
+		telemetry.addData("FLMotorPower", FRMotorPower);
+		telemetry.addData("BLMotorPower", BLMotorPower);
+		telemetry.addData("BRMotorPower", BRMotorPower);
     }
   }
 
   /**
    * Describe this function...
    */
-  private void F_Clawrm() {
-    F_Clawggle();
-    FArmInput = 0.8*(gamepad2.left_trigger - gamepad2.right_trigger);
-  }
-
-  /**
-   * Describe this function...
-   */
-  private void F_Clawggle() {
-    if (ClawState == 0 && gamepad2.left_bumper) {
-      // claw closed
-      ClawState = 1;
-      // claw open
-    } else if (ClawState == 1 && !gamepad2.left_bumper) {
-      ClawState = 2;
-      // claw open
-    } else if (ClawState == 2 && gamepad2.left_bumper) {
-      // claw open
-      ClawState = 3;
-      // claw closed
-    } else if (ClawState == 3 && !gamepad2.left_bumper) {
-      ClawState = 0;
-      // claw closed
-    }
-    if (ClawState == 0 || ClawState == 3) {
-      Clawn = 0;
-    } else {
-      Clawn = 1;
-    }
+  private void F_Clawrm(double FArmInput) {
+    Arm.setPower(FArmInput);
   }
 
   /**
    * Describe this function...
    */
   private void F_Telemetry() {
-	telemetry.addData("LStickX", gamepad1.left_stick_x);
-	telemetry.addData("LStickY", gamepad1.left_stick_y);
-	telemetry.addData("RStickX", gamepad1.right_stick_x);
-	telemetry.addData("MPN", MotorPowerNormalizer);
-	telemetry.addData("FLMotorPower", FLMotorPower);
-	telemetry.addData("FLMotorPower", FRMotorPower);
-	telemetry.addData("BLMotorPower", BLMotorPower);
-	telemetry.addData("BRMotorPower", BRMotorPower);
     telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
     telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
     telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
@@ -199,11 +166,7 @@ public class opmode_TeleOp extends LinearOpMode {
    * Describe this function...
    */
   private void F_Update() {
-    FLMotor.setPower(FLMotorPower);
-    FRMotor.setPower(FRMotorPower * -1);
-    BLMotor.setPower(BLMotorPower * -1);
-    BRMotor.setPower(BRMotorPower * -1);
-    Arm.setPower(FArmInput);
+	Arm.setPower(0);
     LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
     RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
     FLMotorPower = 0;
