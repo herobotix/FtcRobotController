@@ -20,16 +20,17 @@ public class opmode_TeleOp extends LinearOpMode {
   private Servo LClaw;
   private Servo RClaw;
 
-  int ArmState;
-  int Armon;
-  
-  int ClawState;
-  int Clawn;
-  
   double FLMotorPower;
   double FRMotorPower;
   double BLMotorPower;
   double BRMotorPower;
+  
+  double Lynn;
+  double Lake;
+  double Rick;
+  double FArmInput
+  int Clawn;
+  double Naptime;
   
   double MotorPowerNormalizer;
 
@@ -51,8 +52,8 @@ public class opmode_TeleOp extends LinearOpMode {
     if (opModeIsActive()) {
       F_Move();
       F_Clawrm();
-      F_Telemetry();
-      F_Update();
+      F_NewArmon();
+      F_Pause();
     }
   }
 
@@ -105,11 +106,12 @@ public class opmode_TeleOp extends LinearOpMode {
     }
     if (true) {
 	  
-	  //telemetry
-	    telemetry.addData("FLMotorPower OLD", FLMotorPower);
-		telemetry.addData("FLMotorPower OLD", FRMotorPower);
-		telemetry.addData("BLMotorPower OLD", BLMotorPower);
-		telemetry.addData("BRMotorPower OLD", BRMotorPower);
+	    //telemetry
+	      telemetry.addData("FLMotorPower OLD", FLMotorPower);
+		  telemetry.addData("FLMotorPower OLD", FRMotorPower);
+		  telemetry.addData("BLMotorPower OLD", BLMotorPower);
+		  telemetry.addData("BRMotorPower OLD", BRMotorPower);
+		  telemetry.update();
 	  
       MotorPowerNormalizer = ( // Power Control
 		Math.max( 
@@ -126,15 +128,17 @@ public class opmode_TeleOp extends LinearOpMode {
       BLMotor.setPower(BLMotorPower * -MotorPowerNormalizer);
       BRMotor.setPower(BRMotorPower * -MotorPowerNormalizer);
 	  
-	  //telemetry
-		telemetry.addData("Lynn", Lynn);
-		telemetry.addData("Lake", Lake);
-		telemetry.addData("Rick", Rick);
-		telemetry.addData("MPN", MotorPowerNormalizer);
-		telemetry.addData("FLMotorPower", FLMotorPower);
-		telemetry.addData("FLMotorPower", FRMotorPower);
-		telemetry.addData("BLMotorPower", BLMotorPower);
-		telemetry.addData("BRMotorPower", BRMotorPower);
+	    //telemetry
+		  telemetry.addData("Lynn", Lynn);
+		  telemetry.addData("Lake", Lake);
+		  telemetry.addData("Rick", Rick);
+		  telemetry.addData("MPN", MotorPowerNormalizer);
+		  telemetry.addData("FLMotorPower", FLMotorPower);
+		  telemetry.addData("FLMotorPower", FRMotorPower);
+		  telemetry.addData("BLMotorPower", BLMotorPower);
+		  telemetry.addData("BRMotorPower", BRMotorPower);
+		  telemetry.update();
+	  
     }
   }
 
@@ -143,36 +147,33 @@ public class opmode_TeleOp extends LinearOpMode {
    */
   private void F_Clawrm(double FArmInput) {
     Arm.setPower(FArmInput);
+	
+	//telemetry
+	  telemetry.addData("FArmInput", FArmInput);
+	  telemetry.update();
+	
   }
 
   /**
    * Describe this function...
    */
-  private void F_Telemetry() {
-    telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
-    telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
-    telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
-    telemetry.addData("ClawState", ClawState);
-    telemetry.addData("ArmState", ArmState);
-    telemetry.addData("Clawn", Clawn);
-    telemetry.addData("FArmInput", FArmInput);
-    telemetry.addData("Armon", Armon);
-    telemetry.addData("LClawPos", LClaw.getPosition());
-    telemetry.addData("RClawPos", RClaw.getPosition());
-    telemetry.update();
-  }
-
-  /**
-   * Describe this function...
-   */
-  private void F_Update() {
-	Arm.setPower(0);
+  private void F_NewArmon(int Clawn) {
     LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
     RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
-    FLMotorPower = 0;
-    FRMotorPower = 0;
-    BLMotorPower = 0;
-    BRMotorPower = 0;
+	
+	//telemetry
+      telemetry.addData("Clawn", Clawn);
+      telemetry.addData("LClawPos", LClaw.getPosition());
+      telemetry.addData("RClawPos", RClaw.getPosition());
+      telemetry.update();
+	
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void F_Pause(double Naptime) {
+	  sleep((long)(Naptime*1000));
   }
   
 }
