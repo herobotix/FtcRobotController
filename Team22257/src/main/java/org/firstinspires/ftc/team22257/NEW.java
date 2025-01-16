@@ -1,20 +1,14 @@
-package org.firstinspires.ftc.team00000.teleop;
+package org.firstinspires.ftc.team22257;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.team00000.ChassisMecanum;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name="NEW", group="teleop")
 //@Disabled
@@ -24,11 +18,6 @@ public class NEW extends LinearOpMode {
     private DcMotorEx FLMotor;
     private DcMotorEx FRMotor;
     private IMU imu;
-
-    private double integralSum = 0;
-    private double Kp = 0;
-    private double Ki = 0;
-    private double Kd = 0;
 
     //initializing stick axis and power level variables
     private double LSx, rLSx, LSy, rLSy, RSx;
@@ -64,7 +53,7 @@ public class NEW extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
+        
         // Run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
