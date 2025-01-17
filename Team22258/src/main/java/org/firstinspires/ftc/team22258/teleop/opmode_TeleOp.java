@@ -209,7 +209,7 @@ private void F_Twoggle() {
     telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
     telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
     telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
-    telemetry.addData("2 Controllers", Twon ? 1 : 0);
+    telemetry.addData("2 Controllers", Twon);
 	telemetry.addData("ClawState", ClawState);
     telemetry.addData("Clawn", Clawn);
     telemetry.addData("FArmInput", FArmInput);
