@@ -27,6 +27,9 @@ public class opmode_TeleOp extends LinearOpMode {
   int ClawState;
   int Clawn;
   
+  int TwoState;
+  int Twon;
+  
   double FLMotorPower;
   double FRMotorPower;
   double BLMotorPower;
@@ -87,8 +90,32 @@ public class opmode_TeleOp extends LinearOpMode {
     if (gamepad1.options) { //Reset facing direction to robot's orientation.
 		imu.resetYaw();
 	}
+	
   }
-
+  
+private void F_Controggle() {
+    if (TwoState == 0 && gamepad2.left_bumper) {
+      // claw closed
+      TwoState = 1;
+      // claw open
+    } else if (TwoState == 1 && !gamepad2.left_bumper) {
+      TwoState = 2;
+      // claw open
+    } else if (TwoState == 2 && gamepad2.left_bumper) {
+      // claw open
+      TwoState = 3;
+      // claw closed
+    } else if (TwoState == 3 && !gamepad2.left_bumper) {
+      TwoState = 0;
+      // claw closed
+    }
+    if (TwoState == 0 || TwoState == 3) {
+      Twon = 0;
+    } else {
+      Twon = 1;
+    }
+  }
+  
   /**
    * Describe this function...
    */
@@ -109,6 +136,7 @@ public class opmode_TeleOp extends LinearOpMode {
     }
     if (true) {
       // Rotate
+	  double Rick = ((Twon)?gamepad1:gamepad2).right_stick_x;
       FLMotorPower += gamepad1.right_stick_x * -1.0;
       FRMotorPower += gamepad1.right_stick_x * 1.0;
       BLMotorPower += gamepad1.right_stick_x * -1.0;
