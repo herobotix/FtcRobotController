@@ -93,21 +93,21 @@ public class opmode_TeleOp extends LinearOpMode {
 	
   }
   
-private void F_Controggle() {
-    if (TwoState == 0 && gamepad2.left_bumper) {
-      // claw closed
+private void F_Twoggle() {
+    if (TwoState == 0 && (gamepad1.dpad_left ? 1 : 0)) {
+      // Two off
       TwoState = 1;
-      // claw open
-    } else if (TwoState == 1 && !gamepad2.left_bumper) {
+      // Two on
+    } else if (TwoState == 1 && !(gamepad1.dpad_left ? 1 : 0)) {
       TwoState = 2;
-      // claw open
-    } else if (TwoState == 2 && gamepad2.left_bumper) {
-      // claw open
+      // Two on
+    } else if (TwoState == 2 && (gamepad1.dpad_left ? 1 : 0)) {
+      // Two on
       TwoState = 3;
-      // claw closed
-    } else if (TwoState == 3 && !gamepad2.left_bumper) {
+      // Two off
+    } else if (TwoState == 3 && !(gamepad1.dpad_left ? 1 : 0)) {
       TwoState = 0;
-      // claw closed
+      // Two off
     }
     if (TwoState == 0 || TwoState == 3) {
       Twon = 0;
@@ -136,11 +136,11 @@ private void F_Controggle() {
     }
     if (true) {
       // Rotate
-	  double Rick = ((Twon)?gamepad1:gamepad2).right_stick_x;
-      FLMotorPower += gamepad1.right_stick_x * -1.0;
-      FRMotorPower += gamepad1.right_stick_x * 1.0;
-      BLMotorPower += gamepad1.right_stick_x * -1.0;
-      BRMotorPower += gamepad1.right_stick_x * 1.0;
+	  double Rick = ((Twon)?gamepad2:gamepad1).right_stick_x;
+      FLMotorPower += Rick * -1.0;
+      FRMotorPower += Rick * 1.0;
+      BLMotorPower += Rick * -1.0;
+      BRMotorPower += Rick * 1.0;
     }
     if (true) {
       // Power Control
@@ -213,7 +213,8 @@ private void F_Controggle() {
     telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
     telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
     telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
-    telemetry.addData("ClawState", ClawState);
+    telemetry.addData("2 Controllers", Twon ? 1 : 0);
+	telemetry.addData("ClawState", ClawState);
     telemetry.addData("ArmState", ArmState);
     telemetry.addData("Clawn", Clawn);
     telemetry.addData("FArmInput", FArmInput);
