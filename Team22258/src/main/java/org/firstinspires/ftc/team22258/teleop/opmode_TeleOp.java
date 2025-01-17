@@ -132,7 +132,7 @@ private void F_Twoggle() {
     }
     if (true) {
       // Rotate
-	  double Rick = ((Twon)?gamepad2:gamepad1).right_stick_x;
+	  double Rick = ((Twon == 1)?gamepad2:gamepad1).right_stick_x;
       FLMotorPower += Rick * -1.0;
       FRMotorPower += Rick * 1.0;
       BLMotorPower += Rick * -1.0;
