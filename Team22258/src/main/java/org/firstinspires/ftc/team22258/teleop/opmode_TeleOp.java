@@ -21,14 +21,12 @@ public class opmode_TeleOp extends LinearOpMode {
   private Servo RClaw;
 
   double FArmInput;
-  int ArmState;
-  int Armon;
   
-  int ClawState;
-  int Clawn;
+  int ClawState = 0;
+  int Clawn = 0;
   
-  int TwoState;
-  int Twon;
+  int TwoState = 0;
+  int Twon = 0;
   
   double FLMotorPower;
   double FRMotorPower;
@@ -82,8 +80,6 @@ public class opmode_TeleOp extends LinearOpMode {
    */
   private void F_Startup() {
     Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    ClawState = 0;
-    Clawn = 0;
   }
 
   private void F_Misc() {
@@ -215,10 +211,8 @@ private void F_Twoggle() {
     telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
     telemetry.addData("2 Controllers", Twon ? 1 : 0);
 	telemetry.addData("ClawState", ClawState);
-    telemetry.addData("ArmState", ArmState);
     telemetry.addData("Clawn", Clawn);
     telemetry.addData("FArmInput", FArmInput);
-    telemetry.addData("Armon", Armon);
     telemetry.addData("LClawPos", LClaw.getPosition());
     telemetry.addData("RClawPos", RClaw.getPosition());
     telemetry.update();
