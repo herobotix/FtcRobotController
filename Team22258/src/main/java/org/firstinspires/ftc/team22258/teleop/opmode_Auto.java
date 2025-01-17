@@ -51,8 +51,8 @@ public class opmode_TeleOp extends LinearOpMode {
       waitForStart();
     if (opModeIsActive()) {
       F_Move();
-      F_Clawrm();
       F_NewArmon();
+      F_Clawrm();
       F_Pause();
     }
   }
@@ -145,19 +145,7 @@ public class opmode_TeleOp extends LinearOpMode {
   /**
    * Describe this function...
    */
-  private void F_Clawrm(double FArmInput) {
-    Arm.setPower(FArmInput);
-	
-	//telemetry
-	  telemetry.addData("FArmInput", FArmInput);
-	  telemetry.update();
-	
-  }
-
-  /**
-   * Describe this function...
-   */
-  private void F_NewArmon(int Clawn) {
+  private void F_Clawrm(int Clawn) {
     LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
     RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
 	
@@ -166,6 +154,18 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("LClawPos", LClaw.getPosition());
       telemetry.addData("RClawPos", RClaw.getPosition());
       telemetry.update();
+	
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void F_NewArmon(double FArmInput) {
+    Arm.setPower(FArmInput);
+	
+	//telemetry
+	  telemetry.addData("FArmInput", FArmInput);
+	  telemetry.update();
 	
   }
 
