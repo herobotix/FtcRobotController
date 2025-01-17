@@ -1,0 +1,208 @@
+// Import necessary FTC and Java classes
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+public class RobotMovement extends LinearOpMode {
+
+    // Declare motor variables
+    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
+    private BNO055IMU imu;
+
+    // Robot-specific constants
+    private static final double WHEEL_DIAMETER_INCHES = 4.0; // Adjust as necessary
+    private static final int COUNTS_PER_MOTOR_REV = 560; // REV NeverRest 40
+    private static final double DRIVE_GEAR_REDUCTION = 1.0; // No gear reduction
+    private static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER_INCHES * Math.PI;
+    private static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE;
+    // Assumed track width for rotation (distance between left and right wheels)
+    private static final double TRACK_WIDTH_INCHES = 13.0; // Adjust based on your robot
+    // Calculate counts needed for 180-degree rotation
+    private static final double COUNTS_PER_DEGREE = (COUNTS_PER_INCH * Math.PI * TRACK_WIDTH_INCHES) / 360.0;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        // Initialize hardware
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        backRight = hardwareMap.get(DcMotorEx.class, "backRight");
+
+        // Set motor directions
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+
+        // Set motors to run using encoders
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Initialize IMU
+        BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
+        imuParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        imuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imuParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // Ensure calibration file is present
+        imuParameters.loggingEnabled = true;
+        imuParameters.loggingTag = "IMU";
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(imuParameters);
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+
+        if (opModeIsActive()) {
+            // Move forward 24 inches
+            moveForward(24, 0.5);
+
+            // Rotate 180 degrees
+            rotateDegrees(180, 0.3);
+        }
+    }
+
+    /**
+     * Moves the robot forward a specified distance in inches.
+     *
+     * @param inches The distance to move forward in inches.
+     * @param power  The motor power level (0.0 to 1.0).
+     */
+    public void moveForward(double inches, double power) {
+        int targetCounts = (int)(inches * COUNTS_PER_INCH);
+
+        // Reset encoders
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Set target position
+        frontLeft.setTargetPosition(targetCounts);
+        frontRight.setTargetPosition(targetCounts);
+        backLeft.setTargetPosition(targetCounts);
+        backRight.setTargetPosition(targetCounts);
+
+        // Set to RUN_TO_POSITION mode
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Set motor power
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
+        backRight.setPower(power);
+
+        // Wait until all motors reach the target
+        while (opModeIsActive() &&
+               (frontLeft.isBusy() && frontRight.isBusy() &&
+                backLeft.isBusy() && backRight.isBusy())) {
+            // Optionally, add telemetry or idle
+            telemetry.addData("Target Counts", targetCounts);
+            telemetry.addData("Front Left", frontLeft.getCurrentPosition());
+            telemetry.addData("Front Right", frontRight.getCurrentPosition());
+            telemetry.addData("Back Left", backLeft.getCurrentPosition());
+            telemetry.addData("Back Right", backRight.getCurrentPosition());
+            telemetry.update();
+            idle();
+        }
+
+        // Stop all motion
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+
+        // Change motors back to RUN_USING_ENCODER
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    /**
+     * Rotates the robot a specified number of degrees.
+     *
+     * @param degrees The number of degrees to rotate. Positive for clockwise, negative for counter-clockwise.
+     * @param power   The motor power level (0.0 to 1.0).
+     */
+    public void rotateDegrees(double degrees, double power) {
+        double targetDegrees = degrees;
+        Orientation initialOrientation = imu.getAngularOrientation(
+                org.firstinspires.ftc.robotcore.external.navigation.AxesReference.INTRINSIC,
+                org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX,
+                AngleUnit.DEGREES);
+
+        double targetHeading = initialOrientation.firstAngle + targetDegrees;
+        targetHeading = normalizeAngle(targetHeading);
+
+        // Rotate until the desired angle is reached
+        while (opModeIsActive()) {
+            Orientation currentOrientation = imu.getAngularOrientation(
+                    org.firstinspires.ftc.robotcore.external.navigation.AxesReference.INTRINSIC,
+                    org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX,
+                    AngleUnit.DEGREES);
+
+            double currentHeading = normalizeAngle(currentOrientation.firstAngle);
+            double error = targetHeading - currentHeading;
+
+            // Normalize error to [-180, 180]
+            error = normalizeAngle(error);
+
+            if (Math.abs(error) < 2.0) { // Tolerance of 2 degrees
+                break;
+            }
+
+            // Determine rotation direction
+            double rotationPower = power;
+            if (error < 0) {
+                rotationPower = -power;
+            }
+
+            // Set motor powers for rotation
+            frontLeft.setPower(rotationPower);
+            backLeft.setPower(rotationPower);
+            frontRight.setPower(-rotationPower);
+            backRight.setPower(-rotationPower);
+
+            // Telemetry
+            telemetry.addData("Target Heading", targetHeading);
+            telemetry.addData("Current Heading", currentHeading);
+            telemetry.addData("Error", error);
+            telemetry.update();
+
+            idle();
+        }
+
+        // Stop all motion
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+    }
+
+    /**
+     * Normalizes an angle to the range [-180, 180).
+     *
+     * @param angle The angle in degrees.
+     * @return The normalized angle.
+     */
+    private double normalizeAngle(double angle) {
+        angle %= 360;
+        if (angle >= 180) angle -= 360;
+        if (angle < -180) angle += 360;
+        return angle;
+    }
+}
