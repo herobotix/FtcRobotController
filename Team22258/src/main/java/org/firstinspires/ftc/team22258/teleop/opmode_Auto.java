@@ -50,10 +50,7 @@ public class opmode_Auto extends LinearOpMode {
 	  F_Startup();
       waitForStart();
     if (opModeIsActive()) {
-      F_Move(0.0,0.0,0.0);
-      F_NewArmon(0.0);
-      F_Clawrm(0);
-      F_Pause(0.0);
+      F_Run()
     }
   }
 
@@ -176,4 +173,13 @@ public class opmode_Auto extends LinearOpMode {
 	  sleep((long)(Naptime*1000));
   }
   
+    /**
+   * Describe this function...
+   */
+  private void F_Run() {
+    F_Move(0.0,0.0,0.0);
+    F_NewArmon(0.0);
+    F_Clawrm(0);
+    F_Pause(0.0);
+  }
 }
