@@ -10,7 +10,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
 @Autonomous(name = "Opmode (Auto) [1.0.0]") //[1.0.17]
-public class opmode_TeleOp extends LinearOpMode {
+public class opmode_Auto extends LinearOpMode {
 
   private DcMotor Arm;
   private DcMotor FLMotor;
