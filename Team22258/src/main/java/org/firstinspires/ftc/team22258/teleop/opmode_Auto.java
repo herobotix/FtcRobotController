@@ -50,7 +50,7 @@ public class opmode_Auto extends LinearOpMode {
 	  F_Startup();
       waitForStart();
     if (opModeIsActive()) {
-      F_Run()
+      F_Run();
     }
   }
 
