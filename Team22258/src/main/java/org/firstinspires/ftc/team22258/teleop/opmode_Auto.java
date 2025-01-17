@@ -28,7 +28,7 @@ public class opmode_TeleOp extends LinearOpMode {
   double Lynn;
   double Lake;
   double Rick;
-  double FArmInput
+  double FArmInput;
   int Clawn;
   double Naptime;
   
