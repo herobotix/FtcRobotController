@@ -50,10 +50,10 @@ public class opmode_Auto extends LinearOpMode {
 	  F_Startup();
       waitForStart();
     if (opModeIsActive()) {
-      F_Move();
-      F_NewArmon();
-      F_Clawrm();
-      F_Pause();
+      F_Move(0.0,0.0,0.0);
+      F_NewArmon(0.0);
+      F_Clawrm(0);
+      F_Pause(0.0);
     }
   }
 
