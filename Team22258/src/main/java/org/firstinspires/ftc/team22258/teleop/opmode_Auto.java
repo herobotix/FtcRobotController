@@ -20,6 +20,10 @@ public class opmode_Auto extends LinearOpMode {
   private Servo LClaw;
   private Servo RClaw;
 
+  public final double TicksPerRevolution = (28 * 2.89 * 5.23);
+  public final double WheelCircumference = (3.1415926535*2.99/* +/- 0.004 */);
+  public final double TicksPerInch = (TicksPerRevolution/WheelCircumference);
+  
   double FLMotorPower;
   double FRMotorPower;
   double BLMotorPower;
