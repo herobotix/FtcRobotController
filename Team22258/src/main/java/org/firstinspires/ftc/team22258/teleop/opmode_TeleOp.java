@@ -90,18 +90,18 @@ public class opmode_TeleOp extends LinearOpMode {
   }
   
 private void F_Twoggle() {
-    if (TwoState == 0 && (gamepad1.dpad_left ? 1 : 0)) {
+    if (TwoState == 0 && gamepad1.dpad_left) {
       // Two off
       TwoState = 1;
       // Two on
-    } else if (TwoState == 1 && !(gamepad1.dpad_left ? 1 : 0)) {
+    } else if (TwoState == 1 && !gamepad1.dpad_left) {
       TwoState = 2;
       // Two on
-    } else if (TwoState == 2 && (gamepad1.dpad_left ? 1 : 0)) {
+    } else if (TwoState == 2 && gamepad1.dpad_left) {
       // Two on
       TwoState = 3;
       // Two off
-    } else if (TwoState == 3 && !(gamepad1.dpad_left ? 1 : 0)) {
+    } else if (TwoState == 3 && !gamepad1.dpad_left) {
       TwoState = 0;
       // Two off
     }
