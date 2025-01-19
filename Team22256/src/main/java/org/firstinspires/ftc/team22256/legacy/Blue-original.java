@@ -26,7 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+/*
 package org.firstinspires.ftc.team22256.legacy;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -51,6 +51,7 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
+/*
 @TeleOp(name = "Blue", group = "Concept")
 
 public class Blue extends LinearOpMode {
@@ -71,11 +72,13 @@ public class Blue extends LinearOpMode {
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
+/*
     private TfodProcessor tfod;
 
     /**
      * The variable to store our instance of the vision portal.
      */
+/*
     private VisionPortal visionPortal;
     
     private ElapsedTime runtime = new ElapsedTime();
@@ -179,7 +182,7 @@ public class Blue extends LinearOpMode {
                 } else if (sector == 0 && stop == true) {
                     stop = false;
                     sectorThree();
-                } */
+                }
                 
                 if (sector == 1) {
                     if (runtime.seconds() >= 5.0 && runtime.seconds() <= 5.1) {
@@ -260,7 +263,7 @@ public class Blue extends LinearOpMode {
         } else if (runtime.seconds() >= 10.0 && runtime.seconds() <= 11.0){
             claw.setPosition(0.25);
         }
-    } */
+    }
     
     private void antiRotate(int cm){
         FrontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -403,7 +406,7 @@ public class Blue extends LinearOpMode {
 
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
+
     public void telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -426,3 +429,4 @@ public class Blue extends LinearOpMode {
     }   // end method telemetryTfod()
 
 }   // end class
+*/
