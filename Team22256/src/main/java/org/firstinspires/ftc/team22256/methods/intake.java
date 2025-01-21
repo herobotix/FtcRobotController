@@ -14,23 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.team22256.methods.arm;
 public class intake{
-    private DcMotor rightFront;
-    private DcMotor leftFront;
-    private DcMotor rightBack;
-    private DcMotor leftBack;
     private DcMotor rotator;
-    private DcMotor slide;
-    private PIDController controller0;
-    public static double p=0,i=0,d=0;
-    public static double f = 0;
-    double pid = 0;
-    double ff = 0;
-    double power = 0;
-    public static double target = 0;
-    public static double ticks_in_degree = 4.687;
-
-
-
 
 
 

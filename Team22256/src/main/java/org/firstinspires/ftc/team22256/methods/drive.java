@@ -29,9 +29,13 @@ public class drive{
     public static double target = 0;
     public static double ticks_in_degree = 4.687;
 
+    public drive(DcMotor motor_1){
 
 
 
 
 
+
+
+    }
 }

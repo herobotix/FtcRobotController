@@ -46,6 +46,8 @@ public class new_robot extends LinearOpMode {
     public static double ticks_in_degree = 4.687;
 
     arm arm = new arm();
+    drive drive = new drive(leftBack);
+
 
 
     @Override
@@ -121,7 +123,8 @@ public class new_robot extends LinearOpMode {
                 arm.topPos();
             } else if(gamepad1.y){
                 arm.bottomPos();
-                target =100;
+
+
             }
 
             telemetry.addData("target", target);
