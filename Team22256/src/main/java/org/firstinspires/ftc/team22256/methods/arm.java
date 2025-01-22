@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.team22256.methods;
 
-import com.arcrobotics.ftclib.controller.PIDController;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class arm{
-    private DcMotor slide;
-    public static double target = 0;
+    double target;
+    public arm(DcMotor slide){
+        slide = hardwareMap.get(DcMotor.class,"slide");
+
+    }
     public void topPos(){
         target = -4000;
     }
@@ -24,6 +28,8 @@ public class arm{
     public void lowerSlowly(){
         target = target + 1;
     }
+
+
 }
 
 

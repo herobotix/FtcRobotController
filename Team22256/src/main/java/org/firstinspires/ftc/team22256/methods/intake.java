@@ -13,9 +13,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.team22256.methods.arm;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 public class intake{
-    private DcMotor rotator;
 
+    public intake(DcMotor rotator0,Servo rotator1,Servo rotator2,Servo flapper){
+        rotator0 = hardwareMap.get(DcMotor.class,"rotator0");
+        rotator1 = hardwareMap.get(Servo.class,"rotator1");
+        rotator2 = hardwareMap.get(Servo.class,"rotator2");
+        flapper = hardwareMap.get(Servo.class,"flapper");
+    }
 
 
 }

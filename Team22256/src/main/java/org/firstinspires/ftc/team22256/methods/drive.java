@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.team22256.methods;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import android.view.ContextThemeWrapper;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -29,13 +31,12 @@ public class drive{
     public static double target = 0;
     public static double ticks_in_degree = 4.687;
 
-    public drive(DcMotor motor_1){
 
 
-
-
-
-
-
+    public drive(DcMotor fL,DcMotor fR,DcMotor bL,DcMotor bR){
+        fR  = hardwareMap.get(DcMotor.class,"rightFront");
+        fL  = hardwareMap.get(DcMotor.class,"leftFront");
+        bR = hardwareMap.get(DcMotor.class,"rightBack");
+        bL = hardwareMap.get(DcMotor.class,"leftBack");
     }
 }
