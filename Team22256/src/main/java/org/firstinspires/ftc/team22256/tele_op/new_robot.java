@@ -1,23 +1,18 @@
 package org.firstinspires.ftc.team22256.tele_op;
 
-import android.view.ContextThemeWrapper;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.controller.PIDFController;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.team22256.methods.arm;
-import org.firstinspires.ftc.team22256.methods.intake;
 import org.firstinspires.ftc.team22256.methods.drive;
+import org.firstinspires.ftc.team22256.methods.intake;
 
 @Config
 @TeleOp
@@ -25,7 +20,7 @@ import org.firstinspires.ftc.team22256.methods.drive;
 
 public class new_robot extends LinearOpMode {
 
-    // Declare OpMode members for each of the 4 motors.
+
 
 
 
@@ -36,6 +31,8 @@ public class new_robot extends LinearOpMode {
     private DcMotor leftBack;
     private DcMotor rotator;
     private DcMotor slide;
+    private Servo leftS;
+    private Servo rightS;
     private PIDController controller0;
     public static double p=0,i=0,d=0;
     public static double f = 0;
@@ -44,10 +41,6 @@ public class new_robot extends LinearOpMode {
     double power = 0;
     public static double target = 0;
     public static double ticks_in_degree = 4.687;
-
-    arm arm = new arm();
-    drive drive = new drive(leftBack);
-
 
 
     @Override
@@ -65,6 +58,10 @@ public class new_robot extends LinearOpMode {
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+
+
+
         controller0  = new PIDController(p,i,d); // Initialization of controller and coeffients
 
         pid = 0;
@@ -72,6 +69,7 @@ public class new_robot extends LinearOpMode {
         power = 0;
 
         double changePower = 1.25;
+
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
@@ -81,14 +79,8 @@ public class new_robot extends LinearOpMode {
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            controller0.setPID(p,i,d);
-            int slidePos = slide.getCurrentPosition();
-            pid = controller0.calculate(slidePos,target);
-            ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
-            power = pid + ff;
-            slide.setPower(power);
-
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
@@ -119,18 +111,23 @@ public class new_robot extends LinearOpMode {
                 rotator.setPower(0);
             }
 
-            if(gamepad1.x){
-                arm.topPos();
-            } else if(gamepad1.y){
-                arm.bottomPos();
+            controller0.setPID(p,i,d);
+            int slidePos = slide.getCurrentPosition();
+            pid = controller0.calculate(slidePos,target);
+            ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+            power = pid + ff;
+            slide.setPower(power);
 
-
+            if(gamepad1.dpad_up){
+                target = -4000;
+            } else if(gamepad1.dpad_down){
+                target = -100;
             }
+
 
             telemetry.addData("target", target);
             telemetry.addData("pos", slidePos);
             telemetry.update();
         }
-    }
-}
+    }}
 
