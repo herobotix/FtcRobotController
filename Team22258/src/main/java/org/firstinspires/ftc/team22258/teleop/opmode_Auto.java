@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@Autonomous(name = "Opmode (Auto) [1.0.0]") //[1.0.17]
+@Autonomous(name = "Opmode (Auto) [1.1.0]")
 public class opmode_Auto extends LinearOpMode {
 
   private DcMotor Arm;
-  private DcMotor FLMotor;
-  private DcMotor FRMotor;
-  private DcMotor BLMotor;
-  private DcMotor BRMotor;
+  private DcMotor FLM;
+  private DcMotor FRM;
+  private DcMotor BLM;
+  private DcMotor BRM;
   private Servo LClaw;
   private Servo RClaw;
 
@@ -24,29 +24,34 @@ public class opmode_Auto extends LinearOpMode {
   public final double WheelCircumference = (3.1415926535*2.99/* +/- 0.004 */);
   public final double TicksPerInch = (TicksPerRevolution/WheelCircumference);
   
-  double FLMotorPower;
-  double FRMotorPower;
-  double BLMotorPower;
-  double BRMotorPower;
+  double FLMP;
+  double FRMP;
+  double BLMP;
+  double BRMP;
+  
+  double FLMD;
+  double FRMD;
+  double BLMD;
+  double BRMD;
   
   double Lynn;
   double Lake;
   double Rick;
   double FArmInput;
-  int Clawn;
+  int Clawn = 0;
   double Naptime;
   
-  double MotorPowerNormalizer;
+  double MPN;
 
   private IMU imu;
   
   @Override
   public void runOpMode() {
     Arm = hardwareMap.get(DcMotor.class, "Arm");
-    FLMotor = hardwareMap.get(DcMotor.class, "FLMotor");
-    FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
-    BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
-    BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
+    FLM = hardwareMap.get(DcMotor.class, "FLM");
+    FRM = hardwareMap.get(DcMotor.class, "FRM");
+    BLM = hardwareMap.get(DcMotor.class, "BLM");
+    BRM = hardwareMap.get(DcMotor.class, "BRM");
     LClaw = hardwareMap.get(Servo.class, "LClaw");
     RClaw = hardwareMap.get(Servo.class, "RClaw");
 
@@ -76,71 +81,128 @@ public class opmode_Auto extends LinearOpMode {
    * Describe this function...
    */
   private void F_Startup() {
-    Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    Clawn = 0;
+	//Stop, Resest, & Run using Motor Encoders
+      FLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+	  FLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      FRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      FRM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      BLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      BLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      BRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      BRM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+	
+	//Stop Arm w/ input of 0
+      Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
   }
 
   /**
    * Describe this function...
    */
-  private void F_Move(double Lynn, double Lake, double Rick) {
-    if (true) {
-      // Drive
-      FLMotorPower += Lynn * 1.0;
-      FRMotorPower += Lynn * 1.0;
-      BLMotorPower += Lynn * 1.0;
-      BRMotorPower += Lynn * 1.0;
-    }
-    if (true) {
-      // Strafe
-      FLMotorPower += Lake * -1.0;
-      FRMotorPower += Lake * 1.0;
-      BLMotorPower += Lake * 1.0;
-      BRMotorPower += Lake * -1.0;
-    }
-    if (true) {
-      // Rotate
-      FLMotorPower += Rick * -1.0;
-      FRMotorPower += Rick * 1.0;
-      BLMotorPower += Rick * -1.0;
-      BRMotorPower += Rick * 1.0;
-    }
-    if (true) {
-	  
-	    //telemetry
-	      telemetry.addData("FLMotorPower OLD", FLMotorPower);
-		  telemetry.addData("FLMotorPower OLD", FRMotorPower);
-		  telemetry.addData("BLMotorPower OLD", BLMotorPower);
-		  telemetry.addData("BRMotorPower OLD", BRMotorPower);
-		  telemetry.update();
-	  
-      MotorPowerNormalizer = ( // Power Control
-		Math.max( 
-		  Math.max( Math.abs(gamepad1.left_stick_x), Math.abs(gamepad1.left_stick_y) ), 
-		  Math.abs(gamepad1.right_stick_x) 
-		)/ ( Math.max( 
-		  Math.max( Math.abs(FLMotorPower), Math.abs(FRMotorPower) ), 
-		  Math.max( Math.abs(BLMotorPower), Math.abs(BRMotorPower) ) 
-		) ) 
+  private void F_Move(
+	double dstHead  , double powHead
+	,double dstRight, double powRight
+	/*,double dstCclk , double powCclk*/
+  ) {
+	
+	//Reset Encoders
+	  FLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+	  FRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+	  BLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+	  BRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+	
+	// Drive & Strafe Power
+      FLMP = powHead - powRight;
+      FRMP = powHead + powRight;
+      BLMP = powHead + powRight;
+      BRMP = powHead - powRight;
+	
+	//telemetry
+	  telemetry.addData("FLMP OLD", FLMP);
+	  telemetry.addData("FRMP OLD", FRMP);
+	  telemetry.addData("BLMP OLD", BLMP);
+	  telemetry.addData("BRMP OLD", BRMP);
+	  telemetry.update();
+	
+	// Power Control
+      MPN = (
+	    1/Math.max( 
+	      Math.max( Math.abs(FLMP), Math.abs(FRMP) ), 
+	      Math.max( Math.abs(BLMP), Math.abs(BRMP) ) 
+	    )
 	  );
-	  
-	  FLMotor.setPower(FLMotorPower * MotorPowerNormalizer);
-      FRMotor.setPower(FRMotorPower * -MotorPowerNormalizer);
-      BLMotor.setPower(BLMotorPower * -MotorPowerNormalizer);
-      BRMotor.setPower(BRMotorPower * -MotorPowerNormalizer);
-	  
-	    //telemetry
-		  telemetry.addData("Lynn", Lynn);
-		  telemetry.addData("Lake", Lake);
-		  telemetry.addData("Rick", Rick);
-		  telemetry.addData("MPN", MotorPowerNormalizer);
-		  telemetry.addData("FLMotorPower", FLMotorPower);
-		  telemetry.addData("FLMotorPower", FRMotorPower);
-		  telemetry.addData("BLMotorPower", BLMotorPower);
-		  telemetry.addData("BRMotorPower", BRMotorPower);
+	  if (MPN < 1){
+		BRMP *= MPN;
+		BLMP *= MPN;
+		FRMP *= MPN;
+		FLMP *= MPN;
+	  }
+	
+	/* re-add
+    // Rotate
+      FLMP -= Rick;
+      FRMP += Rick;
+      BLMP -= Rick;
+      BRMP += Rick;
+	*/
+	
+	// Drive & Strafe Distance
+      FLMD = (dstHead - dstRight) * TicksPerInch;
+      FRMD = (dstHead + dstRight) * TicksPerInch;
+      BLMD = (dstHead + dstRight) * TicksPerInch;
+      BRMD = (dstHead - dstRight) * TicksPerInch;
+	
+	//telemetry
+	  telemetry.addData("MPN", MPN);
+	  telemetry.addData("FLMP", FLMP);
+	  telemetry.addData("FLMP", FRMP);
+	  telemetry.addData("BLMP", BLMP);
+	  telemetry.addData("BRMP", BRMP);
+	  telemetry.addData("FLMD", FLMD);
+	  telemetry.addData("FLMD", FRMD);
+	  telemetry.addData("BLMD", BLMD);
+	  telemetry.addData("BRMD", BRMD);
+	  telemetry.update();
+	
+	// Set target position
+      FLM.setTargetPosition((int)FLMD);
+      FRM.setTargetPosition((int)FRMD);
+      BLM.setTargetPosition((int)BLMD);
+      BRM.setTargetPosition((int)BRMD);
+	
+	// Set Motors to "BUSY" until target distance reached.
+      FLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      FRM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      BLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      BRM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	
+	//Set Motor Power
+	  FLM.setPower( FLMP);
+      FRM.setPower(-FRMP);
+      BLM.setPower(-BLMP);
+      BRM.setPower(-BRMP);
+	
+	while (opModeIsActive() && FLM.isBusy() && FRM.isBusy() && BLM.isBusy() && BRM.isBusy()) {
+		
+		//telemetry
+		  telemetry.addData("FLMT", FLM.getCurrentPosition());
+		  telemetry.addData("FRMT", FRM.getCurrentPosition());
+		  telemetry.addData("BLMT", BLM.getCurrentPosition());
+		  telemetry.addData("BRMT", BRM.getCurrentPosition());
 		  telemetry.update();
-	  
-    }
+		
+      }
+	
+	// Stop Motors
+      FLM.setPower(0);
+      FRM.setPower(0);
+      BLM.setPower(0);
+      BRM.setPower(0);
+	
+	// Return motors to using the encoder.
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
   /**
