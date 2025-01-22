@@ -34,7 +34,7 @@ public class park extends LinearOpMode {
     public static double target = 0;
     public static double ticks_in_degree = 4.687;
 
-    arm arm = new arm();
+    arm arm = new arm(slide);
 
 
     @Override
