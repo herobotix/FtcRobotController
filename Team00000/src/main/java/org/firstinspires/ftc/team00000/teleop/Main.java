@@ -119,37 +119,37 @@ public class Main extends LinearOpMode {
             }
 
             // Set currentState based on user input.
-            if (gamepad2.a) {
+            if (gamepad1.a) {
                 currentState = RobotState.INTAKE;
-            } else if (gamepad2.b && !lastGrab) {
+            } else if (gamepad1.b && !lastGrab) {
                 if(currentState == RobotState.WALL_GRAB) { currentState = RobotState.WALL_UNHOOK; }
                 else { currentState = RobotState.WALL_GRAB; }
-            } else if (gamepad2.y && !lastHook) {
+            } else if (gamepad1.y && !lastHook) {
                 if(currentState == RobotState.HOVER_HIGH){ currentState = RobotState.CLIP_HIGH; }
                 else { currentState = RobotState.HOVER_HIGH; }
-            } else if (gamepad2.x) {
+            } else if (gamepad1.x) {
                 currentState = RobotState.LOW_BASKET;
-            } else if (gamepad2.left_bumper) {
+            } else if (gamepad1.left_bumper) {
                 currentState = RobotState.INIT;
-            } else if (gamepad2.dpad_up){ //manual control
+            } else if (gamepad1.dpad_up){ //manual control
                 currentState = RobotState.MANUAL;
                 targetUpperArm += 10;
-            } else if (gamepad2.dpad_down){
+            } else if (gamepad1.dpad_down){
                 currentState = RobotState.MANUAL;
                 targetUpperArm -= 10;
-            } else if (gamepad2.dpad_left){
+            } else if (gamepad1.dpad_left){
                 currentState = RobotState.MANUAL;
                 targetLowerArm += 1;
-            } else if (gamepad2.dpad_right){
+            } else if (gamepad1.dpad_right){
                 currentState = RobotState.MANUAL;
                 targetLowerArm -= 1;
             }
 
-            lastGrab = gamepad2.b;
-            lastHook = gamepad2.y;
+            lastGrab = gamepad1.b;
+            lastHook = gamepad1.y;
 
             // Toggle claw position when right_bumper is pressed
-            if (gamepad2.right_bumper && !lastBump) {
+            if (gamepad1.right_bumper && !lastBump) {
                 clawOpen = !clawOpen;
                 if (clawOpen) {
                     ClawServo.setPosition(CLAW_OPEN_POSITION);
@@ -157,12 +157,12 @@ public class Main extends LinearOpMode {
                     ClawServo.setPosition(CLAW_CLOSED_POSITION);
                 }
             }
-            lastBump = gamepad2.right_bumper;
+            lastBump = gamepad1.right_bumper;
 
             // Control intake servo with triggers
-            if (gamepad2.right_trigger>0.1) {
+            if (gamepad1.right_trigger>0.1) {
                 IntakeServo.setPower(1.0);
-            } else if (gamepad2.left_trigger>0.1) {
+            } else if (gamepad1.left_trigger>0.1) {
                 IntakeServo.setPower(-1.0);
             } else {
                 IntakeServo.setPower(0);
@@ -301,14 +301,14 @@ public class Main extends LinearOpMode {
                                       "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
                 break;
             case "GamePad2":
-                txt += "\n\tLeftStick:\tbtn: " + (gamepad2.left_stick_button?1:0) + "\tx: " + _p(gamepad2.left_stick_x) + "\ty: " + _p(gamepad2.left_stick_y);
-                txt += "\n\tRightStick:\tbtn: " + (gamepad2.right_stick_button?1:0) + "\tx: " + _p(gamepad2.right_stick_x) + "\ty: " + _p(gamepad2.right_stick_y);
-                txt += "\n\tLBump: " + (gamepad2.left_bumper?1:0) + "\tRBump: " + (gamepad2.right_bumper?1:0) +
-                        "\tLTrig: " + _p(gamepad2.left_trigger) + "\tRTrig: " + _p(gamepad2.right_trigger);
-                txt += "\n\ta: " + (gamepad2.a?1:0) + "\tb: " + (gamepad2.b?1:0) + "\ty: " + (gamepad2.y?1:0) +
-                        "\tx: " + (gamepad2.x?1:0) + "\tback: " + (gamepad2.back?1:0) + "\tstart: " + (gamepad2.start?1:0);
-                txt += "\n\tDpad:\tL: " + (gamepad2.dpad_left?1:0) + "\tR: " + (gamepad2.dpad_right?1:0) +
-                        "\tU: " + (gamepad2.dpad_up?1:0) + "\tD: " + (gamepad2.dpad_down?1:0);
+                txt += "\n\tLeftStick:\tbtn: " + (gamepad1.left_stick_button?1:0) + "\tx: " + _p(gamepad1.left_stick_x) + "\ty: " + _p(gamepad1.left_stick_y);
+                txt += "\n\tRightStick:\tbtn: " + (gamepad1.right_stick_button?1:0) + "\tx: " + _p(gamepad1.right_stick_x) + "\ty: " + _p(gamepad1.right_stick_y);
+                txt += "\n\tLBump: " + (gamepad1.left_bumper?1:0) + "\tRBump: " + (gamepad1.right_bumper?1:0) +
+                        "\tLTrig: " + _p(gamepad1.left_trigger) + "\tRTrig: " + _p(gamepad1.right_trigger);
+                txt += "\n\ta: " + (gamepad1.a?1:0) + "\tb: " + (gamepad1.b?1:0) + "\ty: " + (gamepad1.y?1:0) +
+                        "\tx: " + (gamepad1.x?1:0) + "\tback: " + (gamepad1.back?1:0) + "\tstart: " + (gamepad1.start?1:0);
+                txt += "\n\tDpad:\tL: " + (gamepad1.dpad_left?1:0) + "\tR: " + (gamepad1.dpad_right?1:0) +
+                        "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
                 break;
         }
         return txt;
