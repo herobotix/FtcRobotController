@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@Autonomous(name = "Opmode (Auto) [1.1.0]")
+@Autonomous(name = "Opmode (Auto) [1.1.1]")
 public class opmode_Auto extends LinearOpMode {
 
   private DcMotor Arm;
@@ -181,8 +181,11 @@ public class opmode_Auto extends LinearOpMode {
       BLM.setPower(-BLMP);
       BRM.setPower(-BRMP);
 	
-	while (opModeIsActive() && FLM.isBusy() && FRM.isBusy() && BLM.isBusy() && BRM.isBusy()) {
-		
+	while (opModeIsActive()&&(FLM.isBusy()||FRM.isBusy()||BLM.isBusy()||BRM.isBusy())) {
+		if !(FLM.isBusy()||FLM.getPower()==0) {FLM.setPower(0);}
+		if !(FRM.isBusy()||FRM.getPower()==0) {FLM.setPower(0);}
+		if !(BLM.isBusy()||BLM.getPower()==0) {FLM.setPower(0);}
+		if !(BRM.isBusy()||BRM.getPower()==0) {FLM.setPower(0);}
 		//telemetry
 		  telemetry.addData("FLMT", FLM.getCurrentPosition());
 		  telemetry.addData("FRMT", FRM.getCurrentPosition());
@@ -192,7 +195,7 @@ public class opmode_Auto extends LinearOpMode {
 		
       }
 	
-	// Stop Motors
+	// Stop Motors not caught in while loop.
       FLM.setPower(0);
       FRM.setPower(0);
       BLM.setPower(0);
@@ -239,13 +242,22 @@ public class opmode_Auto extends LinearOpMode {
 	  sleep((long)(Naptime*1000));
   }
   
-    /**
-   * Describe this function...
-   */
-  private void F_Run() {
-    F_Move(0.0,0.0,0.0);
+   /* //selection
+	F_Move(
+	  0.0, 0.0,
+	  0.0, 0.0
+	);
     F_NewArmon(0.0);
     F_Clawrm(0);
     F_Pause(0.0);
+	
+   /**
+	* Describe this function...
+	*/
+  private void F_Run() {
+    F_Move(
+	  12.0, 0.5,
+	  6.0, 0.5
+	);
   }
 }
