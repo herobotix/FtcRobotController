@@ -1,123 +1,151 @@
 package org.firstinspires.ftc.team00000.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import androidx.annotation.NonNull;
+
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.robot.RobotState;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name="Main", group="teleop")
 //@Disabled
 public class Main extends LinearOpMode {
-    private DcMotor BLMotor;
-    private DcMotor BRMotor;
-    private DcMotor FLMotor;
-    private DcMotor FRMotor;
-    private DcMotorSimple ArmMotor;
-    private DcMotorSimple IntakeArmMotor;
-    private Servo ClawServo;
-    private CRServo IntakeServo;
-    //private Blinker control_Hub;
-    //private IMU imu;
-    
-    //initializing stick axis and power level variables
+    private DcMotor FLMotor, BLMotor, FRMotor, BRMotor, UAMotor, LAMotor;
+    private Servo ClServo;
+    private CRServo InServo;
+    private IMU imu;
     private boolean ClawOpen, ClawChange;
-    private double LSy, LSx, RSx;
-    private double FRPwr, BRPwr, FLPwr, BLPwr, MaxPwr;
 
     public void runOpMode() {
-        // Initialize the hardware variables.
-        FLMotor  = hardwareMap.get(DcMotor.class, "FLMotor");
-        BLMotor = hardwareMap.get(DcMotor.class, "BLMotor"); 
-        FRMotor  = hardwareMap.get(DcMotor.class, "FRMotor");
-        BRMotor = hardwareMap.get(DcMotor.class, "BRMotor"); 
-        ArmMotor= hardwareMap.get(DcMotorSimple.class, "ArmMotor");
-        IntakeArmMotor= hardwareMap.get(DcMotorSimple.class, "IntakeArmMotor");
-        ClawServo= hardwareMap.get(Servo.class, "ClawServo");
-        IntakeServo= hardwareMap.get(CRServo.class, "IntakeServo");
-        
-        // Stop and reset encoders
-        FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        
-        // Set motors to use encoders
-        FLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); 
-        
-        // Initialize Claw State
-        ClawOpen=false;
-        ClawChange=true;
-        
-        // Initialize Intake State
-        IntakeServo.setDirection(CRServo.Direction.REVERSE);
-        
+        setupChassis();
+        setupActuators();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        
+
         // Run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            
-            LSy=gamepad1.left_stick_y;
-            LSx=-gamepad1.left_stick_x;
-            RSx=-gamepad1.right_stick_x;
-            telemetry.addData("LSy", LSy);
-            telemetry.addData("LSx", LSx);
-            telemetry.addData("RSx", RSx);
-            
-            MaxPwr=Math.max(Math.abs(LSy)+Math.abs(LSx)+Math.abs(RSx), 1);
-            FLPwr=(LSy+LSx+RSx)/MaxPwr;
-            BLPwr=(LSy-LSx+RSx)/MaxPwr;
-            FRPwr=(LSy-LSx-RSx)/MaxPwr;
-            BRPwr=(LSy+LSx-RSx)/MaxPwr;            
-            
-             // Handle state transitions based on gamepad input
-            FLMotor.setPower(FLPwr); 
-            BLMotor.setPower(BLPwr);
-            FRMotor.setPower(FRPwr); 
-            BRMotor.setPower(BRPwr); 
+
+            if (gamepad1.start) { imu.resetYaw(); }
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+            double LSx = gamepad1.left_stick_x, LSy = gamepad1.left_stick_y;
+            double RSx = gamepad1.right_stick_x, RSy = gamepad1.right_stick_y;
+            double rLSx = -LSx*Math.cos(-botHeading) - LSy*Math.sin(-botHeading);
+            double rLSy = -LSx*Math.sin(-botHeading) + LSy*Math.cos(-botHeading);
+            double LT =  gamepad1.left_trigger, RT = gamepad1.right_trigger;
+
+            double MaxPwr=Math.max(Math.abs(LSy)+Math.abs(LSx)+Math.abs(RSx), 1);
+            FLMotor.setPower((rLSy-rLSx-RSx)/MaxPwr);
+            BLMotor.setPower((rLSy+rLSx-RSx)/MaxPwr);
+            FRMotor.setPower((rLSy+rLSx+RSx)/MaxPwr);
+            BRMotor.setPower((rLSy-rLSx+RSx)/MaxPwr);
             
             //Raise and lower the Arm
-            ArmMotor.setPower(-gamepad1.right_stick_y);
-            telemetry.addData("RSy", gamepad1.right_stick_y);
-            
-            
+            UAMotor.setPower(-RSy);
+
             //Raise and lower the Intake Arm
-            if(gamepad1.left_trigger>0) IntakeArmMotor.setPower(gamepad1.left_trigger);
-            else if(gamepad1.right_trigger>0) IntakeArmMotor.setPower(-gamepad1.right_trigger);
-            else IntakeArmMotor.setPower(0.0);
-            telemetry.addData("LTrigger", gamepad1.left_trigger);
-            telemetry.addData("RTrigger", gamepad1.right_trigger);
-            
+            LAMotor.setPower(LT > 0 ? LT : (RT > 0 ? -RT : 0.0));
+
             //Open and Close Claw
             if(gamepad1.a && ClawChange) {
                 if(ClawOpen) {
-                    ClawServo.setPosition(0.7);
+                    ClServo.setPosition(0.7);
                     ClawOpen=false;
                 } else{
-                    ClawServo.setPosition(0.4);
+                    ClServo.setPosition(0.4);
                     ClawOpen=true;
                 }
                 ClawChange=false;
             } else if (!gamepad1.a && !ClawChange) ClawChange=true;
             
-            if(gamepad1.left_bumper) IntakeServo.setPower(-1);
-            else if(gamepad1.right_bumper) IntakeServo.setPower(1);
-            else IntakeServo.setPower(0);
-            
+            if(gamepad1.left_bumper) InServo.setPower(-1);
+            else if(gamepad1.right_bumper) InServo.setPower(1);
+            else InServo.setPower(0);
+
+            telemetry.addData("GamePad1", teleText("GamePad1"));
+            telemetry.addData("GamePad2", teleText("GamePad2"));
             telemetry.update();
         }
-       
-       
-  
     }
+
+    public void setupChassis() {
+        // Initialize the hardware motor variables.
+        FLMotor = hardwareMap.get(DcMotor.class, "FrontLeftMotor");
+        BLMotor = hardwareMap.get(DcMotor.class, "BackLeftMotor");
+        FRMotor = hardwareMap.get(DcMotor.class, "FrontRightMotor");
+        BRMotor = hardwareMap.get(DcMotor.class, "BackRightMotor");
+
+        // Stop and reset motor encoders
+        FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Setup to use motor encoders
+        FLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Initialize IMU and set directions of Logo and USB port
+        imu = hardwareMap.get(IMU.class,"IMU");
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+        )));
+    }
+
+    public void setupActuators() {
+        // Initialize the hardware variables.
+        UAMotor = hardwareMap.get(DcMotor.class, "UpperArmMotor");
+        LAMotor = hardwareMap.get(DcMotor.class, "LowerArmMotor");
+        ClServo = hardwareMap.get(Servo.class, "ClawServo");
+        InServo = hardwareMap.get(CRServo.class, "IntakeServo");
+
+        // Initialize Claw State
+        ClawOpen=false;
+        ClawChange=false;
+
+        // Initialize Intake State
+        InServo.setDirection(CRServo.Direction.REVERSE);
+    }
+
+    public String teleText(@NonNull String pick) {
+        String txt = "";
+        switch (pick) {
+            case "GamePad1":
+                txt += "\n\tLeftStick:\tbtn: " + (gamepad1.left_stick_button?1:0) + "\tx: " + _p(gamepad1.left_stick_x) + "\ty: " + _p(gamepad1.left_stick_y);
+                txt += "\n\tRightStick:\tbtn: " + (gamepad1.right_stick_button?1:0) + "\tx: " + _p(gamepad1.right_stick_x) + "\ty: " + _p(gamepad1.right_stick_y);
+                txt += "\n\tLBump: " + (gamepad1.left_bumper?1:0) + "\tRBump: " + (gamepad1.right_bumper?1:0) +
+                             "\tLTrig: " + _p(gamepad1.left_trigger) + "\tRTrig: " + _p(gamepad1.right_trigger);
+                txt += "\n\ta: " + (gamepad1.a?1:0) + "\tb: " + (gamepad1.b?1:0) + "\ty: " + (gamepad1.y?1:0) +
+                             "\tx: " + (gamepad1.x?1:0) + "\tback: " + (gamepad1.back?1:0) + "\tstart: " + (gamepad1.start?1:0);
+                txt += "\n\tDpad:\tL: " + (gamepad1.dpad_left?1:0) + "\tR: " + (gamepad1.dpad_right?1:0) +
+                                      "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
+                break;
+            case "GamePad2":
+                txt += "\n\tLeftStick:\tbtn: " + (gamepad2.left_stick_button?1:0) + "\tx: " + _p(gamepad2.left_stick_x) + "\ty: " + _p(gamepad2.left_stick_y);
+                txt += "\n\tRightStick:\tbtn: " + (gamepad2.right_stick_button?1:0) + "\tx: " + _p(gamepad2.right_stick_x) + "\ty: " + _p(gamepad2.right_stick_y);
+                txt += "\n\tLBump: " + (gamepad2.left_bumper?1:0) + "\tRBump: " + (gamepad2.right_bumper?1:0) +
+                        "\tLTrig: " + _p(gamepad2.left_trigger) + "\tRTrig: " + _p(gamepad2.right_trigger);
+                txt += "\n\ta: " + (gamepad2.a?1:0) + "\tb: " + (gamepad2.b?1:0) + "\ty: " + (gamepad2.y?1:0) +
+                        "\tx: " + (gamepad2.x?1:0) + "\tback: " + (gamepad2.back?1:0) + "\tstart: " + (gamepad2.start?1:0);
+                txt += "\n\tDpad:\tL: " + (gamepad2.dpad_left?1:0) + "\tR: " + (gamepad2.dpad_right?1:0) +
+                        "\tU: " + (gamepad2.dpad_up?1:0) + "\tD: " + (gamepad2.dpad_down?1:0);
+                break;
+        }
+        return txt;
+
+    }
+
+    public String _p(double val) {
+        return String.format("%.3f",val);
+    }
+
 }
