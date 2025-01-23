@@ -24,6 +24,8 @@ public class opmode_Auto extends LinearOpMode {
   public final double WheelCircumference = (3.1415926535*2.99/* +/- 0.004 */);
   public final double TicksPerInch = (TicksPerRevolution/WheelCircumference);
   
+  public final double TicksPerRot = /* INSERT CONSTANT HERE */;
+  
   double FLMP;
   double FRMP;
   double BLMP;
@@ -101,7 +103,7 @@ public class opmode_Auto extends LinearOpMode {
   private void F_Move(
 	double dstHead  , double powHead
 	,double dstRight, double powRight
-	/*,double dstCclk , double powCclk*/
+	,double dstCclk , double powCclk
   ) {
 	
 	//Reset Encoders
@@ -111,10 +113,10 @@ public class opmode_Auto extends LinearOpMode {
 	  BRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 	
 	// Drive & Strafe Power
-      FLMP = powHead - powRight;
-      FRMP = powHead + powRight;
-      BLMP = powHead + powRight;
-      BRMP = powHead - powRight;
+      FLMP = powHead + powRight - powCclk;
+      FRMP = powHead - powRight + powCclk;
+      BLMP = powHead - powRight - powCclk;
+      BRMP = powHead + powRight + powCclk;
 	
 	//telemetry
 	  telemetry.addData("FLMP OLD", FLMP);
@@ -137,19 +139,11 @@ public class opmode_Auto extends LinearOpMode {
 		FLMP *= MPN;
 	  }
 	
-	/* re-add
-    // Rotate
-      FLMP -= Rick;
-      FRMP += Rick;
-      BLMP -= Rick;
-      BRMP += Rick;
-	*/
-	
 	// Drive & Strafe Distance
-      FLMD = (dstHead - dstRight) * TicksPerInch;
-      FRMD = (dstHead + dstRight) * TicksPerInch;
-      BLMD = (dstHead + dstRight) * TicksPerInch;
-      BRMD = (dstHead - dstRight) * TicksPerInch;
+      FLMD = (dstHead + dstRight) * TicksPerInch - dstCclk * TicksPerRot;
+      FRMD = (dstHead - dstRight) * TicksPerInch + dstCclk * TicksPerRot;
+      BLMD = (dstHead - dstRight) * TicksPerInch - dstCclk * TicksPerRot;
+      BRMD = (dstHead + dstRight) * TicksPerInch + dstCclk * TicksPerRot;
 	
 	//telemetry
 	  telemetry.addData("MPN", MPN);
