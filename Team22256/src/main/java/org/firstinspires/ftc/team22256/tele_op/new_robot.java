@@ -12,9 +12,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team22256.methods.arm;
-import org.firstinspires.ftc.team22256.methods.drive;
-import org.firstinspires.ftc.team22256.methods.intake;
 
 @Config
 @TeleOp
