@@ -183,10 +183,10 @@ public class opmode_Auto extends LinearOpMode {
       BRM.setPower(-BRMP);
 	
 	while (opModeIsActive()&&(FLM.isBusy()||FRM.isBusy()||BLM.isBusy()||BRM.isBusy())) {
-		if !(FLM.isBusy()||FLM.getPower()==0) {FLM.setPower(0);}
-		if !(FRM.isBusy()||FRM.getPower()==0) {FLM.setPower(0);}
-		if !(BLM.isBusy()||BLM.getPower()==0) {FLM.setPower(0);}
-		if !(BRM.isBusy()||BRM.getPower()==0) {FLM.setPower(0);}
+		if (!FLM.isBusy()&&!(FLM.getPower()==0)) {FLM.setPower(0);}
+		if (!FRM.isBusy()&&!(FRM.getPower()==0)) {FLM.setPower(0);}
+		if (!BLM.isBusy()&&!(BLM.getPower()==0)) {FLM.setPower(0);}
+		if (!BRM.isBusy()&&!(BRM.getPower()==0)) {FLM.setPower(0);}
 		//telemetry
 		  telemetry.addData("FLMT", FLM.getCurrentPosition());
 		  telemetry.addData("FRMT", FRM.getCurrentPosition());
