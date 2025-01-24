@@ -246,6 +246,7 @@ public class opmode_Auto extends LinearOpMode {
    /* //selection
 	F_Move(
 	  0.0, 0.0,
+	  0.0, 0.0,
 	  0.0, 0.0
 	);
     F_NewArmon(0.0);
@@ -258,7 +259,13 @@ public class opmode_Auto extends LinearOpMode {
   private void F_Run() {
     F_Move(
 	  12.0, 0.5,
-	  6.0, 0.5
+	  6.0, 0.5,
+	  0.0, 0.0
+	);
+	F_Move(
+	  0.0, 0.0,
+	  0.0, 0.0,
+	  1.0, 0.5
 	);
   }
 }
