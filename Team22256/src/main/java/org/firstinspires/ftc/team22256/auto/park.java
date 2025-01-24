@@ -10,8 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.team22256.methods.arm;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @Autonomous
@@ -25,6 +24,11 @@ public class park extends LinearOpMode {
     private DcMotor leftBack;
     private DcMotor rotator;
     private DcMotor slide;
+    private Servo S1;
+    private Servo S2;
+    private Servo wrist;
+    private Servo flapper;
+    private Servo claw;
     private PIDController controller0;
     public static double p=0,i=0,d=0;
     public static double f = 0;
@@ -33,10 +37,6 @@ public class park extends LinearOpMode {
     double power = 0;
     public static double target = 0;
     public static double ticks_in_degree = 4.687;
-
-    arm arm = new arm(slide);
-
-
     @Override
     public void runOpMode() {
 
@@ -75,6 +75,18 @@ public class park extends LinearOpMode {
             ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
             power = pid + ff;
             slide.setPower(power);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
