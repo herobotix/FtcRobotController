@@ -14,7 +14,7 @@ public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
   private DcMotor FLMotor;
-  private DcMotor FRMotorotor;
+  private DcMotor FRMotor;
   private DcMotor BLMotor;
   private DcMotor BRMotor;
   private Servo LClaw;
@@ -29,7 +29,7 @@ public class opmode_TeleOp extends LinearOpMode {
   int Twon = 0;
   
   double FLMotorPower;
-  double FRMotorotorPower;
+  double FRMotorPower;
   double BLMotorPower;
   double BRMotorPower;
   
@@ -41,7 +41,7 @@ public class opmode_TeleOp extends LinearOpMode {
   public void runOpMode() {
     Arm = hardwareMap.get(DcMotor.class, "Arm");
     FLMotor = hardwareMap.get(DcMotor.class, "FLMotor");
-    FRMotorotor = hardwareMap.get(DcMotor.class, "FRMotorotor");
+    FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
     BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
     BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
     LClaw = hardwareMap.get(Servo.class, "LClaw");
@@ -119,14 +119,14 @@ private void F_Twoggle() {
     if (true) {
       // Drive
       FLMotorPower += gamepad1.left_stick_y * 1.0;
-      FRMotorotorPower += gamepad1.left_stick_y * 1.0;
+      FRMotorPower += gamepad1.left_stick_y * 1.0;
       BLMotorPower += gamepad1.left_stick_y * 1.0;
       BRMotorPower += gamepad1.left_stick_y * 1.0;
     }
     if (true) {
       // Strafe
       FLMotorPower += gamepad1.left_stick_x * -1.0;
-      FRMotorotorPower += gamepad1.left_stick_x * 1.0;
+      FRMotorPower += gamepad1.left_stick_x * 1.0;
       BLMotorPower += gamepad1.left_stick_x * 1.0;
       BRMotorPower += gamepad1.left_stick_x * -1.0;
     }
@@ -134,14 +134,14 @@ private void F_Twoggle() {
       // Rotate
 	  double Rick = ((Twon == 1)?gamepad2:gamepad1).right_stick_x;
       FLMotorPower += Rick * -1.0;
-      FRMotorotorPower += Rick * 1.0;
+      FRMotorPower += Rick * 1.0;
       BLMotorPower += Rick * -1.0;
       BRMotorPower += Rick * 1.0;
     }
     if (true) {
       // Power Control
 		telemetry.addData("FLMotorPower OLD", FLMotorPower);
-		telemetry.addData("FLMotorPower OLD", FRMotorotorPower);
+		telemetry.addData("FLMotorPower OLD", FRMotorPower);
 		telemetry.addData("BLMotorPower OLD", BLMotorPower);
 		telemetry.addData("BRMotorPower OLD", BRMotorPower);
       MotorPowerNormalizer = ( 
@@ -149,12 +149,12 @@ private void F_Twoggle() {
 		  Math.max( Math.abs(gamepad1.left_stick_x), Math.abs(gamepad1.left_stick_y) ), 
 		  Math.abs(gamepad1.right_stick_x) 
 		)/ ( Math.max( 
-		  Math.max( Math.abs(FLMotorPower), Math.abs(FRMotorotorPower) ), 
+		  Math.max( Math.abs(FLMotorPower), Math.abs(FRMotorPower) ), 
 		  Math.max( Math.abs(BLMotorPower), Math.abs(BRMotorPower) ) 
 		) ) 
 	  );
       FLMotorPower = (FLMotorPower * MotorPowerNormalizer);
-      FRMotorotorPower = (FRMotorotorPower * MotorPowerNormalizer);
+      FRMotorPower = (FRMotorPower * MotorPowerNormalizer);
       BLMotorPower = (BLMotorPower * MotorPowerNormalizer);
       BRMotorPower = (BRMotorPower * MotorPowerNormalizer);
     }
@@ -203,7 +203,7 @@ private void F_Twoggle() {
 	telemetry.addData("RStickX", gamepad1.right_stick_x);
 	telemetry.addData("MPN", MotorPowerNormalizer);
 	telemetry.addData("FLMotorPower", FLMotorPower);
-	telemetry.addData("FLMotorPower", FRMotorotorPower);
+	telemetry.addData("FLMotorPower", FRMotorPower);
 	telemetry.addData("BLMotorPower", BLMotorPower);
 	telemetry.addData("BRMotorPower", BRMotorPower);
     telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
@@ -223,14 +223,14 @@ private void F_Twoggle() {
    */
   private void F_Update() {
     FLMotor.setPower(FLMotorPower);
-    FRMotorotor.setPower(FRMotorotorPower * -1);
+    FRMotor.setPower(FRMotorPower * -1);
     BLMotor.setPower(BLMotorPower * -1);
     BRMotor.setPower(BRMotorPower * -1);
     Arm.setPower(FArmInput);
     LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
     RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
     FLMotorPower = 0;
-    FRMotorotorPower = 0;
+    FRMotorPower = 0;
     BLMotorPower = 0;
     BRMotorPower = 0;
   }
