@@ -26,7 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.firstinspires.ftc.team22256;
+package org.firstinspires.ftc.team22256.tele_op;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -77,16 +77,16 @@ public class dean extends LinearOpMode {
 
 
 
-            double y = gamepad1.left_stick_y;
+            double y = gamepad1.left_stick_y;//forward and backwards
+            double rx = gamepad1.right_stick_x;//strafing
+            double x = gamepad1.left_stick_x;//rotating
 
 
 
-
-
-            motor1.setPower(y);
-            motor2.setPower(y);
-            motor3.setPower(y);
-            motor4.setPower(y);
+            motor2.setPower(y - x - rx);
+            motor3.setPower(y + x - rx);
+            motor4.setPower(y - x + rx);
+            motor1.setPower(y + x + rx);
 
 
 
@@ -106,5 +106,8 @@ public class dean extends LinearOpMode {
 
             }
         }
-    }
+
+
+
+}
 
