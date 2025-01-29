@@ -216,7 +216,7 @@ public class opmode_TeleOp extends LinearOpMode {
     telemetry.addData("2 Controllers", Twon);
     telemetry.addData("ClawState", ClawState);
     telemetry.addData("Clawn", Clawn);
-    telemetry.addData("FArmInput", Arm.getPower);
+    telemetry.addData("FArmInput", Arm.getPower());
     telemetry.addData("LClawPos", LClaw.getPosition());
     telemetry.addData("RClawPos", RClaw.getPosition());
     telemetry.update();
