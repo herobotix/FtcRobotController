@@ -100,7 +100,7 @@ public class opmode_TeleOp extends LinearOpMode {
   }
   
   private void Fn_Move() {
-    //Movement Code
+  //Movement Code
     
     // Get/Reset Robot Rotation Value
       if (gamepad1.start) {rIMU.resetYaw();}
@@ -108,7 +108,7 @@ public class opmode_TeleOp extends LinearOpMode {
     
     // Inputs
       powHead = gamepad1.left_stick_x*Math.sin(Rot) + gamepad1.left_stick_y*Math.cos(Rot);
-      powSide = gamepad1.left_stick_x*Math.cos(Rot) - gamepad1.left_stick_y*Math.sin(Rot);
+      powSide = gamepad1.left_stick_y*Math.sin(Rot) - gamepad1.left_stick_x*Math.cos(Rot);
       powTurn = gamepad1.right_stick_x;
     
     // Drive & Strafe & Rotate
@@ -133,7 +133,7 @@ public class opmode_TeleOp extends LinearOpMode {
         FLMP /= MPN;
       }
     
-    // Trigger Motors
+    // Trigger
       FLMotor.setPower(FLMP);
       FRMotor.setPower(FRMP);
       BLMotor.setPower(BLMP);
@@ -142,13 +142,16 @@ public class opmode_TeleOp extends LinearOpMode {
   }
   
   private void Fn_Clawrm() {
-    // Claw & Arm Code
+  // Claw & Arm Code
     
     // Run Toggle Functions
       Fn_Twoggle();
       Fn_Clawggle();
     
-    FArmInput = 0.8*(Twarm.left_trigger - Twarm.right_trigger);
+    // Trigger
+      Arm.setPower(0.8*(Twarm.left_trigger - Twarm.right_trigger));  
+      LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
+      RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
   }
 
   /**
@@ -214,23 +217,10 @@ public class opmode_TeleOp extends LinearOpMode {
     telemetry.addData("2 Controllers", Twon);
     telemetry.addData("ClawState", ClawState);
     telemetry.addData("Clawn", Clawn);
-    telemetry.addData("FArmInput", FArmInput);
+    telemetry.addData("FArmInput", Arm.getPower);
     telemetry.addData("LClawPos", LClaw.getPosition());
     telemetry.addData("RClawPos", RClaw.getPosition());
     telemetry.update();
-  }
-
-  /**
-   * Describe this function...
-   */
-  private void Fn_Update() {
-    Arm.setPower(FArmInput);
-    LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
-    RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
-    FLMP = 0;
-    FRMP = 0;
-    BLMP = 0;
-    BRMP = 0;
   }
   
 }
