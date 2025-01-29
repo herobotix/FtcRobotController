@@ -30,19 +30,18 @@ public class new_robot extends LinearOpMode {
     private DcMotor leftBack;
     private DcMotor rotator;
     private DcMotor slide;
-    private Servo S1;
-    private Servo S2;
+
     private Servo wrist;
     private Servo claw;
-    private CRServo flapper;
+
     private PIDController controller0;
-    public static double p=0,i=0,d=0;
-    public static double f = 0;
+    public static double p=0.05,i=0,d=0;
+    public static double f = -0.05;
     double pid = 0;
     double ff = 0;
     double power = 0;
     public static double target = 0;
-    public static double ticks_in_degree = 4.687;
+    public static double ticks_in_degree = 5.9744;
     public enum lift_state{
             START,
             INTAKING,
@@ -62,11 +61,10 @@ public class new_robot extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class,"leftBack");
         rotator = hardwareMap.get(DcMotor.class,"rotator");
         slide = hardwareMap.get(DcMotor.class,"slide");
-        S1 = hardwareMap.get(Servo.class,"S1");
-        S2 = hardwareMap.get(Servo.class,"S2");
+
         wrist = hardwareMap.get(Servo.class,"wrist");
         claw = hardwareMap.get(Servo.class,"claw");
-        flapper = hardwareMap.get(CRServo.class,"flapper");
+
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -106,11 +104,11 @@ public class new_robot extends LinearOpMode {
         waitForStart();
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        target = 0;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            int slidePos = slide.getCurrentPosition();
-            switch(lift_state) {
+           int slidePos = slide.getCurrentPosition();
+       /*     switch(lift_state) {
                 case START:
                     if(gamepad1.x) {
                         timer.reset();
@@ -176,9 +174,17 @@ public class new_robot extends LinearOpMode {
             if(gamepad1.start && lift_state != new_robot.lift_state.INTAKING){
                 lift_state = new_robot.lift_state.INTAKING;
             }
-
-
-
+            */
+                if(gamepad1.a){
+                    wrist.setPosition(1);
+                } else if(gamepad1.b){
+                    wrist.setPosition(0.27);
+                }
+                if(gamepad1.left_bumper){
+                    claw.setPosition(1);
+                }else {
+                    claw.setPosition(0);
+                }
 
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -203,13 +209,7 @@ public class new_robot extends LinearOpMode {
             rightFront.setPower(frontRightPower);
             rightBack.setPower(-backRightPower);
 
-            if(gamepad1.a){
-                rotator.setPower(1);
-            } else if(gamepad1.b) {
-                rotator.setPower(-1);
-            } else {
-                rotator.setPower(0);
-            }
+
 
             controller0.setPID(p,i,d);
 
@@ -219,11 +219,15 @@ public class new_robot extends LinearOpMode {
             slide.setPower(power);
 
             if(gamepad1.dpad_up){
-                target = -4100;
+                target = -3700;
             } else if(gamepad1.dpad_down){
-                target = -100;
+                target = -20;
             }
-
+            if(gamepad1.right_trigger > 1){
+                target = 20;
+                slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
 
             telemetry.addData("target", target);
             telemetry.addData("pos", slidePos);
