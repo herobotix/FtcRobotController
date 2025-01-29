@@ -21,7 +21,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private Servo LClaw;
   private Servo RClaw;
 
-  double Twarm
+  double Twarm;
   double FArmInput;
   
   int ClawState = 0;
@@ -180,7 +180,7 @@ public class opmode_TeleOp extends LinearOpMode {
       TwoState = 0;
       // Two off
     }
-    Twarm = (TwoState != 0 && TwoState != 3)?gamepad2:gamepad1);
+    Twarm = ((TwoState != 0 && TwoState != 3)?gamepad2:gamepad1);
   }
 
   /**
