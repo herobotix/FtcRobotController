@@ -82,15 +82,19 @@ public class opmode_TeleOp extends LinearOpMode {
     
     // Set Motor Behaviors
       Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      FLMotor.setDirection(DcMotor.Direction.REVERSE);
+      FLMotor.setDirection(DcMotor.Direction.FORWARD);
       FRMotor.setDirection(DcMotor.Direction.FORWARD);
       BLMotor.setDirection(DcMotor.Direction.FORWARD);
-      BRMotor.setDirection(DcMotor.Direction.REVERSE);
+      BRMotor.setDirection(DcMotor.Direction.FORWARD);
     
     // Set Robot Orientation (IMU)
-      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-      RevHubOrientationOnRobot.LogoFacingDirection.UP,
-      RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(  // For HEROBOT
+              RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+              RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+      ));
+      //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(  // For BEANIEBOT
+      //        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+      //        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
       rIMU.initialize(parameters);
     
   }
