@@ -108,9 +108,9 @@ public class opmode_Auto extends LinearOpMode {
    * Describe this function...
    */
   private void F_Move(
-    double dstHead  , double powHead
-    ,double dstRight, double powRight
-    ,double dstCclk , double powCclk
+    double dstHead, double powHead,
+    double dstSide, double powSide,
+    double dstTurn, double powTurn
   ) {
     
     //Reset Encoders
@@ -120,10 +120,10 @@ public class opmode_Auto extends LinearOpMode {
       BRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     
     // Drive & Strafe Power
-      FLMP = powHead + powRight - powCclk + 1;
-      FRMP = powHead - powRight + powCclk + 1;
-      BLMP = powHead - powRight - powCclk + 1;
-      BRMP = powHead + powRight + powCclk + 1;
+      FLMP = powHead + powSide - powTurn;
+      FRMP = powHead - powSide + powTurn;
+      BLMP = powHead - powSide - powTurn;
+      BRMP = powHead + powSide + powTurn;
     
     //telemetry
       double FLMPo = FLMP;
@@ -146,10 +146,10 @@ public class opmode_Auto extends LinearOpMode {
       }
     
     // Drive & Strafe Distance
-      FLMD = (dstHead + dstRight) * TicksPerInch - dstCclk * TicksPerRot + 1;
-      FRMD = (dstHead - dstRight) * TicksPerInch + dstCclk * TicksPerRot + 1;
-      BLMD = (dstHead - dstRight) * TicksPerInch - dstCclk * TicksPerRot + 1;
-      BRMD = (dstHead + dstRight) * TicksPerInch + dstCclk * TicksPerRot + 1;
+      FLMD = (dstHead + dstSide) * TicksPerInch - dstTurn * TicksPerRot;
+      FRMD = (dstHead - dstSide) * TicksPerInch + dstTurn * TicksPerRot;
+      BLMD = (dstHead - dstSide) * TicksPerInch - dstTurn * TicksPerRot;
+      BRMD = (dstHead + dstSide) * TicksPerInch + dstTurn * TicksPerRot;
     
     //telemetry
       telemetry.addData("MPN", MPN);
@@ -181,15 +181,15 @@ public class opmode_Auto extends LinearOpMode {
     
     //Set Motor Power
       FLM.setPower(-FLMP);
-    FRM.setPower(-FRMP);
-    BLM.setPower(-BLMP);
-    BRM.setPower(-BRMP);
+      FRM.setPower(-FRMP);
+      BLM.setPower(-BLMP);
+      BRM.setPower(-BRMP);
     
     while (opModeIsActive()&&(FLM.isBusy()||FRM.isBusy()||BLM.isBusy()||BRM.isBusy())) {
-        /*if (!FLM.isBusy()&&!(FLM.getPower()==0)) {FLM.setPower(0);}
+        if (!FLM.isBusy()&&!(FLM.getPower()==0)) {FLM.setPower(0);}
         if (!FRM.isBusy()&&!(FRM.getPower()==0)) {FRM.setPower(0);}
         if (!BLM.isBusy()&&!(BLM.getPower()==0)) {BLM.setPower(0);}
-        if (!BRM.isBusy()&&!(BRM.getPower()==0)) {BRM.setPower(0);}*/
+        if (!BRM.isBusy()&&!(BRM.getPower()==0)) {BRM.setPower(0);}
         //telemetry
           telemetry.addData("FLMTp", FLM.getCurrentPosition());
           telemetry.addData("FRMTp", FRM.getCurrentPosition());
