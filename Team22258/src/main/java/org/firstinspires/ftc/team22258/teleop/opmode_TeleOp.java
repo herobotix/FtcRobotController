@@ -62,7 +62,6 @@ public class opmode_TeleOp extends LinearOpMode {
         Fn_Move();
         Fn_Clawrm();
         Fn_Telemetry();
-        Fn_Update();
       }
     
   }
