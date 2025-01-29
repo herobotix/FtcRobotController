@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
@@ -21,7 +22,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private Servo LClaw;
   private Servo RClaw;
 
-  double Twarm;
+  Gamepad Twarm;
   double FArmInput;
   
   int ClawState = 0;
