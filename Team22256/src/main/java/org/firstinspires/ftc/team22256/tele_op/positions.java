@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team22256.tele_op;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,8 +12,12 @@ public class positions extends LinearOpMode {
     private Servo S1;
     private Servo S2;
     private Servo wrist;
-    private Servo flapper;
+    private CRServo flapper;
     private Servo claw;
+
+    new_robot.lift_state lift_state = new_robot.lift_state.START;
+
+
     @Override
     public void runOpMode() {
         rotator = hardwareMap.get(DcMotor.class,"rotator");
@@ -20,7 +25,7 @@ public class positions extends LinearOpMode {
         S1 = hardwareMap.get(Servo.class,"S1");
         S2 = hardwareMap.get(Servo.class,"S2");
         wrist = hardwareMap.get(Servo.class,"wrist");
-        flapper = hardwareMap.get(Servo.class,"flapper");
+        flapper = hardwareMap.get(CRServo.class,"flapper");
         claw = hardwareMap.get(Servo.class,"claw");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -31,10 +36,10 @@ public class positions extends LinearOpMode {
         rotator.setPower(0);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
             telemetry.addData("S1 position",S1.getPosition());
             telemetry.addData("S2 position",S2.getPosition());
             telemetry.addData("wrist position",wrist.getPosition());
-            telemetry.addData("flapper position",flapper.getPosition());
             telemetry.addData("claw position",claw.getPosition());
             telemetry.addData("rotator position",rotator.getCurrentPosition());
             telemetry.update();
