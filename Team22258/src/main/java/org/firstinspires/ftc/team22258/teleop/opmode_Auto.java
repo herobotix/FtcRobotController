@@ -57,10 +57,10 @@ public class opmode_Auto extends LinearOpMode {
   @Override
   public void runOpMode() {
     Arm = hardwareMap.get(DcMotor.class, "Arm");
-    FLM = hardwareMap.get(DcMotor.class, "FLM");
-    FRM = hardwareMap.get(DcMotor.class, "FRM");
-    BLM = hardwareMap.get(DcMotor.class, "BLM");
-    BRM = hardwareMap.get(DcMotor.class, "BRM");
+    FLMotor = hardwareMap.get(DcMotor.class, "FLM");
+    FRMotor = hardwareMap.get(DcMotor.class, "FRM");
+    BLMotor = hardwareMap.get(DcMotor.class, "BLM");
+    BRMotor = hardwareMap.get(DcMotor.class, "BRM");
     LClaw = hardwareMap.get(Servo.class, "LClaw");
     RClaw = hardwareMap.get(Servo.class, "RClaw");
 
