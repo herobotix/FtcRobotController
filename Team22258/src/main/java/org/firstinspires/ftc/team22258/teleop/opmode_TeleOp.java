@@ -35,6 +35,14 @@ public class opmode_TeleOp extends LinearOpMode {
   double BLMP;
   double BRMP;
   
+  double dstHead;
+  double powHead;
+  double dstSide;
+  double powSide;
+  double dstTurn;
+  double powTurn;
+
+
   double MPN;
   
   double Rot;
