@@ -15,10 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
-  private DcMotor FLMotor;
-  private DcMotor FRMotor;
-  private DcMotor BLMotor;
-  private DcMotor BRMotor;
+  private DcMotor FLM;
+  private DcMotor FRM;
+  private DcMotor BLM;
+  private DcMotor BRM;
   private Servo LClaw;
   private Servo RClaw;
 
@@ -71,20 +71,20 @@ public class opmode_TeleOp extends LinearOpMode {
     
     // Map Hardware
       Arm = hardwareMap.get(DcMotor.class, "Arm");
-      FLMotor = hardwareMap.get(DcMotor.class, "FLMotor");
-      FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
-      BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
-      BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
+      FLM = hardwareMap.get(DcMotor.class, "FLMotor");
+      FRM = hardwareMap.get(DcMotor.class, "FRMotor");
+      BLM = hardwareMap.get(DcMotor.class, "BLMotor");
+      BRM = hardwareMap.get(DcMotor.class, "BRMotor");
       LClaw = hardwareMap.get(Servo.class, "LClaw");
       RClaw = hardwareMap.get(Servo.class, "RClaw");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
     
     // Set Motor Behaviors
       Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      FLMotor.setDirection(DcMotor.Direction.FORWARD);
-      FRMotor.setDirection(DcMotor.Direction.FORWARD);
-      BLMotor.setDirection(DcMotor.Direction.FORWARD);
-      BRMotor.setDirection(DcMotor.Direction.FORWARD);
+      FLM.setDirection(DcMotor.Direction.FORWARD);
+      FRM.setDirection(DcMotor.Direction.FORWARD);
+      BLM.setDirection(DcMotor.Direction.FORWARD);
+      BRM.setDirection(DcMotor.Direction.FORWARD);
     
     // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(  // For HEROBOT
@@ -133,10 +133,10 @@ public class opmode_TeleOp extends LinearOpMode {
       }
     
     // Trigger
-      FLMotor.setPower(FLMP);
-      FRMotor.setPower(FRMP);
-      BLMotor.setPower(BLMP);
-      BRMotor.setPower(BRMP);
+      FLM.setPower(FLMP);
+      FRM.setPower(FRMP);
+      BLM.setPower(BLMP);
+      BRM.setPower(BRMP);
     
   }
   
