@@ -51,7 +51,7 @@ public class opmode_TeleOp extends LinearOpMode {
   
   @Override
   public void runOpMode() {
-    //Begin
+  //Begin
     
     //Init & Wait
       Fn_Init();
@@ -67,7 +67,7 @@ public class opmode_TeleOp extends LinearOpMode {
   }
   
   private void Fn_Init() {
-    // Initialization Code
+  // Initialization Code
     
     // Map Hardware
       Arm = hardwareMap.get(DcMotor.class, "Arm");
@@ -150,52 +150,39 @@ public class opmode_TeleOp extends LinearOpMode {
     // Trigger
       Arm.setPower(0.8*(Twarm.left_trigger - Twarm.right_trigger));  
       LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
-      RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
+      RClaw.setPosition(0 == Clawn ? 0.25 : 0.75);
+    
   }
 
   /**
    * Describe this function...
    */
   private void Fn_Clawggle() {
-    if (ClawState == 0 && Twarm.left_bumper) {
-      // claw closed
-      ClawState = 1;
-      // claw open
-    } else if (ClawState == 1 && !Twarm.left_bumper) {
-      ClawState = 2;
-      // claw open
-    } else if (ClawState == 2 && Twarm.left_bumper) {
-      // claw open
-      ClawState = 3;
-      // claw closed
-    } else if (ClawState == 3 && !Twarm.left_bumper) {
-      ClawState = 0;
-      // claw closed
-    }
-    if (ClawState == 0 || ClawState == 3) {
-      Clawn = 0;
-    } else {
-      Clawn = 1;
-    }
+  // Claw Toggler
+    
+    //Toggle Cycle
+      if      (ClawState == 0 && Twarm.left_bumper)  {ClawState = 1;} //Press On
+      else if (ClawState == 1 && !Twarm.left_bumper) {ClawState = 2;} //Release On
+      else if (ClawState == 2 && Twarm.left_bumper)  {ClawState = 3;} //Press Off
+      else if (ClawState == 3 && !Twarm.left_bumper) {ClawState = 0;} //Release Off
+    
+    //Output Variable
+      Clawn = (ClawState == 1 || ClawState == 2)?1:0;
+    
   }
   
   private void Fn_Twoggle() {
-    if (TwoState == 0 && gamepad1.dpad_left) {
-      // Two off
-      TwoState = 1;
-      // Two on
-    } else if (TwoState == 1 && !gamepad1.dpad_left) {
-      TwoState = 2;
-      // Two on
-    } else if (TwoState == 2 && gamepad1.dpad_left) {
-      // Two on
-      TwoState = 3;
-      // Two off
-    } else if (TwoState == 3 && !gamepad1.dpad_left) {
-      TwoState = 0;
-      // Two off
-    }
-    Twarm = ((TwoState != 0 && TwoState != 3)?gamepad2:gamepad1);
+  // Dual Controller Toggler
+    
+    //Toggle Cycle
+      if      (TwoState == 0 && gamepad1.dpad_left)  {TwoState = 1;} //Press On
+      else if (TwoState == 1 && !gamepad1.dpad_left) {TwoState = 2;} //Release On
+      else if (TwoState == 2 && gamepad1.dpad_left)  {TwoState = 3;} //Press Off
+      else if (TwoState == 3 && !gamepad1.dpad_left) {TwoState = 0;} //Release Off
+    
+    //Output Variable
+      Twarm = ((TwoState != 0 && TwoState != 3)?gamepad2:gamepad1);
+    
   }
 
   /**
