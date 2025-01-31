@@ -78,10 +78,12 @@ public class solvone4 extends LinearOpMode {
 
         // Put initialization blocks here.
         waitForStart();
+
         elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbow.setTargetPosition(0);
         elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         elbow.setPower(0.5);
+
 
 
         if (opModeIsActive()) {
@@ -91,7 +93,9 @@ public class solvone4 extends LinearOpMode {
             //backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             intake.setPower(0);
             wrist.setPower(0);
+
            // elbow.setPower(0);
+
             while (opModeIsActive()) {
 
                 // Put run blocks here.
@@ -102,6 +106,7 @@ public class solvone4 extends LinearOpMode {
                 }
 
                 // Gamepad 1 controls driving
+
 
                 if (gamepad1.start) imu.resetYaw();
                 botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
@@ -142,10 +147,12 @@ public class solvone4 extends LinearOpMode {
 
                 // Gamepad 2 controls extras
                 // Elbow
+
               //  if(elbow_pressed %)
 
                 elbow.setPower(elbowZeroPwr - gamepad2.left_stick_y*elbowMaxPwr);
                 elbow_State = ((gamepad2.left_stick_y > 0) ? "up" : ( gamepad2.left_stick_y < 0 ? "down" : "stopped"));
+
 
 
                 /*
@@ -162,6 +169,8 @@ public class solvone4 extends LinearOpMode {
                 */
 
                 // Wrist
+
+
 
                 wrist.setPower(wristZeroPwr - gamepad2.right_stick_y*wristMaxPwr);
 
@@ -180,6 +189,7 @@ public class solvone4 extends LinearOpMode {
 
                 // Claws
                 if (gamepad2.a && !GP2a_Pressed) {
+
                     times_pressed ++;
                     if(times_pressed % 2 == 0){
                         claw.setPosition(0.45);
@@ -191,6 +201,7 @@ public class solvone4 extends LinearOpMode {
                     GP2a_Pressed = true;
                     //if (clawPos == 0.3) claw_State = "open";
                     //else claw_State = "closed";
+
                 } else if (!gamepad2.a && GP2a_Pressed) {
                     GP2a_Pressed = false;
                 }
