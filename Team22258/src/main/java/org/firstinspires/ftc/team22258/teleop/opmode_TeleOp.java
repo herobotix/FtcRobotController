@@ -153,21 +153,18 @@ public class opmode_TeleOp extends LinearOpMode {
       RClaw.setPosition(0 == Clawn ? 0.25 : 0.75);
     
   }
-
-  /**
-   * Describe this function...
-   */
+  
   private void Fn_Clawggle() {
   // Claw Toggler
     
     //Toggle Cycle
-      if      (ClawState == 0 && Twarm.left_bumper)  {ClawState = 1;} //Press On
-      else if (ClawState == 1 && !Twarm.left_bumper) {ClawState = 2;} //Release On
-      else if (ClawState == 2 && Twarm.left_bumper)  {ClawState = 3;} //Press Off
-      else if (ClawState == 3 && !Twarm.left_bumper) {ClawState = 0;} //Release Off
+      if      (ClawState == 0 && !Twarm.left_bumper) {ClawState = 1;} //Release  Off
+      else if (ClawState == 1 && Twarm.left_bumper)  {ClawState = 2;} //Press -► On
+      else if (ClawState == 2 && !Twarm.left_bumper) {ClawState = 3;} //Release  On
+      else if (ClawState == 3 && Twarm.left_bumper)  {ClawState = 0;} //Press -► Off
     
     //Output Variable
-      Clawn = (ClawState == 1 || ClawState == 2)?1:0;
+      Clawn = (ClawState == 2 || ClawState == 3)?1:0;
     
   }
   
@@ -175,13 +172,13 @@ public class opmode_TeleOp extends LinearOpMode {
   // Dual Controller Toggler
     
     //Toggle Cycle
-      if      (TwoState == 0 && gamepad1.dpad_left)  {TwoState = 1;} //Press On
-      else if (TwoState == 1 && !gamepad1.dpad_left) {TwoState = 2;} //Release On
-      else if (TwoState == 2 && gamepad1.dpad_left)  {TwoState = 3;} //Press Off
-      else if (TwoState == 3 && !gamepad1.dpad_left) {TwoState = 0;} //Release Off
+      if      (TwoState == 0 && !gamepad1.dpad_left) {TwoState = 1;}  //Release  Off
+      else if (TwoState == 1 && gamepad1.dpad_left)  {TwoState = 2;}  //Press -► On
+      else if (TwoState == 2 && !gamepad1.dpad_left) {TwoState = 3;}  //Release  On
+      else if (TwoState == 3 && gamepad1.dpad_left)  {TwoState = 0;}  //Press -► Off
     
     //Output Variable
-      Twarm = ((TwoState != 0 && TwoState != 3)?gamepad2:gamepad1);
+      Twarm = (TwoState == 2 || TwoState == 3)?gamepad2:gamepad1;
     
   }
 

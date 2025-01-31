@@ -37,6 +37,8 @@ public class opmode_Auto extends LinearOpMode {
   double FRMP;
   double BLMP;
   double BRMP;
+  double MP;
+  double MD;
   
   double FLMD;
   double FRMD;
@@ -64,18 +66,18 @@ public class opmode_Auto extends LinearOpMode {
     LClaw = hardwareMap.get(Servo.class, "LClaw");
     RClaw = hardwareMap.get(Servo.class, "RClaw");
 
-      F_IMU();
-      F_Startup();
+      Fn_IMU();
+      Fn_Startup();
       waitForStart();
     if (opModeIsActive()) {
-      F_Run();
+      Fn_Run();
     }
   }
 
 /**
    * Describe this function...
    */
-  private void F_IMU() {
+  private void Fn_IMU() {
     // Retrieve the IMU from the hardware map
     imu = hardwareMap.get(IMU.class, "imu");
     // Adjust the orientation parameters to match your robot
@@ -89,7 +91,7 @@ public class opmode_Auto extends LinearOpMode {
   /**
    * Describe this function...
    */
-  private void F_Startup() {
+  private void Fn_Startup() {
     //Stop, Resest, & Run using Motor Encoders
       FLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       FLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -103,15 +105,88 @@ public class opmode_Auto extends LinearOpMode {
     //Stop Arm w/ input of 0
       Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
   }
-
-  /**
-   * Describe this function...
-   */
-  private void F_Move(
-    double dstHead, double powHead,
-    double dstSide, double powSide,
-    double dstTurn, double powTurn
+  
+  private void Fn_Head(
+    double dstHead, double strHead
   ) {
+  //Back & Forth Movement
+    
+    //Reset Encoders
+      FLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      FRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      BLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      BRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    
+    // Drive Power & Distance
+      MP = (strHead < 1)?strHead:1;
+      MD = (int)(dstHead * TicksPerInch);
+    
+    //telemetry
+      telemetry.addData("Motor Strength", MP);
+      telemetry.addData("Motor Distance", MD);
+      telemetry.addData("Head Strength", strHead);
+      telemetry.addData("Head Distance", dstHead);
+      telemetry.update();
+    
+    // Set target position
+      FLM.setTargetPosition(MD);
+      FRM.setTargetPosition(MD);
+      BLM.setTargetPosition(MD);
+      BRM.setTargetPosition(MD);
+    
+    // Set Motors to "BUSY" until target distance reached.
+      FLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      FRM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      BLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      BRM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    
+    //Set Motor Power
+      FLM.setPower(FLMP);
+      FRM.setPower(FRMP);
+      BLM.setPower(BLMP);
+      BRM.setPower(BRMP);
+    
+    while (opModeIsActive()&&(FLM.isBusy()||FRM.isBusy()||BLM.isBusy()||BRM.isBusy())) {
+      if (!FLM.isBusy()&&!(FLM.getPower()==0)) {FLM.setPower(0);}
+      if (!FRM.isBusy()&&!(FRM.getPower()==0)) {FRM.setPower(0);}
+      if (!BLM.isBusy()&&!(BLM.getPower()==0)) {BLM.setPower(0);}
+      if (!BRM.isBusy()&&!(BRM.getPower()==0)) {BRM.setPower(0);}
+      //telemetry
+        telemetry.addData("FLM position", FLM.getCurrentPosition());
+        telemetry.addData("FRM position", FRM.getCurrentPosition());
+        telemetry.addData("BLM position", BLM.getCurrentPosition());
+        telemetry.addData("BRM position", BRM.getCurrentPosition());
+        telemetry.addData("FLM On?", FLM.isBusy());
+        telemetry.addData("FRM On?", FRM.isBusy());
+        telemetry.addData("BLM On?", BLM.isBusy());
+        telemetry.addData("BRM On?", BRM.isBusy());
+        telemetry.addData("Motor Strength", MP);
+        telemetry.addData("Motor Distance", MD);
+        telemetry.addData("Head Strength", strHead);
+        telemetry.addData("Head Distance", dstHead);
+        telemetry.update();
+      
+    }
+    
+    // Stop Motors not caught in while loop.
+      FLM.setPower(0);
+      FRM.setPower(0);
+      BLM.setPower(0);
+      BRM.setPower(0);
+    
+    // Return motors to using the encoder.
+      FLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      FRM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      BLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      BRM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+  }
+  
+  /* private void Fn_Move(
+    double dstHead, double strHead,
+    double dstSide, double strSide,
+    double dstTurn, double strTurn
+  ) {
+  //--- Movement
     
     //Reset Encoders
       FLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -120,10 +195,10 @@ public class opmode_Auto extends LinearOpMode {
       BRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     
     // Drive & Strafe Power
-      FLMP = powHead + powSide - powTurn;
-      FRMP = powHead - powSide + powTurn;
-      BLMP = powHead - powSide - powTurn;
-      BRMP = powHead + powSide + powTurn;
+      FLMP = strHead + strSide - strTurn;
+      FRMP = strHead - strSide + strTurn;
+      BLMP = strHead - strSide - strTurn;
+      BRMP = strHead + strSide + strTurn;
     
     //telemetry
       double FLMPo = FLMP;
@@ -231,12 +306,12 @@ public class opmode_Auto extends LinearOpMode {
       FRM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       BLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       BRM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-  }
-
+  } */
+  
   /**
    * Describe this function...
    */
-  private void F_Clawrm(int Clawn) {
+  private void Fn_Clawrm(int Clawn) {
     LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
     RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
     
@@ -251,7 +326,7 @@ public class opmode_Auto extends LinearOpMode {
   /**
    * Describe this function...
    */
-  private void F_NewArmon(double FArmInput) {
+  private void Fn_NewArmon(double FArmInput) {
     Arm.setPower(FArmInput);
     
     //telemetry
@@ -263,33 +338,33 @@ public class opmode_Auto extends LinearOpMode {
   /**
    * Describe this function...
    */
-  private void F_Pause(double Naptime) {
+  private void Fn_Pause(double Naptime) {
       sleep((long)(Naptime*1000));
   }
   
    /* //selection
-    F_Move(
+    Fn_Move(
       0.0, 0.0,
       0.0, 0.0,
       0.0, 0.0
     );
-    F_NewArmon(0.0);
-    F_Clawrm(0);
-    F_Pause(0.0);
+    Fn_NewArmon(0.0);
+    Fn_Clawrm(0);
+    Fn_Pause(0.0);
     
    /**
     * Describe this function...
     */
-  private void F_Run() {
-    F_Move(
-      12.0, 0.5,
+  private void Fn_Run() {
+    Fn_Move(
+      12.0, 0.5/*,
       6.0, 0.5,
       0.0, 0.0
     );
-    F_Move(
+    Fn_Move(
       0.0, 0.0,
       0.0, 0.0,
-      1.0, 0.5
+      1.0, 0.5*/
     );
   }
 }
