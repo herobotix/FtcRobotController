@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name="Main", group="teleop")
