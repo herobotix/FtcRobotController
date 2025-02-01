@@ -223,13 +223,13 @@ public class Main extends LinearOpMode {
             else IntakeServo.setPower(0);
             */
 
-            telemetry.addData("GamePad1", teleText("GamePad1"));
-            telemetry.addData("GamePad2", teleText("GamePad2"));
+            telemetry.addData("GamePad1", telemetryGP(gamepad1));
+            telemetry.addData("GamePad2", telemetryGP(gamepad2));
             telemetry.update();
         }
     }
 
-    public void setupChassis() {
+    private void setupChassis() {
         // Map the hardware motor variables.
         FLMotor = hardwareMap.get(DcMotor.class, "FrontLeftMotor");
         BLMotor = hardwareMap.get(DcMotor.class, "BackLeftMotor");
@@ -268,7 +268,7 @@ public class Main extends LinearOpMode {
         )));
     }
 
-    public void setupActuators() {
+    private void setupActuators() {
         // Map the hardware actuator variables.
         UAMotor = hardwareMap.get(DcMotor.class, "UpperArmMotor");
         LAMotor = hardwareMap.get(DcMotor.class, "LowerArmMotor");
@@ -287,36 +287,24 @@ public class Main extends LinearOpMode {
         IntakeServo.setDirection(CRServo.Direction.REVERSE);
     }
 
-    public String teleText(String pick) {
+    private String telemetryGP(Gamepad gp) {
         String txt = "";
-        switch (pick) {
-            case "GamePad1":
-                txt += "\n\tLeftStick:\tbtn: " + (gamepad1.left_stick_button?1:0) + "\tx: " + _p(gamepad1.left_stick_x) + "\ty: " + _p(gamepad1.left_stick_y);
-                txt += "\n\tRightStick:\tbtn: " + (gamepad1.right_stick_button?1:0) + "\tx: " + _p(gamepad1.right_stick_x) + "\ty: " + _p(gamepad1.right_stick_y);
-                txt += "\n\tLBump: " + (gamepad1.left_bumper?1:0) + "\tRBump: " + (gamepad1.right_bumper?1:0) +
-                             "\tLTrig: " + _p(gamepad1.left_trigger) + "\tRTrig: " + _p(gamepad1.right_trigger);
-                txt += "\n\ta: " + (gamepad1.a?1:0) + "\tb: " + (gamepad1.b?1:0) + "\ty: " + (gamepad1.y?1:0) +
-                             "\tx: " + (gamepad1.x?1:0) + "\tback: " + (gamepad1.back?1:0) + "\tstart: " + (gamepad1.start?1:0);
-                txt += "\n\tDpad:\tL: " + (gamepad1.dpad_left?1:0) + "\tR: " + (gamepad1.dpad_right?1:0) +
-                                      "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
-                break;
-            case "GamePad2":
-                txt += "\n\tLeftStick:\tbtn: " + (gamepad1.left_stick_button?1:0) + "\tx: " + _p(gamepad1.left_stick_x) + "\ty: " + _p(gamepad1.left_stick_y);
-                txt += "\n\tRightStick:\tbtn: " + (gamepad1.right_stick_button?1:0) + "\tx: " + _p(gamepad1.right_stick_x) + "\ty: " + _p(gamepad1.right_stick_y);
-                txt += "\n\tLBump: " + (gamepad1.left_bumper?1:0) + "\tRBump: " + (gamepad1.right_bumper?1:0) +
-                        "\tLTrig: " + _p(gamepad1.left_trigger) + "\tRTrig: " + _p(gamepad1.right_trigger);
-                txt += "\n\ta: " + (gamepad1.a?1:0) + "\tb: " + (gamepad1.b?1:0) + "\ty: " + (gamepad1.y?1:0) +
-                        "\tx: " + (gamepad1.x?1:0) + "\tback: " + (gamepad1.back?1:0) + "\tstart: " + (gamepad1.start?1:0);
-                txt += "\n\tDpad:\tL: " + (gamepad1.dpad_left?1:0) + "\tR: " + (gamepad1.dpad_right?1:0) +
-                        "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
-                break;
-        }
+        txt += "\n\tLeftStick:\tbtn: "  + _b(gp.left_stick_button ) + "\tx: " + _p(gp.left_stick_x ) + "\ty: " + _p(gp.left_stick_y );
+        txt += "\n\tRightStick:\tbtn: " + _b(gp.right_stick_button) + "\tx: " + _p(gp.right_stick_x) + "\ty: " + _p(gp.right_stick_y);
+        txt += "\n\tLBump: " + _b(gp.left_bumper ) + "\tRBump: " + _b(gp.right_bumper )
+               + "\tLTrig: " + _p(gp.left_trigger) + "\tRTrig: " + _p(gp.right_trigger);
+        txt += "\n\ta: " + _b(gp.a) + "\tb: " + _b(gp.b) + "\ty: " + _b(gp.y) + "\tx: " + _b(gp.x)
+               + "\tback: " + _b(gp.back) + "\tstart: " + _b(gp.start);
+        txt += "\n\tDpad:\tL: " + _b(gp.dpad_left) + "\tR: " + _b(gp.dpad_right)
+                      + "\tU: " + _b(gp.dpad_up  ) + "\tD: " + _b(gp.dpad_down );
         return txt;
-
     }
 
-    public String _p(double val) {
+    private String _p(double val) {
         return String.format("%.3f",val);
+    }
+    private int _b(boolean val) {
+        return (val?1:0);
     }
 
 }
