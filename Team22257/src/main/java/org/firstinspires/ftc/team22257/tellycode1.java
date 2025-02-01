@@ -9,12 +9,11 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name="tellycode1", group="teleop")
 //@Disabled
-public class tellycode1 extends LinearOpMode { }
+public class tellycode1 extends LinearOpMode {
     private DcMotor FLMotor, BLMotor, FRMotor, BRMotor, UAMotor, LAMotor;
     private Servo ClawServo;
     private CRServo IntakeServo;
