@@ -78,7 +78,7 @@ public class NEW extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        
+
         // Run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 

@@ -12,9 +12,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.IMU;
 
-@TeleOp(name="ORIGINAL", group="teleop")
+@TeleOp(name="Main", group="teleop")
 //@Disabled
-public class ORIGINAL extends LinearOpMode {
+public class Main extends LinearOpMode {
     private DcMotor BLMotor;
     private DcMotor BRMotor;
     private DcMotor FLMotor;
