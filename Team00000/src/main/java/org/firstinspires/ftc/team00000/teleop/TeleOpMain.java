@@ -11,9 +11,9 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name="Main", group="teleop")
+@TeleOp(name="TeleOpMain", group="teleop")
 //@Disabled
-public class Main extends LinearOpMode {
+public class TeleOpMain extends LinearOpMode {
     private DcMotor FLMotor, BLMotor, FRMotor, BRMotor, UAMotor, LAMotor;
     private Servo ClawServo;
     private CRServo IntakeServo;

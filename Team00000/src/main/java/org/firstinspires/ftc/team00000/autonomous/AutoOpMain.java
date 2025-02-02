@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="NEWAuto", group="autonomous")
+@TeleOp(name="AutoOpMain", group="autonomous")
 //@Disabled
-public class NEWAuto extends LinearOpMode {
+public class AutoOpMain extends LinearOpMode {
     private DcMotorEx BLMotor;
     private DcMotorEx BRMotor;
     private DcMotorEx FLMotor;

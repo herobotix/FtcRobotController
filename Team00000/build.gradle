@@ -21,6 +21,16 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'  // define the main source directory
+                exclude '**/team00000/NEW_RR/**'  // exclude this directory and all its contents
+                exclude '**/team00000/OLD_RR/**'  // exclude this directory and all its contents
+            }
+        }
+    }
 }
 
 repositories {
