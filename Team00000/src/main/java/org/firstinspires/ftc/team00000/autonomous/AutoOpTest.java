@@ -34,6 +34,7 @@ public class AutoOpTest extends LinearOpMode {
         TrajectoryActionBuilder actionBuilder = drive.actionBuilder(startPose);
 
         // Build your sequence of actions
+        /*
         Action sequence = actionBuilder
                 .strafeTo(new Pose2d(-36, -60, Math.toRadians(90))) // Move to a new x position
                 .setTangent(Math.toRadians(0)) // Set the tangent for the next movement
@@ -47,9 +48,10 @@ public class AutoOpTest extends LinearOpMode {
                     // This marker is added at time 0, meaning at the start of this segment
                 })
                 .build();
+        */
 
         // Execute the built sequence
-        drive.followAction(sequence);
+        //drive.followAction(sequence);
 
         // You can continue to build more complex sequences or handle parallel actions
         telemetry.addData("Status", "Sequence Completed");
