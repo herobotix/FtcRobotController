@@ -11,7 +11,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.0.17]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.11]")
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;

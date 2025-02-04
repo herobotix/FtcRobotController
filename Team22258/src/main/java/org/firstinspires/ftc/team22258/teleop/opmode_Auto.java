@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 @Disabled
-@Autonomous(name = "Opmode (Auto) [1.1.1]")
+@Autonomous(name = "Opmode (Auto) [1.2.0]")
 public class opmode_Auto extends LinearOpMode {
 
   private DcMotor Arm;
