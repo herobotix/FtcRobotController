@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team22258.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-
+@Disabled
 @Autonomous(name = "Opmode (Auto) [1.1.1]")
 public class opmode_Auto extends LinearOpMode {
 
@@ -129,10 +130,10 @@ public class opmode_Auto extends LinearOpMode {
       telemetry.update();
     
     // Set target position
-      FLM.setTargetPosition(MD);
-      FRM.setTargetPosition(MD);
-      BLM.setTargetPosition(MD);
-      BRM.setTargetPosition(MD);
+      //FLM.setTargetPosition(MD);
+      //FRM.setTargetPosition(MD);
+      //BLM.setTargetPosition(MD);
+      //BRM.setTargetPosition(MD);
     
     // Set Motors to "BUSY" until target distance reached.
       FLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -356,7 +357,7 @@ public class opmode_Auto extends LinearOpMode {
     * Describe this function...
     */
   private void Fn_Run() {
-    Fn_Move(
+    Fn_Head(
       12.0, 0.5/*,
       6.0, 0.5,
       0.0, 0.0
