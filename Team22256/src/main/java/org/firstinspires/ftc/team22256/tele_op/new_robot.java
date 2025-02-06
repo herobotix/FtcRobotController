@@ -65,7 +65,7 @@ public class new_robot extends LinearOpMode {
         wrist = hardwareMap.get(Servo.class,"wrist");
         claw = hardwareMap.get(Servo.class,"claw");
 
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lift_state lift_state = new_robot.lift_state.START;
@@ -176,9 +176,9 @@ public class new_robot extends LinearOpMode {
             }
             */
                 if(gamepad1.a){
-                    wrist.setPosition(1);
+                    wrist.setPosition(0.75);
                 } else if(gamepad1.b){
-                    wrist.setPosition(0.27);
+                    wrist.setPosition(0.2);
                 }
                 if(gamepad1.left_bumper){
                     claw.setPosition(1);
