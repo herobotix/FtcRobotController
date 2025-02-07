@@ -11,7 +11,7 @@ import org.firstinspires.ftc.team22258.roadrunner.MecanumDrive;
 @Config
 @Autonomous(name = "PathingTest", group="autonomous")
 public final class PathingTest extends LinearOpMode {
-    public static double startX=16,startY=-66,nearY=-52, farY=-20, mark1X=54, mark2X=65, mark3X=80, upX=36;
+    public static double startX=16,startY=-66,nearY=-52, farY=-16, mark1X=54, mark2X=65, mark3X=78, upX=38;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,13 +28,13 @@ public final class PathingTest extends LinearOpMode {
                 .strafeTo(new Vector2d(mark1X, farY))
                     .strafeTo(new Vector2d(mark1X, nearY))
                     .strafeTo(new Vector2d(mark1X, farY))
-                .strafeTo(new Vector2d(mark2X, farY+2))
+                .strafeTo(new Vector2d(mark2X, farY))
                     .strafeTo(new Vector2d(mark2X, nearY))
-                    .strafeTo(new Vector2d(mark2X, farY+2))
-                .strafeTo(new Vector2d(mark3X, farY+4))
+                    .strafeTo(new Vector2d(mark2X, farY))
+                .strafeTo(new Vector2d(mark3X, farY))
                     .strafeTo(new Vector2d(mark3X, nearY))
-                    .strafeTo(new Vector2d(mark3X, farY+4))
-                .strafeTo(new Vector2d(upX+2, farY+4))
+                    .strafeTo(new Vector2d(mark3X, farY))
+                .strafeTo(new Vector2d(upX, farY))
                 //.splineTo(new Vector2d(30, 30), Math.PI / 2)
                 //.splineToLinearHeading(new Pose2d(0, 60, 0), Math.PI / 2)
                 .build());

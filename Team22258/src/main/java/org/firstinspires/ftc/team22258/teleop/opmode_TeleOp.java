@@ -11,7 +11,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.11]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.12]")
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
@@ -82,18 +82,18 @@ public class opmode_TeleOp extends LinearOpMode {
     // Set Motor Behaviors
       Arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       FLM.setDirection(DcMotor.Direction.FORWARD);
-      FRM.setDirection(DcMotor.Direction.FORWARD);
-      BLM.setDirection(DcMotor.Direction.FORWARD);
-      BRM.setDirection(DcMotor.Direction.FORWARD);
+      FRM.setDirection(DcMotor.Direction.REVERSE);
+      BLM.setDirection(DcMotor.Direction.REVERSE);
+      BRM.setDirection(DcMotor.Direction.REVERSE);
     
     // Set Robot Orientation (IMU)
-      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(  // For HEROBOT
+      /*IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(  // For HEROBOT
               RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
               RevHubOrientationOnRobot.UsbFacingDirection.LEFT
-      ));
-      //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(  // For BEANIEBOT
-      //        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-      //        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+      ));*/
+      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(  // For BEANIEBOT
+              RevHubOrientationOnRobot.LogoFacingDirection.UP,
+              RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
       rIMU.initialize(parameters);
     
   }
