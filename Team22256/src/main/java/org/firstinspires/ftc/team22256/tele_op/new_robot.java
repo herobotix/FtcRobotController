@@ -176,9 +176,9 @@ public class new_robot extends LinearOpMode {
             }
             */
                 if(gamepad1.a){
-                    wrist.setPosition(0.75);
+                    wrist.setPosition(0.9);
                 } else if(gamepad1.b){
-                    wrist.setPosition(0.2);
+                    wrist.setPosition(0.35);
                 }
                 if(gamepad1.left_bumper){
                     claw.setPosition(1);
@@ -219,15 +219,16 @@ public class new_robot extends LinearOpMode {
             slide.setPower(power);
 
             if(gamepad1.dpad_up){
-                target = -3700;
+                target = -3850;
             } else if(gamepad1.dpad_down){
-                target = -20;
+                target = -100;
             }
             if(gamepad1.right_trigger > 1){
                 target = 20;
                 slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
+
 
             telemetry.addData("target", target);
             telemetry.addData("pos", slidePos);
