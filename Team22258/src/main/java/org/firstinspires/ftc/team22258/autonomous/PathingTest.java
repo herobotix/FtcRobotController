@@ -4,13 +4,12 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.team22258.roadrunner.MecanumDrive;
-import org.firstinspires.ftc.team22258.roadrunner.TankDrive;
-import org.firstinspires.ftc.team22258.roadrunner.tuning.TuningOpModes;
 
 @Config
+@Autonomous(name = "PathingTest", group="autonomous")
 public final class PathingTest extends LinearOpMode {
     public static double finalX=36, finalY=-26;
 
