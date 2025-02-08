@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-//import com.qualcomm.robotcore.robot.RobotState;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -63,21 +63,21 @@ public class tellycode2 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        //Default States and Values
         ArmState currentState = ArmState.HOME;
-
-        //Default States and Positions
         boolean hold1Y = false, hold1RT = false, hold1S = false;
         boolean hold2A = false, hold2X = false, hold2Y = false, hold2RT = false;
         boolean clawOpen = true;
-        double clawPos = 0.5;
+        double botHeading=0, clawPos = CLAW_OPEN_POSITION, MaxPwr=1;
+        double LSx=0, LSy=0, RSx=0, RSy=0, rLSx=0, rLSy=0, LT=0, RT=0;
         int targetUpperArm = UA_POS_GET_SPECIMEN;
         int targetLowerArm = LA_POS_SPECIMEN;
+        String tele="";
 
+        //Initialize all hardware in hardwareMap
         setupChassis();
         setupActuators();
 
-        double botHeading=0, LSx=0, LSy=0, RSx=0, RSy=0, rLSx=0, rLSy=0, LT=0, RT=0, MaxPwr=1;
-        String tele="";
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -212,13 +212,13 @@ public class tellycode2 extends LinearOpMode {
 
             // Send telemetry data to the driver station
             tele += "\n\tHeading: " + _p(botHeading);
-            tele += "\n\tUpperArm: Pos: " + _p(UAMotor.getCurrentPosition()) + "/" + _p(targetUpperArm) + ", Pwr: " + _p(UAMotor.getPower());
-            tele += "\n\tLowerArm: Pos: " + _p(LAMotor.getCurrentPosition()) + "/" + _p(targetLowerArm) + ", Pwr: " + _p(LAMotor.getPower());
+            tele += "\n\tUpperArm: Pos: " + _p(UAMotor.getCurrentPosition()) + " / " + _p(targetUpperArm) + ", Pwr: " + _p(UAMotor.getPower());
+            tele += "\n\tLowerArm: Pos: " + _p(LAMotor.getCurrentPosition()) + " / " + _p(targetLowerArm) + ", Pwr: " + _p(LAMotor.getPower());
             tele += "\n\tClaw: Pos: " + _p(ClawServo.getPosition()) + "\t" + (clawOpen ? "Open" : "Closed");
             telemetry.addData("State",tele);
 
-            telemetry.addData("GamePad1", teleText("GamePad1"));
-            telemetry.addData("GamePad2", teleText("GamePad2"));
+            telemetry.addData("GamePad1", telemetryGP(gamepad1));
+            telemetry.addData("GamePad2", telemetryGP(gamepad2));
             telemetry.update();
         }
     }
@@ -289,37 +289,26 @@ public class tellycode2 extends LinearOpMode {
         IntakeServo.setDirection(CRServo.Direction.REVERSE);
     }
 
-    public String teleText(String pick) {
+    private String telemetryGP(Gamepad gp) {
         String txt = "";
-        switch (pick) {
-            case "GamePad1":
-                txt += "\n\tLeftStick:\tbtn: " + (gamepad1.left_stick_button?1:0) + "\tx: " + _p(gamepad1.left_stick_x) + "\ty: " + _p(gamepad1.left_stick_y);
-                txt += "\n\tRightStick:\tbtn: " + (gamepad1.right_stick_button?1:0) + "\tx: " + _p(gamepad1.right_stick_x) + "\ty: " + _p(gamepad1.right_stick_y);
-                txt += "\n\tLBump: " + (gamepad1.left_bumper?1:0) + "\tRBump: " + (gamepad1.right_bumper?1:0) +
-                        "\tLTrig: " + _p(gamepad1.left_trigger) + "\tRTrig: " + _p(gamepad1.right_trigger);
-                txt += "\n\ta: " + (gamepad1.a?1:0) + "\tb: " + (gamepad1.b?1:0) + "\ty: " + (gamepad1.y?1:0) +
-                        "\tx: " + (gamepad1.x?1:0) + "\tback: " + (gamepad1.back?1:0) + "\tstart: " + (gamepad1.start?1:0);
-                txt += "\n\tDpad:\tL: " + (gamepad1.dpad_left?1:0) + "\tR: " + (gamepad1.dpad_right?1:0) +
-                        "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
-                break;
-            case "GamePad2":
-                txt += "\n\tLeftStick:\tbtn: " + (gamepad2.left_stick_button?1:0) + "\tx: " + _p(gamepad2.left_stick_x) + "\ty: " + _p(gamepad2.left_stick_y);
-                txt += "\n\tRightStick:\tbtn: " + (gamepad2.right_stick_button?1:0) + "\tx: " + _p(gamepad2.right_stick_x) + "\ty: " + _p(gamepad2.right_stick_y);
-                txt += "\n\tLBump: " + (gamepad2.left_bumper?1:0) + "\tRBump: " + (gamepad2.right_bumper?1:0) +
-                        "\tLTrig: " + _p(gamepad2.left_trigger) + "\tRTrig: " + _p(gamepad2.right_trigger);
-                txt += "\n\ta: " + (gamepad2.a?1:0) + "\tb: " + (gamepad2.b?1:0) + "\ty: " + (gamepad2.y?1:0) +
-                        "\tx: " + (gamepad2.x?1:0) + "\tback: " + (gamepad2.back?1:0) + "\tstart: " + (gamepad2.start?1:0);
-                txt += "\n\tDpad:\tL: " + (gamepad2.dpad_left?1:0) + "\tR: " + (gamepad2.dpad_right?1:0) +
-                        "\tU: " + (gamepad2.dpad_up?1:0) + "\tD: " + (gamepad2.dpad_down?1:0);
-                break;
-        }
+        txt += "\n\tLeftStick: \tx: " + _p(gp.left_stick_x ) + "\ty: " + _p(gp.left_stick_y ) + "\tbtn: "  + _b(gp.left_stick_button);
+        txt += "\n\tRightStick:\tx: " + _p(gp.right_stick_x) + "\ty: " + _p(gp.right_stick_y) + "\tbtn: " + _b(gp.right_stick_button);
+        txt += "\n\tLBump: " + _b(gp.left_bumper ) + "\tRBump: " + _b(gp.right_bumper )
+                + "\tLTrig: " + _p(gp.left_trigger) + "\tRTrig: " + _p(gp.right_trigger);
+        txt += "\n\tA: " + _b(gp.a) + "\tB: " + _b(gp.b) + "\tY: " + _b(gp.y) + "\tX: " + _b(gp.x)
+                + "\tback: " + _b(gp.back) + "\tstart: " + _b(gp.start);
+        txt += "\n\tDpad:\tL: " + _b(gp.dpad_left) + "\tR: " + _b(gp.dpad_right)
+                + "\tU: " + _b(gp.dpad_up  ) + "\tD: " + _b(gp.dpad_down );
         return txt;
-
     }
 
     @SuppressLint("DefaultLocale")
     public String _p(double val) {
         return String.format("%.3f",val);
+    }
+
+    private int _b(boolean val) {
+        return (val?1:0);
     }
 
 }
