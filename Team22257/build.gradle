@@ -26,6 +26,7 @@ android {
         main {
             java {
                 srcDir 'src/main/java'  // define the main source directory
+                exclude '**/team22257/ARCHIVE/**'  // exclude this directory and all its contents
                 //exclude '**/team22257/DIRNAME/**'  // exclude this directory and all its contents
             }
         }
