@@ -36,7 +36,7 @@ public class tellycode2 extends LinearOpMode {
 
     // LowerArm predefined target positions
     private static final int LA_POS_MIN = 0;
-    private static final int LA_POS_MAX = 230;
+    private static final int LA_POS_MAX = 282;
     private static final int LA_POS_SPECIMEN = 0;
     private static final int LA_POS_SAMPLE = 215;
     private static final int LA_POS_BL_HOVER = 230;
@@ -68,6 +68,7 @@ public class tellycode2 extends LinearOpMode {
         boolean hold1Y = false, hold1RT = false, hold1S = false;
         boolean hold2A = false, hold2X = false, hold2Y = false, hold2RT = false;
         boolean clawOpen = true;
+        boolean enableTelemetery = false, holdBack = false;
         double botHeading=0, clawPos = CLAW_OPEN_POSITION, MaxPwr=1;
         double LSx=0, LSy=0, RSx=0, RSy=0, rLSx=0, rLSy=0, LT=0, RT=0;
         int targetUpperArm = UA_POS_GET_SPECIMEN;
@@ -148,8 +149,12 @@ public class tellycode2 extends LinearOpMode {
             } else if (gamepad2.b) {
                 currentState = ArmState.BL_HOVER;
             } else if (gamepad2.x && !hold2X) {
-                if (currentState == ArmState.CL_HOVER) { currentState = ArmState.CL_CLIP; }
-                else { currentState = ArmState.CL_HOVER; }
+                clawOpen = !clawOpen;
+                clawPos = clawOpen ? CLAW_OPEN_POSITION : CLAW_CLOSED_POSITION;
+                ClawServo.setPosition(clawPos);
+                //} else if (gamepad2.x && !hold2X) {
+            //    if (currentState == ArmState.CL_HOVER) { currentState = ArmState.CL_CLIP; }
+            //    else { currentState = ArmState.CL_HOVER; }
             } else if (gamepad2.y && !hold2Y) {
                 if (currentState == ArmState.CH_HOVER) { currentState = ArmState.CH_CLIP; }
                 else { currentState = ArmState.CH_HOVER; }
@@ -168,21 +173,25 @@ public class tellycode2 extends LinearOpMode {
                 targetLowerArm = Math.max(LA_POS_MIN,Math.min(LA_POS_MAX,targetLowerArm));
             }
 
+            /*
             // Toggle claw position when right_bumper is pressed
-            if (gamepad2.right_trigger>0.1 && !hold2RT) {
+            if ((gamepad2.left_trigger>0.1 || gamepad2.right_trigger>0.1) && !hold2RT) {
                 clawOpen = !clawOpen;
                 clawPos = clawOpen ? CLAW_OPEN_POSITION : CLAW_CLOSED_POSITION;
                 ClawServo.setPosition(clawPos);
             }
+            */
 
             // Control intake servo with triggers
-            /* ********* SIGN MIGHT NEED TO BE REVERSED FOR INTAKE! ********* */
             if (gamepad2.left_bumper) { IntakeServo.setPower(-1.0); }
             else if (gamepad2.right_bumper) { IntakeServo.setPower(+1.0); }
             else { IntakeServo.setPower(0); }
 
             if (gamepad1.start) { imu.resetYaw(); }
             botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+            if ((gamepad1.back || gamepad2.back) && !holdBack) { enableTelemetery = !enableTelemetery; }
+            holdBack = (gamepad1.back || gamepad2.back);
 
             hold1Y = gamepad1.y; hold1S = gamepad1.start;
             hold1RT = gamepad1.right_trigger>0.1; hold2RT = gamepad2.right_trigger>0.1;
@@ -215,10 +224,13 @@ public class tellycode2 extends LinearOpMode {
             tele += "\n\tUpperArm: Pos: " + _p(UAMotor.getCurrentPosition()) + " / " + _p(targetUpperArm) + ", Pwr: " + _p(UAMotor.getPower());
             tele += "\n\tLowerArm: Pos: " + _p(LAMotor.getCurrentPosition()) + " / " + _p(targetLowerArm) + ", Pwr: " + _p(LAMotor.getPower());
             tele += "\n\tClaw: Pos: " + _p(ClawServo.getPosition()) + "\t" + (clawOpen ? "Open" : "Closed");
-            telemetry.addData("State",tele);
+            telemetry.addData("State", tele);
 
-            telemetry.addData("GamePad1", telemetryGP(gamepad1));
-            telemetry.addData("GamePad2", telemetryGP(gamepad2));
+            if (enableTelemetery) {
+                telemetry.addData("GamePad1", telemetryGP(gamepad1));
+                telemetry.addData("GamePad2", telemetryGP(gamepad2));
+            }
+
             telemetry.update();
         }
     }
