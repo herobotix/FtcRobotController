@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.team22258.roadrunner.MecanumDrive;
 
 @Config
-@Autonomous(name = "PathingTest", group="autonomous")
+@Autonomous(name = "PathingTest (Auto) [1.0.1]", group="autonomous")
 public final class PathingTest extends LinearOpMode {
-    public static double startX=16,startY=-66,nearY=-52, farY=-16, mark1X=54, mark2X=65, mark3X=78, upX=38;
+    public static double startX=16,startY=-66,nearY=-59, farY=-16, mark1X=54, mark2X=65, mark3X=78, upX=38;
 
     @Override
     public void runOpMode() throws InterruptedException {

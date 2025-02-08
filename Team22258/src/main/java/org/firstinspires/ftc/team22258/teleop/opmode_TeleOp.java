@@ -11,7 +11,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.12]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.13]")
 public class opmode_TeleOp extends LinearOpMode {
 
   private DcMotor Arm;
@@ -28,8 +28,8 @@ public class opmode_TeleOp extends LinearOpMode {
   int ClawState = 0;
   int Clawn = 0;
   
-  int TwoState = 0;
-  int Twon = 0;
+  int TwoState = 2;
+  int Twon = 1;
   
   double FLMP;
   double FRMP;
