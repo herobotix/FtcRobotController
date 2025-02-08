@@ -32,7 +32,8 @@ public class new_robot extends LinearOpMode {
     private DcMotor slide;
 
     private Servo wrist;
-    private Servo claw;
+    private Servo intake;
+    private CRServo intake_2;
 
     private PIDController controller0;
     public static double p=0.05,i=0,d=0;
@@ -63,7 +64,8 @@ public class new_robot extends LinearOpMode {
         slide = hardwareMap.get(DcMotor.class,"slide");
 
         wrist = hardwareMap.get(Servo.class,"wrist");
-        claw = hardwareMap.get(Servo.class,"claw");
+        intake = hardwareMap.get(Servo.class,"intake");
+        intake_2 = hardwareMap.get(CRServo.class,"intake_2");
 
 
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -100,11 +102,14 @@ public class new_robot extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        boolean BP = false;
+
 
         waitForStart();
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         target = 0;
+        int times_pressed = 0;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
            int slidePos = slide.getCurrentPosition();
@@ -175,18 +180,39 @@ public class new_robot extends LinearOpMode {
                 lift_state = new_robot.lift_state.INTAKING;
             }
             */
+
+            /*
                 if(gamepad1.a){
                     wrist.setPosition(0.9);
                 } else if(gamepad1.b){
-                    wrist.setPosition(0.35);
+                    wrist.setPosition(0.45);
                 }
+
                 if(gamepad1.left_bumper){
-                    claw.setPosition(1);
-                }else {
-                    claw.setPosition(0);
+                intake.setPosition(1);
+                }else if(gamepad1.right_bumper){
+                intake.setPosition(0);
+            } */
+                if(gamepad1.x){
+                    intake_2.setPower(0.5);
+                } else if(gamepad1.y){
+                    intake_2.setPower(-0.5);
+                } else {
+                    intake_2.setPower(0);
                 }
-
-
+            if (gamepad1.a && !BP) {
+                times_pressed++;
+                BP = true;
+            } else if (!gamepad1.a && BP) {
+                BP = false;
+            }
+            if(times_pressed % 2 == 0){
+                wrist.setPosition(0.45);
+                intake.setPosition(1);
+            } else {
+                wrist.setPosition(0.9);
+                intake.setPosition(0);
+            }
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
@@ -211,6 +237,8 @@ public class new_robot extends LinearOpMode {
 
 
 
+
+
             controller0.setPID(p,i,d);
 
             pid = controller0.calculate(slidePos,target);
@@ -230,10 +258,12 @@ public class new_robot extends LinearOpMode {
             }
 
 
+
+
             telemetry.addData("target", target);
             telemetry.addData("pos", slidePos);
             telemetry.update();
-
+            telemetry.addData("times pressed",times_pressed);
         }
     }
 }
