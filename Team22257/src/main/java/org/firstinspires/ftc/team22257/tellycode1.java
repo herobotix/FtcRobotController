@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team22257;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,20 +22,27 @@ public class tellycode1 extends LinearOpMode {
     private boolean ClawOpen, ClawChange;
 
     // UpperArm, LowerArm target positions for each state
-    private static final int UA_POS_INIT = 300;
-    private static final int UA_POS_INTAKE = 450;
-    private static final int UA_POS_WALL_GRAB = 1100;
-    private static final int UA_POS_WALL_UNHOOK = 1700;
-    private static final int UA_POS_HOVER_HIGH = 2600;
-    private static final int UA_POS_CLIP_HIGH = 2100;
-    private static final int UA_POS_LOW_BASKET = 2500;
+    private static final int UA_POS_INIT = 0;
+    private static final int UA_POS_INTAKE = 230;
+    private static final int UA_POS_WALL_GRAB = 800;
+    private static final int UA_POS_WALL_UNHOOK = 1400;
+    private static final int UA_POS_LOW_HOVER = 2700;
+    private static final int UA_POS_LOW_CLIP = 2100;
+    private static final int UA_POS_HIGH_HOVER = 4500;
+    private static final int UA_POS_HIGH_CLIP = 3900;
+    private static final int UA_POS_HOVER_HIGH = 2300;
+    private static final int UA_POS_CLIP_HIGH = 1800;
+    private static final int UA_POS_LOW_BASKET = 3500;
+    private static final int UA_POS_HANG_HOVER = 4400;
+    private static final int UA_POS_HANG_LIFT = 0;
     private static final int LA_POS_INIT = 0;
-    private static final int LA_POS_SAMPLE = 270;
+    private static final int LA_POS_SAMPLE = 215;
+    private static final int LA_POS_LOW_BASKET = 230;
     private static final int LA_POS_SPEC = 10;
 
     // Claw positions for each state
-    private static final double CLAW_OPEN_POSITION = 0.55;
-    private static final double CLAW_CLOSED_POSITION = 0.7;
+    private static final double CLAW_OPEN_POSITION = 0.5;
+    private static final double CLAW_CLOSED_POSITION = 1.0;
 
     // Enum for state machine
     private enum RobotState {
@@ -131,19 +139,29 @@ public class tellycode1 extends LinearOpMode {
                 currentState = RobotState.LOW_BASKET;
             } else if (gamepad2.left_bumper) {
                 currentState = RobotState.INIT;
-            } else if (gamepad2.dpad_up){ //manual control
+            } else if (gamepad2.left_stick_y!=0){ //manual control
+                currentState = RobotState.MANUAL;
+                targetUpperArm += Math.round(-30*gamepad2.left_stick_y);//5000 //4650
+                targetUpperArm = targetUpperArm < 0 ? 0 : (targetUpperArm > 4650 ? 4650 : targetUpperArm);
+            } else if (gamepad2.right_stick_y!=0){
+                currentState = RobotState.MANUAL;
+                targetLowerArm += Math.round(-3*gamepad2.right_stick_y);
+                targetLowerArm = targetLowerArm < 0 ? 0 : (targetLowerArm > 230 ? 230 : targetLowerArm);
+            }
+            /*} else if (gamepad2.dpad_up){ //manual control
                 currentState = RobotState.MANUAL;
                 targetUpperArm += 10;
             } else if (gamepad2.dpad_down){
                 currentState = RobotState.MANUAL;
                 targetUpperArm -= 10;
+                targetUpperArm = targetUpperArm < 0 ? 0 : targetUpperArm;
             } else if (gamepad2.dpad_left){
                 currentState = RobotState.MANUAL;
                 targetLowerArm += 1;
             } else if (gamepad2.dpad_right){
                 currentState = RobotState.MANUAL;
                 targetLowerArm -= 1;
-            }
+            }*/
 
             lastGrab = gamepad2.b;
             lastHook = gamepad2.y;
@@ -194,9 +212,10 @@ public class tellycode1 extends LinearOpMode {
             LAMotor.setPower(1);
 
             // Send telemetry data to the driver station
-            tele += "\n\tHeading: " + _p(botHeading) + "\tClaw: " + (clawOpen ? "Open" : "Closed");
+            tele += "\n\tHeading: " + _p(botHeading);
             tele += "\n\tUpperArm: Pos: " + _p(UAMotor.getCurrentPosition()) + "/" + _p(targetUpperArm) + ", Pwr: " + _p(UAMotor.getPower());
             tele += "\n\tLowerArm: Pos: " + _p(LAMotor.getCurrentPosition()) + "/" + _p(targetLowerArm) + ", Pwr: " + _p(LAMotor.getPower());
+            tele += "\n\tClaw: Pos: " + _p(ClawServo.getPosition()) + "\t" + (clawOpen ? "Open" : "Closed");
             telemetry.addData("State",tele);
 
             /*
@@ -233,7 +252,7 @@ public class tellycode1 extends LinearOpMode {
         // Map the hardware motor variables.
         FLMotor = hardwareMap.get(DcMotor.class, "frontLeft");
         BLMotor = hardwareMap.get(DcMotor.class, "backLeft");
-        FRMotor = hardwareMap.get(DcMotor.class, "backLeft");
+        FRMotor = hardwareMap.get(DcMotor.class, "frontRight");
         BRMotor = hardwareMap.get(DcMotor.class, "backRight");
 
         // Set Motor Direction
@@ -261,7 +280,7 @@ public class tellycode1 extends LinearOpMode {
         BRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Initialize IMU and set directions of Logo and USB port
-        imu = hardwareMap.get(IMU.class,"IMU");
+        imu = hardwareMap.get(IMU.class,"imu");
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT
@@ -275,9 +294,17 @@ public class tellycode1 extends LinearOpMode {
         ClawServo = hardwareMap.get(Servo.class, "claw");
         IntakeServo = hardwareMap.get(CRServo.class, "intake");
 
+        // Set Motor Direction
+        UAMotor.setDirection(DcMotor.Direction.FORWARD);
+        LAMotor.setDirection(DcMotor.Direction.FORWARD);
+
         // Set Zero Power Behavior
         UAMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LAMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Stop and reset motor encoders
+        UAMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LAMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Initialize Claw State
         //ClawOpen=false;
@@ -301,14 +328,14 @@ public class tellycode1 extends LinearOpMode {
                         "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
                 break;
             case "GamePad2":
-                txt += "\n\tLeftStick:\tbtn: " + (gamepad1.left_stick_button?1:0) + "\tx: " + _p(gamepad1.left_stick_x) + "\ty: " + _p(gamepad1.left_stick_y);
-                txt += "\n\tRightStick:\tbtn: " + (gamepad1.right_stick_button?1:0) + "\tx: " + _p(gamepad1.right_stick_x) + "\ty: " + _p(gamepad1.right_stick_y);
-                txt += "\n\tLBump: " + (gamepad1.left_bumper?1:0) + "\tRBump: " + (gamepad1.right_bumper?1:0) +
-                        "\tLTrig: " + _p(gamepad1.left_trigger) + "\tRTrig: " + _p(gamepad1.right_trigger);
-                txt += "\n\ta: " + (gamepad1.a?1:0) + "\tb: " + (gamepad1.b?1:0) + "\ty: " + (gamepad1.y?1:0) +
-                        "\tx: " + (gamepad1.x?1:0) + "\tback: " + (gamepad1.back?1:0) + "\tstart: " + (gamepad1.start?1:0);
-                txt += "\n\tDpad:\tL: " + (gamepad1.dpad_left?1:0) + "\tR: " + (gamepad1.dpad_right?1:0) +
-                        "\tU: " + (gamepad1.dpad_up?1:0) + "\tD: " + (gamepad1.dpad_down?1:0);
+                txt += "\n\tLeftStick:\tbtn: " + (gamepad2.left_stick_button?1:0) + "\tx: " + _p(gamepad2.left_stick_x) + "\ty: " + _p(gamepad2.left_stick_y);
+                txt += "\n\tRightStick:\tbtn: " + (gamepad2.right_stick_button?1:0) + "\tx: " + _p(gamepad2.right_stick_x) + "\ty: " + _p(gamepad2.right_stick_y);
+                txt += "\n\tLBump: " + (gamepad2.left_bumper?1:0) + "\tRBump: " + (gamepad2.right_bumper?1:0) +
+                        "\tLTrig: " + _p(gamepad2.left_trigger) + "\tRTrig: " + _p(gamepad2.right_trigger);
+                txt += "\n\ta: " + (gamepad2.a?1:0) + "\tb: " + (gamepad2.b?1:0) + "\ty: " + (gamepad2.y?1:0) +
+                        "\tx: " + (gamepad2.x?1:0) + "\tback: " + (gamepad2.back?1:0) + "\tstart: " + (gamepad2.start?1:0);
+                txt += "\n\tDpad:\tL: " + (gamepad2.dpad_left?1:0) + "\tR: " + (gamepad2.dpad_right?1:0) +
+                        "\tU: " + (gamepad2.dpad_up?1:0) + "\tD: " + (gamepad2.dpad_down?1:0);
                 break;
         }
         return txt;
