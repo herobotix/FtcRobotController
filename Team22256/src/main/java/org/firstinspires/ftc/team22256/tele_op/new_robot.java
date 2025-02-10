@@ -36,8 +36,8 @@ public class new_robot extends LinearOpMode {
     private CRServo intake_2;
 
     private PIDController controller0;
-    public static double p=0.05,i=0,d=0;
-    public static double f = -0.05;
+    final public  static double p=0.05,i=0,d=0;
+    final public static double f = -0.05;
     double pid = 0;
     double ff = 0;
     double power = 0;
@@ -213,9 +213,9 @@ public class new_robot extends LinearOpMode {
                 wrist.setPosition(0.9);
                 intake.setPosition(0);
             }
-            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-            double rx = gamepad1.right_stick_x;
+            double y = -gamepad2.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad2.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad2.right_stick_x;
 
             telemetry.addData("left stick x", gamepad1.left_stick_x);
             telemetry.addData("left stick y", gamepad1.left_stick_y);
@@ -249,9 +249,9 @@ public class new_robot extends LinearOpMode {
             if(gamepad1.dpad_up){
                 target = -3850;
             } else if(gamepad1.dpad_down){
-                target = -100;
+                target = 0;
             }
-            if(gamepad1.right_trigger > 1){
+            if(gamepad1.right_trigger > 0.5){
                 target = 20;
                 slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
