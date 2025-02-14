@@ -279,6 +279,10 @@ public class TeleOpMain extends LinearOpMode {
         UAMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LAMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // Stop and reset motor encoders
+        UAMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LAMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         // Initialize Claw State
         //ClawOpen=false;
         //ClawChange=false;
