@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name="NEW", group="teleop")
+@TeleOp(name="NEWandNoARM", group="teleop")
 //@Disabled
 public class NEWandNoARM extends LinearOpMode {
     // Declare the hardware variables.
