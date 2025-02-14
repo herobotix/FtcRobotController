@@ -18,8 +18,13 @@ public final class PathingTest extends LinearOpMode {
         fudR = 1, fudL = 1,
         fudFI = 1, fudBI= -2.7,
         fudRI = 1, fudLI = 1,
+
+
+        //x = actual, y = theoretical,apply quadratic best fit
         fudBA = -0.00067, fudBB = 0.97, fudBC = -0.28,
-        fudFA = 0.00076, fudFB = 0.95, fudFC =-0.13
+        fudFA = 0.00076, fudFB = 0.95, fudFC =-0.13,
+        fudRA = 1, fudRB = 1, fudRC =1,
+        fudLA =-0.002132, fudLB = 1.815 , fudLC = 0.8388
     ;
 
     
@@ -37,10 +42,10 @@ public final class PathingTest extends LinearOpMode {
           // Move to Chamber
             .strafeTo(new Vector2d(
                     deltaX >= 0 ?
-                            fudFA * deltaX + fudFI:
+                            fudFA * Math.pow(deltaX,2) + fudFB*deltaX + fudFC:
                             fudBA * Math.pow(deltaX,2)+ fudBB * deltaX + fudBC,
                     deltaY >= 0 ?
-                            fudL * deltaY + fudLI :
+                            fudLA * Math.pow(deltaY,2) + fudLB * deltaY + fudLC :
                             fudR * deltaY + fudRI))
           // Begin Loop
             .build())
