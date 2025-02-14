@@ -1,20 +1,20 @@
-package org.firstinspires.ftc.team22256.auto.tuning;
+package org.firstinspires.ftc.team22256.RR.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.team22256.auto.MecanumDrive;
-import org.firstinspires.ftc.team22256.auto.TankDrive;
-import org.firstinspires.ftc.team22256.auto.ThreeDeadWheelLocalizer;
-import org.firstinspires.ftc.team22256.auto.TwoDeadWheelLocalizer;
+import org.firstinspires.ftc.team22256.RR.MecanumDrive;
+import org.firstinspires.ftc.team22256.RR.TankDrive;
+import org.firstinspires.ftc.team22256.RR.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.team22256.RR.TwoDeadWheelLocalizer;
 
 public final class ManualFeedbackTuner extends LinearOpMode {
     public static double DISTANCE = 64;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        if (org.firstinspires.ftc.team22256.auto.tuning.TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
+        if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
             
             if (drive.localizer instanceof TwoDeadWheelLocalizer) {
@@ -35,7 +35,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
                             .lineToX(0)
                             .build());
             }
-        } else if (org.firstinspires.ftc.team22256.auto.tuning.TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
+        } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             if (drive.localizer instanceof TwoDeadWheelLocalizer) {

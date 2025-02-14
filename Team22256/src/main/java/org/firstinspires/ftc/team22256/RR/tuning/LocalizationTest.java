@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team22256.auto.tuning;
+package org.firstinspires.ftc.team22256.RR.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,9 +8,9 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.team22256.auto.Drawing;
-import org.firstinspires.ftc.team22256.auto.MecanumDrive;
-import org.firstinspires.ftc.team22256.auto.TankDrive;
+import org.firstinspires.ftc.team22256.RR.Drawing;
+import org.firstinspires.ftc.team22256.RR.MecanumDrive;
+import org.firstinspires.ftc.team22256.RR.TankDrive;
 
 public class LocalizationTest extends LinearOpMode {
     @Override
@@ -33,14 +33,15 @@ public class LocalizationTest extends LinearOpMode {
 
                 drive.updatePoseEstimate();
 
-                telemetry.addData("x", drive.pose.position.x);
-                telemetry.addData("y", drive.pose.position.y);
-                telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                Pose2d pose = drive.localizer.getPose();
+                telemetry.addData("x", pose.position.x);
+                telemetry.addData("y", pose.position.y);
+                telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
                 telemetry.update();
 
                 TelemetryPacket packet = new TelemetryPacket();
                 packet.fieldOverlay().setStroke("#3F51B5");
-                Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
+                Drawing.drawRobot(packet.fieldOverlay(), pose);
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
         } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
@@ -59,14 +60,15 @@ public class LocalizationTest extends LinearOpMode {
 
                 drive.updatePoseEstimate();
 
-                telemetry.addData("x", drive.pose.position.x);
-                telemetry.addData("y", drive.pose.position.y);
-                telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                Pose2d pose = drive.localizer.getPose();
+                telemetry.addData("x", pose.position.x);
+                telemetry.addData("y", pose.position.y);
+                telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
                 telemetry.update();
 
                 TelemetryPacket packet = new TelemetryPacket();
                 packet.fieldOverlay().setStroke("#3F51B5");
-                Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
+                Drawing.drawRobot(packet.fieldOverlay(), pose);
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
         } else {
