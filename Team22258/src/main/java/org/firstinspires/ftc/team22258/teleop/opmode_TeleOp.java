@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team22258.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-
+@Config
 @TeleOp(name = "Opmode (TeleOp) [1.1.13]")
 public class opmode_TeleOp extends LinearOpMode {
 
