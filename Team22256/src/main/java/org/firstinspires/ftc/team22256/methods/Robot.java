@@ -157,20 +157,17 @@ public class Robot{
         intake.setPosition(1);
     }
     public void intake(double seconds){
-    timer.reset();
-    intake_2.setPower(-0.5);
-    if(timer.seconds() >= seconds){
-        intake_2.setPower(0);
+        timer.reset();
+        intake_2.setPower(-0.5);
+        while(timer.seconds() < seconds){
         }
+        intake_2.setPower(0);
     }
     public void outtake(double seconds){
-    timer2.reset();
+    timer.reset();
     intake_2.setPower(0.5);
-    if(timer2.seconds() >= seconds){
-        intake_2.setPower(0);
+    while(timer.seconds() < seconds){
     }
+    intake_2.setPower(0);
     }
-
-
-
 }

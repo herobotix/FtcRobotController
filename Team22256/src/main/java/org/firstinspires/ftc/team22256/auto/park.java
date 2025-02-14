@@ -96,13 +96,13 @@ double target;
                         break;
                     case TWO:
                         robot.turn(51, 700);
-                        target = (-3700);
+                        target = (-3600);
 
                         State = state.THREE;
                         break;
                     case THREE:
                         sleep(1000);
-                        robot.driveToPosition(-9, 500);
+                        robot.driveToPosition(-8, 500);
                         State = state.FOUR;
                         break;
                     case FOUR:
@@ -110,18 +110,10 @@ double target;
                         State = state.FIVE;
                         break;
                     case FIVE:
-                        timer.reset();
-                        if(timer.seconds() >3) {
-                            robot.driveToPosition(20, 1500);
-                            State = state.SIX;
+                        robot.driveToPosition(20, 1500);
+                        target = (-170);
+
                         }
-                        break;
-                    case SIX:
-                       timer.reset();
-                        if(timer.seconds() > 7) {
-                            target = (-170);
-                        }
-                        break;
                 }
 
                     controller0.setPID(p, i, d);
@@ -136,4 +128,3 @@ double target;
             }
         }
     }
-}

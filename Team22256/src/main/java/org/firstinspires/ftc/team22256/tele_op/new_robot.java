@@ -50,6 +50,11 @@ public class new_robot extends LinearOpMode {
             SCORING,
             RESET
     }
+
+
+    int x = 0;
+
+
     ElapsedTime timer = new ElapsedTime();
     @Override
     public void runOpMode() {
@@ -217,8 +222,8 @@ public class new_robot extends LinearOpMode {
             double x = gamepad2.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad2.right_stick_x;
 
-            telemetry.addData("left stick x", gamepad1.left_stick_x);
-            telemetry.addData("left stick y", gamepad1.left_stick_y);
+            telemetry.addData("left stick x", gamepad2.left_stick_x);
+            telemetry.addData("left stick y", gamepad2.left_stick_y);
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;
@@ -246,6 +251,13 @@ public class new_robot extends LinearOpMode {
             power = pid + ff;
             slide.setPower(power);
 
+
+            if(target < -3850){
+                target = -3850;
+            } else if(target > -10){
+                target = -10;
+            }
+            target = target + gamepad1.left_stick_y;
             if(gamepad1.dpad_up){
                 target = -3850;
             } else if(gamepad1.dpad_down){
@@ -256,8 +268,6 @@ public class new_robot extends LinearOpMode {
                 slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
-
-
 
 
             telemetry.addData("target", target);
