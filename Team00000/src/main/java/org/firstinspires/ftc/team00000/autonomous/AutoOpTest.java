@@ -4,10 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 
 import org.firstinspires.ftc.team00000.roadrunner.MecanumDrive;
 
@@ -15,45 +13,28 @@ import org.firstinspires.ftc.team00000.roadrunner.MecanumDrive;
 @Autonomous(name="AutoOpTest", group="autonomous")
 //@Disabled
 public class AutoOpTest extends LinearOpMode {
+    public static double Xi=0, Yi=0, θi=0, ΔX=0, ΔY=0, Δθ=0;
+    public static double    ffFa=0, ffFb=1, ffFc=0,
+                            ffBa=0, ffBb=1, ffBc=0,
+                            ffLa=0, ffLb=1, ffLc=0,
+                            ffRa=0, ffRb=1, ffRc=0;
+    public static
 
     @Override
     public void runOpMode() throws InterruptedException {
+        Pose2d beginPose = new Pose2d(Xi, Yi, Math.toRadians(θi));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
-
-        // Wait for the game to start (driver presses PLAY)
-        ElapsedTime timer = new ElapsedTime();
         waitForStart();
-        timer.reset();
 
-        // Run until the end of the match (driver presses STOP)
-        if (isStopRequested()) return;
+        Actions.runBlocking(
+                drive.actionBuilder(beginPose)
+                        .strafeTo(new Vector2d(
+                                ΔX>=0 ? (ffFa*ΔX*ΔX)+(ffFb*ΔX)+(ffFc) : (ffBa*ΔX*ΔX)+(ffBb*ΔX)+(ffBc),
+                                ΔY>=0 ? (ffLa*ΔX*ΔX)+(ffLb*ΔX)+(ffLc) : (ffRa*ΔX*ΔX)+(ffRb*ΔX)+(ffRc)
+                        ))
+                        .build());
 
-        // Using TrajectoryActionBuilder to create a sequence of actions
-        TrajectoryActionBuilder actionBuilder = drive.actionBuilder(startPose);
-
-        // Build your sequence of actions
-        /*
-        Action sequence = actionBuilder
-                .strafeTo(new Pose2d(-36, -60, Math.toRadians(90))) // Move to a new x position
-                .setTangent(Math.toRadians(0)) // Set the tangent for the next movement
-                .splineTo(new Pose2d(-36, -36, Math.toRadians(0))) // Spline to a point
-                .strafeTo(new Pose2d(-36, -12, Math.toRadians(0))) // Strafe
-                .waitSeconds(1) // Wait for 1 second
-                // Here you could add custom actions like moving an arm or opening a claw
-                // Example:
-                .addTemporalMarker(0, () -> {
-                    // Perform some action at the start of the trajectory, like opening a claw
-                    // This marker is added at time 0, meaning at the start of this segment
-                })
-                .build();
-        */
-
-        // Execute the built sequence
-        //drive.followAction(sequence);
-
-        // You can continue to build more complex sequences or handle parallel actions
         telemetry.addData("Status", "Sequence Completed");
         telemetry.update();
     }
