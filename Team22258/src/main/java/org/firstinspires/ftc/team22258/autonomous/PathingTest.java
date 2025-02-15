@@ -12,10 +12,23 @@ import org.firstinspires.ftc.team22258.roadrunner.MecanumDrive;
 @Autonomous(name = "PathingTest (Auto) [1.0.1]", group="autonomous")
 public final class PathingTest extends LinearOpMode {
     public static double
-        startX= 16, startY= -66,
-        ChamberX= 0, ChamberY= -45,
-        upX= 38, nearY= -59, farY= -16,
-        mark1X= 54, mark2X= 65, mark3X= 77
+      // Start Position
+        startX = 16,
+        startY = -66,
+        
+      // Chamber Position
+        ChamberX= 0,
+        ChamberY= -45,
+        
+      // upX (pre-mark X) & nearY (Observation Zone Y) Positions
+        upX= 38,
+        nearY= -59,
+        
+      //Sample Marks' Positions
+        farY= -16,
+        mark1X= 54,
+        mark2X= 65,
+        mark3X= 77
     ;
     
     @Override
