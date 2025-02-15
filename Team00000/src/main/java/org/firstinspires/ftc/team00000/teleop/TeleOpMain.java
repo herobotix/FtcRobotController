@@ -279,6 +279,10 @@ public class TeleOpMain extends LinearOpMode {
         UAMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LAMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // Activate position sensitivity.
+        UAMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LAMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Stop and reset motor encoders
         UAMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LAMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
