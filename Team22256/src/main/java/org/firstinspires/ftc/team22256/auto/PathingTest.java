@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.team22256.RR.MecanumDrive;
-
+import org.firstinspires.ftc.team22256.Experimental.roadrunner_experimental;
 @Config
 @Autonomous
 public final class PathingTest extends LinearOpMode {
@@ -30,15 +30,16 @@ public final class PathingTest extends LinearOpMode {
     
     @Override
     public void runOpMode() throws InterruptedException {
-      
+      roadrunner_experimental drive = new roadrunner_experimental();
       // Setup Robot Position
-        Pose2d beginPose = new Pose2d(startX, startY, 0);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+       // Pose2d beginPose = new Pose2d(startX, startY, 0);
+      //  MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         
         waitForStart();
-        
+
+        drive.strafe2(2,5);
       // Create & Run Actions
-        Actions.runBlocking(drive.actionBuilder(beginPose)
+   /*     Actions.runBlocking(drive.actionBuilder(beginPose)
           // Move to Chamber
             .strafeTo(new Vector2d(
                     deltaX >= 0 ?
@@ -50,5 +51,7 @@ public final class PathingTest extends LinearOpMode {
           // Begin Loop
             .build())
         ;
+
+    */
     }
 }
