@@ -22,8 +22,8 @@ public final class PathTest extends LinearOpMode {
         deltaY = 0,
         
       //fudge factors
-        ffFa = 0, ffFb = 1, ffFc = 0,
-        ffBa = 0, ffBb = 1, ffBc = 0,
+        ffFa = 0.00009272, ffFb = 0.9221, ffFc = 0,
+        ffBa = -0.0001061, ffBb = 0.9187, ffBc = 0,
         ffLa = 0, ffLb = 1, ffLc = 0,
         ffRa = 0, ffRb = 1, ffRc = 0
     ;
