@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -23,7 +24,7 @@ public class tellycode2 extends LinearOpMode {
 
     // UpperArm predefined target positions
     private static final int UA_POS_MIN = 0;
-    private static final int UA_POS_MAX = 4650;
+    private static final int UA_POS_MAX = 5000;
     private static final int UA_POS_GET_SPECIMEN = 0;
     private static final int UA_POS_GET_SAMPLE = 230;
     private static final int UA_POS_BL_HOVER = 3500;
@@ -65,6 +66,7 @@ public class tellycode2 extends LinearOpMode {
 
         //Default States and Values
         ArmState currentState = ArmState.HOME;
+        ArmState lastState = ArmState.HOME;
         boolean hold1Y = false, hold1RT = false, hold1S = false;
         boolean hold2A = false, hold2X = false, hold2Y = false, hold2RT = false;
         boolean clawOpen = true;
@@ -142,6 +144,8 @@ public class tellycode2 extends LinearOpMode {
                     break;
             }
 
+            lastState = currentState;
+
             // Adjust currentState based on user input.
             if (gamepad2.a && !hold2A) {
                 if (currentState == ArmState.GET_SPEC) { currentState = ArmState.GET_SAMP; }
@@ -153,11 +157,14 @@ public class tellycode2 extends LinearOpMode {
                 clawPos = clawOpen ? CLAW_OPEN_POSITION : CLAW_CLOSED_POSITION;
                 ClawServo.setPosition(clawPos);
                 //} else if (gamepad2.x && !hold2X) {
-            //    if (currentState == ArmState.CL_HOVER) { currentState = ArmState.CL_CLIP; }
-            //    else { currentState = ArmState.CL_HOVER; }
+                //    if (currentState == ArmState.CL_HOVER) { currentState = ArmState.CL_CLIP; }
+                //    else { currentState = ArmState.CL_HOVER; }
             } else if (gamepad2.y && !hold2Y) {
+                hold2Y = true;
                 if (currentState == ArmState.CH_HOVER) { currentState = ArmState.CH_CLIP; }
                 else { currentState = ArmState.CH_HOVER; }
+            } else if (hold2Y) {
+                hold2Y = false;
             } else if (gamepad1.right_bumper && !hold1RT) {
                 if (currentState == ArmState.RL_HOVER) { currentState = ArmState.RL_LOCK; }
                 else { currentState = ArmState.RL_HOVER; }
@@ -169,7 +176,7 @@ public class tellycode2 extends LinearOpMode {
                 targetUpperArm = Math.max(UA_POS_MIN,Math.min(UA_POS_MAX,targetUpperArm));
             } else if (gamepad2.right_stick_y!=0){
                 currentState = ArmState.MANUAL;
-                targetLowerArm += Math.round(-3*gamepad2.right_stick_y);
+                targetLowerArm += Math.round(-8*gamepad2.right_stick_y);
                 targetLowerArm = Math.max(LA_POS_MIN,Math.min(LA_POS_MAX,targetLowerArm));
             }
 
@@ -195,7 +202,7 @@ public class tellycode2 extends LinearOpMode {
 
             hold1Y = gamepad1.y; hold1S = gamepad1.start;
             hold1RT = gamepad1.right_trigger>0.1; hold2RT = gamepad2.right_trigger>0.1;
-            hold2A = gamepad2.a; hold2X = gamepad2.x; hold2Y = gamepad2.y;
+            hold2A = gamepad2.a; hold2X = gamepad2.x; //hold2Y = gamepad2.y;
 
             LSx = gamepad1.left_stick_x;
             LSy = gamepad1.left_stick_y;
@@ -217,7 +224,7 @@ public class tellycode2 extends LinearOpMode {
             LAMotor.setTargetPosition(targetLowerArm);
             LAMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             UAMotor.setPower(1);
-            LAMotor.setPower(1);
+            LAMotor.setPower(0.25);
 
             // Send telemetry data to the driver station
             tele += "\n\tHeading: " + _p(botHeading);
@@ -276,8 +283,8 @@ public class tellycode2 extends LinearOpMode {
 
     public void setupActuators() {
         // Map the hardware actuator variables.
-        UAMotor = hardwareMap.get(DcMotor.class, "elbow");
-        LAMotor = hardwareMap.get(DcMotor.class, "wrist");
+        UAMotor = hardwareMap.get(DcMotorEx.class, "elbow");
+        LAMotor = hardwareMap.get(DcMotorEx.class, "wrist");
         ClawServo = hardwareMap.get(Servo.class, "claw");
         IntakeServo = hardwareMap.get(CRServo.class, "intake");
 
