@@ -5,9 +5,11 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.team22258.roadrunner.MecanumDrive;
 
+@Disabled
 @Config
 @Autonomous(name = "PathingTest (Auto) [1.0.1]", group="autonomous")
 public final class PathingTest extends LinearOpMode {
