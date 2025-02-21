@@ -43,18 +43,12 @@ public class new_robot extends LinearOpMode {
     double power = 0;
     public static double target = 0;
     public static double ticks_in_degree = 5.9744;
-    public enum lift_state{
-            START,
-            INTAKING,
-            TRANSFERRING,
-            SCORING,
-            RESET
+    public enum Intake{
+    INTAKING,
+        OUTAKING,
+        NEUTRAL
     }
-
-
-    int x = 0;
-
-
+    Intake intake_1 = Intake.NEUTRAL;
     ElapsedTime timer = new ElapsedTime();
     @Override
     public void runOpMode() {
@@ -75,27 +69,6 @@ public class new_robot extends LinearOpMode {
 
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        lift_state lift_state = new_robot.lift_state.START;
-
-        final int INTAKING_POS = 1;//These are both for the motor positions
-        final int TRANSEFFERING_POS = 2;
-
-        final double S1_OUT = 1;
-        final double S2_OUT = 1;
-        final double S1_IN = 2;
-        final double S2_IN = 2;
-
-        final double WRIST_TRANSFER = 1;
-        final double WRIST_SCORING = 2;
-        final double WRIST_IDLE = 3;
-
-        final double CLAW_OPEN = 1;
-        final double CLAW_CLOSE = 2;
-
-        final double FLAPPER_POWER = 0.25;
-
-        final double EXTENDED = -4100;
-        final double RETRACTED = -100;
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         controller0  = new PIDController(p,i,d); // Initialization of controller and coeffients
@@ -119,13 +92,43 @@ public class new_robot extends LinearOpMode {
         while (opModeIsActive()) {
            int slidePos = slide.getCurrentPosition();
 
-                if(gamepad1.x){
-                    intake_2.setPower(0.5);
+                if(gamepad1.b){
+                    intake_2.setPower(1);
                 } else if(gamepad1.y){
-                    intake_2.setPower(-0.5);
+                    intake_2.setPower(-1);
                 } else {
                     intake_2.setPower(0);
                 }
+
+/*
+            switch(intake_1){
+                case NEUTRAL:
+                    if(gamepad1.b){
+                        intake_1 = Intake.INTAKING;
+                    } else if(gamepad1.y){
+                        intake_1 = Intake.OUTAKING;
+                    }
+                    break;
+                case INTAKING:
+                    timer.reset();
+                    if (!(timer.seconds()  > 1.5)){
+                        intake_2.setPower(-1);
+                }
+                    intake_2.setPower(0);
+                    intake_1 = Intake.NEUTRAL;
+                    break;
+                case OUTAKING:
+                    timer.reset();
+                    if (!(timer.seconds()  > 1.5)){
+                        intake_2.setPower(1);
+                    }
+                    intake_2.setPower(0);
+                    intake_1 = Intake.NEUTRAL;
+                    break;
+            }
+*/
+
+
             if (gamepad1.a && !BP) {
                 times_pressed++;
                 BP = true;
@@ -133,10 +136,10 @@ public class new_robot extends LinearOpMode {
                 BP = false;
             }
             if(times_pressed % 2 == 0){
-                wrist.setPosition(0.45);
+                wrist.setPosition(0.1);
                 intake.setPosition(1);
             } else {
-                wrist.setPosition(0.9);
+                wrist.setPosition(1);
                 intake.setPosition(0);
             }
             double y = -gamepad2.left_stick_y; // Remember, Y stick value is reversed
@@ -176,13 +179,18 @@ public class new_robot extends LinearOpMode {
             if(target < -3850){
                 target = -3850;
             } else if(target > -10){
-                target = -10;
+                target = -20;
             }
-            target = target + gamepad1.left_stick_y;
+            //Hi Armani if you keep tis in this is where the self destruct button would go
+            boolean self_destruct = false;
+
+
+            target = target + (gamepad1.left_stick_y * 2.5);
+
             if(gamepad1.dpad_up){
                 target = -3850;
             } else if(gamepad1.dpad_down){
-                target = 0;
+                target = -35;
             }
             if(gamepad1.back){
                 target = 20;
