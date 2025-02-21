@@ -39,7 +39,7 @@ double target;
         THREE,
         FOUR,
         FIVE,
-        SIX
+        FINISHED
     }
     ElapsedTime timer = new ElapsedTime();
 
@@ -86,7 +86,7 @@ double target;
         while (opModeIsActive()) {
 
 
-            if (opModeIsActive()) {
+
                 switch (State) {
                     case ONE:
                         robot.score_pos();
@@ -96,33 +96,37 @@ double target;
                         break;
                     case TWO:
                         robot.turn(51, 700);
-                        target = (-3600);
-
+                        robot.setTarget(-3600);
                         State = state.THREE;
                         break;
                     case THREE:
-                        sleep(1000);
-                        robot.driveToPosition(-8, 500);
+                        robot.driveToPosition(-9, 700);
                         State = state.FOUR;
                         break;
                     case FOUR:
-                        robot.intake(3);
+                        robot.intake(7);
                         State = state.FIVE;
                         break;
                     case FIVE:
-                        robot.driveToPosition(20, 1500);
-                        target = (-170);
-
+                        robot.driveToPosition(15, 1300);
+                        //robot.setTarget(-35);
+                        State = state.FINISHED;
+                        break;
+                    case FINISHED:
+                        break;
+                    default:
+                        State = state.FINISHED;
+                        break;
                         }
-                }
 
+/*
                     controller0.setPID(p, i, d);
                     int slidePos = robot.slide.getCurrentPosition();
                     pid = controller0.calculate(slidePos, target);
                     ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
                     power = pid + ff;
                     robot.slide.setPower(power);
-
+*/
 
 
             }
