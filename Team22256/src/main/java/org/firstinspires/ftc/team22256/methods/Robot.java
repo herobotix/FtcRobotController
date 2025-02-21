@@ -153,13 +153,13 @@ public class Robot{
         intake.setPosition(0);
     }
     public void score_pos(){
-        wrist.setPosition(0.45);
+        wrist.setPosition(0);
         intake.setPosition(1);
     }
     public void intake(double seconds){
         timer.reset();
         intake_2.setPower(-0.5);
-        while(timer.seconds() < seconds){
+        while(timer.seconds() >= seconds){
         }
         intake_2.setPower(0);
     }
@@ -169,5 +169,28 @@ public class Robot{
     while(timer.seconds() < seconds){
     }
     intake_2.setPower(0);
+    }
+
+    public void setTarget( double Target){
+        double p = 0.05, i = 0, d = 0;
+        PIDController controller0 = new PIDController(p,i,d);
+        double f = -0.05;
+        double pid = 0;
+        double ff = 0;
+        double power = 0;
+        double ticks_in_degree = 5.9744;
+        double target = Target;
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        while(Math.abs(Target - slide.getCurrentPosition()) > 7){
+            controller0.setPID(p, i, d);
+            int slidePos = slide.getCurrentPosition();
+            pid = controller0.calculate(slidePos, target);
+            ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+            power = pid + ff;
+            slide.setPower(power);
+        }
+
     }
 }
