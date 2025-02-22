@@ -209,6 +209,7 @@ public class new_robot extends LinearOpMode {
             telemetry.addData("pos", slidePos);
             telemetry.update();
             telemetry.addData("times pressed",times_pressed);
+            telemetry.addData("power",slide.getPower());
         }
     }
 }
