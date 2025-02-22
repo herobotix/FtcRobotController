@@ -87,6 +87,7 @@ double target;
 
 
 
+
                 switch (State) {
                     case ONE:
                         robot.score_pos();
@@ -96,20 +97,21 @@ double target;
                         break;
                     case TWO:
                         robot.turn(51, 700);
-                        robot.setTarget(-3600);
+                        robot.setTarget(-3500);
                         State = state.THREE;
                         break;
                     case THREE:
-                        robot.driveToPosition(-9, 700);
+                        robot.driveToPosition(-10.5, 700);
                         State = state.FOUR;
                         break;
                     case FOUR:
-                        robot.intake(7);
+                        robot.intake(2);
                         State = state.FIVE;
                         break;
                     case FIVE:
                         robot.driveToPosition(15, 1300);
-                        //robot.setTarget(-35);
+
+                         robot.setTarget(0);
                         State = state.FINISHED;
                         break;
                     case FINISHED:

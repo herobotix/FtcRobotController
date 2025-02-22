@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team22256.methods;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Robot{
 
@@ -159,7 +163,7 @@ public class Robot{
     public void intake(double seconds){
         timer.reset();
         intake_2.setPower(-0.5);
-        while(timer.seconds() >= seconds){
+        while(timer.seconds() <= seconds){
         }
         intake_2.setPower(0);
     }
@@ -180,10 +184,8 @@ public class Robot{
         double power = 0;
         double ticks_in_degree = 5.9744;
         double target = Target;
-        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while(Math.abs(Target - slide.getCurrentPosition()) > 7){
+        while(Math.abs(target - slide.getCurrentPosition()) > 2){
             controller0.setPID(p, i, d);
             int slidePos = slide.getCurrentPosition();
             pid = controller0.calculate(slidePos, target);
