@@ -92,12 +92,17 @@ public class new_robot extends LinearOpMode {
         while (opModeIsActive()) {
            int slidePos = slide.getCurrentPosition();
 
-                if(gamepad1.b){
+                if(gamepad1.right_trigger > 0.1){
                     intake_2.setPower(1);
-                } else if(gamepad1.y){
+                } else if(gamepad1.right_bumper){
                     intake_2.setPower(-1);
                 } else {
                     intake_2.setPower(0);
+                }
+
+                if(gamepad1.dpad_right){
+                    target = -3600;
+
                 }
 
 /*
@@ -189,6 +194,7 @@ public class new_robot extends LinearOpMode {
 
             if(gamepad1.dpad_up){
                 target = -3850;
+                times_pressed = 0;
             } else if(gamepad1.dpad_down){
                 target = -35;
             }
