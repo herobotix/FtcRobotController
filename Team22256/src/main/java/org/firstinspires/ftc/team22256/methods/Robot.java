@@ -175,7 +175,7 @@ public class Robot{
     intake_2.setPower(0);
     }
 
-    public void setTarget( double Target){
+    public void setTarget( double Target, boolean top){
         double p = 0.05, i = 0, d = 0;
         PIDController controller0 = new PIDController(p,i,d);
         double f = -0.05;
@@ -193,6 +193,10 @@ public class Robot{
             power = pid + ff;
             slide.setPower(power);
         }
-
+        if(top = true){
+            slide.setPower(-0.1124);
+        } else {
+            slide.setPower(-0.0999);
+        }
     }
 }
