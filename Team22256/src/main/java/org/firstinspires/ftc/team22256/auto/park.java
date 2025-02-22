@@ -97,7 +97,8 @@ double target;
                         break;
                     case TWO:
                         robot.turn(51, 700);
-                        robot.setTarget(-3500);
+                        robot.setTarget(-3600,true);
+                        //target = -3600;
                         State = state.THREE;
                         break;
                     case THREE:
@@ -105,13 +106,14 @@ double target;
                         State = state.FOUR;
                         break;
                     case FOUR:
+
                         robot.intake(2);
                         State = state.FIVE;
                         break;
                     case FIVE:
                         robot.driveToPosition(15, 1300);
 
-                         robot.setTarget(0);
+                        robot.setTarget(0,false);
                         State = state.FINISHED;
                         break;
                     case FINISHED:
