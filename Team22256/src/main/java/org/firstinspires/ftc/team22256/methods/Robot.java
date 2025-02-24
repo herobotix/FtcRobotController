@@ -114,6 +114,39 @@ public class Robot{
         leftBack.setVelocity(0);
         rightBack.setVelocity(0);
     }
+    public void strafe_intake(double inches, double power){
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        int ticks = (int) (Math.round(inches * SI2T));
+
+        leftFront.setTargetPosition(-ticks);
+        rightFront.setTargetPosition(ticks);
+        leftBack.setTargetPosition(-ticks);
+        rightBack.setTargetPosition(-ticks);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFront.setVelocity(power);
+        rightFront.setVelocity(power);
+        leftBack.setVelocity(power);
+        rightBack.setVelocity(power);
+        intake_2.setPower(-0.4);
+
+        while(leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy()){
+        }
+
+        leftFront.setVelocity(0);
+        rightFront.setVelocity(0);
+        leftBack.setVelocity(0);
+        rightBack.setVelocity(0);
+        intake_2.setPower(0);
+    }
     public void turn(double degrees,double power){
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
