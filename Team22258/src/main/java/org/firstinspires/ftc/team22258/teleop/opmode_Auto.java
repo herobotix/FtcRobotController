@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
@@ -26,12 +25,12 @@ public class opmode_Auto extends LinearOpMode {
   public final double wD = 2.99 /* +/-0.004 */;
   public final double pR = 10.5;
   
-  public final double TicksPerRevolution = (28 * 2.89 * 5.23);
-  public final double TicksPerInch = (TicksPerRevolution/(Pi*wD));
+  public final double TicksPerRev = (28 * 2.89 * 5.23); //Ticks per Revolution of the Wheel
+  public final double TicksPerInch = (TicksPerRev /(Pi*wD)); //Ticks per Inch Traveled
   
   public final double RotCorrection = 1;
-  public final double RotPerRevolution = ((wD)/(pR*sqrt8)) * RotCorrection;
-  public final double TicksPerRot = TicksPerRevolution/RotPerRevolution;
+  public final double RotPerRev = ((wD)/(pR*sqrt8)) * RotCorrection;
+  public final double TicksPerRot = TicksPerRev / RotPerRev; //Ticks per Rotation of the Robot
   
   double FLMP;
   double FRMP;
@@ -283,13 +282,13 @@ public class opmode_Auto extends LinearOpMode {
   private void F_Run() {
     F_Move(
       12.0, 0.5,
-      6.0, 0.5,
+      0.0, 0.0,
       0.0, 0.0
     );
-    F_Move(
-      0.0, 0.0,
-      0.0, 0.0,
-      1.0, 0.5
-    );
+//    F_Move(
+//      0.0, 0.0,
+//      0.0, 0.0,
+//      1.0, 0.5
+//    );
   }
 }
