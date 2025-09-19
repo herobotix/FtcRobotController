@@ -8,7 +8,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.0.17]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.1]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -42,6 +42,7 @@ public class opmode_TeleOp extends LinearOpMode {
     //Run Opmode
       while (opModeIsActive()) {
         Fn_Move();
+        Fn_Intake();
         Fn_Telemetry();
         Fn_LoopEnd();
       }
@@ -120,7 +121,7 @@ public class opmode_TeleOp extends LinearOpMode {
     //Intake Code
       
       ItkMP = gamepad1.right_stick_y;
-      ItkMotor.setPower(BRMP);
+      ItkMotor.setPower(ItkMP);
       
   }
   
@@ -130,14 +131,15 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("LStickX", gamepad1.left_stick_x);
       telemetry.addData("LStickY", gamepad1.left_stick_y);
       telemetry.addData("RStickX", gamepad1.right_stick_x);
+      telemetry.addData("RStickY", gamepad1.right_stick_y);
       telemetry.addData("MPN", MPN);
       telemetry.addData("FLMP", FLMP);
       telemetry.addData("FLMP", FRMP);
       telemetry.addData("BLMP", BLMP);
       telemetry.addData("BRMP", BRMP);
-      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
-      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
-      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
+//      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
+//      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
+//      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
       telemetry.update();
       
   }
