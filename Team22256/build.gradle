@@ -16,6 +16,14 @@ apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 
 android {
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'  // define the main source directory
+                exclude '**/team22256/legacy/**'  // exclude this directory and all its contents
+            }
+        }
+    }
     namespace = 'org.firstinspires.ftc.teamcode'
 
     packagingOptions {
