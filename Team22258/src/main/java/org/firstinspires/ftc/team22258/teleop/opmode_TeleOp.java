@@ -26,10 +26,11 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor BRMotor;
   double BRMP;
   
+  int fieldCentric = 2;
   double MPN;
   
-  private DcMotor ItkMotor;
-  double ItkMP;
+  private DcMotor InMotor;
+  double InMP;
   
   @Override
   public void runOpMode() {
@@ -57,7 +58,7 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
       BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
-      ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
+      InMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
     
     // Set Motor Behaviors
@@ -65,7 +66,7 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMotor.setDirection(DcMotor.Direction.REVERSE);
       BLMotor.setDirection(DcMotor.Direction.REVERSE);
       BRMotor.setDirection(DcMotor.Direction.REVERSE);
-      ItkMotor.setDirection(DcMotor.Direction.FORWARD);
+      InMotor.setDirection(DcMotor.Direction.FORWARD);
       
       // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -81,12 +82,27 @@ public class opmode_TeleOp extends LinearOpMode {
     // Get/Reset Robot Rotation Value
       if (gamepad1.start) {rIMU.resetYaw();}
       Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+      
+    // Toggle Field-Centrism
+      fieldCentric = ((fieldCentric == 0 || fieldCentric == 2)&&!gamepad1.dpad_up)?
+          (fieldCentric+1):
+          (((fieldCentric == 1 || fieldCentric == 3)&&gamepad1.dpad_up)?
+              (3-fieldCentric):
+              (fieldCentric)
+          )
+      ;
     
     // Inputs
-      double powHead = gamepad1.left_stick_x*Math.sin(Rot) + gamepad1.left_stick_y*Math.cos(Rot);
-      double powSide = gamepad1.left_stick_x*Math.cos(Rot) - gamepad1.left_stick_y*Math.sin(Rot);
-      double powTurn = gamepad1.right_stick_x;
-    
+      double powHead, powSide, powTurn;
+      if (fieldCentric > 1) {
+          powHead = gamepad1.left_stick_x * Math.sin(Rot) + gamepad1.left_stick_y * Math.cos(Rot);
+          powSide = gamepad1.left_stick_x * Math.cos(Rot) - gamepad1.left_stick_y * Math.sin(Rot);
+      } else {
+          powHead = gamepad1.left_stick_y;
+          powSide = gamepad1.left_stick_x;
+      }
+      powTurn = gamepad1.right_stick_x;
+      
     // Drive & Strafe & Rotate
       FLMP = powHead + powSide - powTurn;
       FRMP = powHead - powSide + powTurn;
@@ -120,8 +136,8 @@ public class opmode_TeleOp extends LinearOpMode {
   private void Fn_Intake() {
     //Intake Code
       
-      ItkMP = gamepad1.right_stick_y;
-      ItkMotor.setPower(ItkMP);
+      InMP = gamepad1.right_stick_y;
+      InMotor.setPower(InMP);
       
   }
   
@@ -137,6 +153,7 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("FLMP", FRMP);
       telemetry.addData("BLMP", BLMP);
       telemetry.addData("BRMP", BRMP);
+      telemetry.addData("Intake", InMP);
 //      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
 //      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
 //      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
@@ -151,7 +168,7 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMP = 0;
       BLMP = 0;
       BRMP = 0;
-      ItkMP = 0;
+      InMP = 0;
       
   }
   
