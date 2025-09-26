@@ -29,8 +29,11 @@ public class opmode_TeleOp extends LinearOpMode {
   int fieldCentric = 2;
   double MPN;
   
-  private DcMotor InMotor;
-  double InMP;
+  private DcMotor ItkMotor;
+  double ItkMP;
+  
+  private DcMotor OtkMotor;
+  double OtkMP;
   
   @Override
   public void runOpMode() {
@@ -39,15 +42,15 @@ public class opmode_TeleOp extends LinearOpMode {
     //Init & Wait
       Fn_Init();
       waitForStart();
-    
+      
     //Run Opmode
       while (opModeIsActive()) {
         Fn_Move();
-        Fn_Intake();
+        Fn_IOtk();
         Fn_Telemetry();
         Fn_LoopEnd();
       }
-    
+      
   }
   
   private void Fn_Init() {
@@ -58,22 +61,24 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
       BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
-      InMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
+      ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
+      OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
-    
+      
     // Set Motor Behaviors
       FLMotor.setDirection(DcMotor.Direction.FORWARD);
       FRMotor.setDirection(DcMotor.Direction.REVERSE);
       BLMotor.setDirection(DcMotor.Direction.REVERSE);
       BRMotor.setDirection(DcMotor.Direction.REVERSE);
-      InMotor.setDirection(DcMotor.Direction.FORWARD);
+      ItkMotor.setDirection(DcMotor.Direction.FORWARD);
+      OtkMotor.setDirection(DcMotor.Direction.FORWARD);
       
       // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
       RevHubOrientationOnRobot.LogoFacingDirection.UP,
       RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
       rIMU.initialize(parameters);
-    
+      
   }
   
   private void Fn_Move() {
@@ -91,7 +96,7 @@ public class opmode_TeleOp extends LinearOpMode {
               (fieldCentric)
           )
       ;
-    
+      
     // Inputs
       double powHead, powSide, powTurn;
       if (fieldCentric > 1) {
@@ -108,7 +113,7 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMP = powHead - powSide + powTurn;
       BLMP = powHead - powSide - powTurn;
       BRMP = powHead + powSide + powTurn;
-    
+      
     // Power Control
       MPN = (
         Math.max(1,
@@ -124,39 +129,55 @@ public class opmode_TeleOp extends LinearOpMode {
         FRMP /= MPN;
         FLMP /= MPN;
       }
-    
+      
     // Trigger Motors
       FLMotor.setPower(FLMP);
       FRMotor.setPower(FRMP);
       BLMotor.setPower(BLMP);
       BRMotor.setPower(BRMP);
-    
+      
   }
   
-  private void Fn_Intake() {
-    //Intake Code
+  private void Fn_IOtk() {
+    //Intake/Outtake Code
+    
+    //Intake
+      ItkMP = gamepad1.right_stick_y;
+      ItkMotor.setPower(ItkMP);
       
-      InMP = gamepad1.right_stick_y;
-      InMotor.setPower(InMP);
+    //Outtake
+      OtkMP = gamepad1.right_trigger;
+      OtkMotor.setPower(OtkMP);
       
   }
   
   private void Fn_Telemetry() {
     //Telemetry Data
-      
+    
+    //Gamepad 1
       telemetry.addData("LStickX", gamepad1.left_stick_x);
       telemetry.addData("LStickY", gamepad1.left_stick_y);
       telemetry.addData("RStickX", gamepad1.right_stick_x);
       telemetry.addData("RStickY", gamepad1.right_stick_y);
+      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
+      /*telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
+      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);*/
+      
+    //Movement
       telemetry.addData("MPN", MPN);
       telemetry.addData("FLMP", FLMP);
-      telemetry.addData("FLMP", FRMP);
+      telemetry.addData("FRMP", FRMP);
       telemetry.addData("BLMP", BLMP);
       telemetry.addData("BRMP", BRMP);
-      telemetry.addData("Intake", InMP);
-//      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
-//      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
-//      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
+      
+    //IO-take
+      telemetry.addData("Input Motor", ItkMP);
+      telemetry.addData("Outtake Motor", OtkMP);
+      
+    //Misc
+      telemetry.addData("Field-Centric", (fieldCentric>1));
+      
+    //End Code
       telemetry.update();
       
   }
@@ -168,8 +189,8 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMP = 0;
       BLMP = 0;
       BRMP = 0;
-      InMP = 0;
-      
+      ItkMP = 0;
+      OtkMP = 0;
   }
   
 }
