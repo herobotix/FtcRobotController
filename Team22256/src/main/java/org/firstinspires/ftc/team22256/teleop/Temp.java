@@ -29,14 +29,18 @@ public class Temp extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        boolean BP = false;
+
         waitForStart();
         runtime.reset();
+        double power = 0;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (gamepad1.a){
-                two.setPower(1);
-                one.setPower(1);
+
+           if (gamepad1.a){
+               two.setPower(1);
+               one.setPower(1);
             } else if(gamepad1.b){
                 two.setPower(-1);
                 one.setPower(-1);
@@ -44,6 +48,31 @@ public class Temp extends LinearOpMode {
                 two.setPower(0);
                 one.setPower(0);
             }
+
+            /*
+            if (gamepad1.right_bumper && !BP) {
+                BP = true;
+                power += 0.1;
+            } else if (!gamepad1.right_bumper && BP) {
+                BP = false;
+                power += 0.1;
+            }
+
+            if (gamepad1.left_bumper && !BP) {
+                BP = true;
+                power -= 0.1;
+            } else if (!gamepad1.left_bumper && BP) {
+                BP = false;
+                power -= 0.1;
+            }
+
+            if(power < 0 || power >1){
+                power = 0;
+            }
+
+            two.setPower(power);
+            one.setPower(power);
+  */
         }
     }
 }
