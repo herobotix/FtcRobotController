@@ -1,14 +1,20 @@
 package org.firstinspires.ftc.team22258.teamcode;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
+import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.3]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.4]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -35,6 +41,8 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor OtkMotor;
   double OtkMP;
   
+  private Limelight3A limelight;
+  
   @Override
   public void runOpMode() {
     //Begin
@@ -42,16 +50,21 @@ public class opmode_TeleOp extends LinearOpMode {
     //Init & Wait
       Fn_Init();
       waitForStart();
+      Fn_OnStart();
       
     //Run Opmode
       while (opModeIsActive()) {
+        Fn_Limelight();
         Fn_Move();
         Fn_IOtk();
         Fn_Telemetry();
         Fn_LoopEnd();
+        
       }
+      Fn_OnStop();
       
   }
+  
   
   private void Fn_Init() {
     // Initialization Code
@@ -63,6 +76,7 @@ public class opmode_TeleOp extends LinearOpMode {
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
+      limelight = hardwareMap.get(Limelight3A.class, "limelight");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
       
     // Set Motor Behaviors
@@ -73,11 +87,53 @@ public class opmode_TeleOp extends LinearOpMode {
       ItkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       
-      // Set Robot Orientation (IMU)
+    // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
       RevHubOrientationOnRobot.LogoFacingDirection.UP,
       RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
       rIMU.initialize(parameters);
+      
+  }
+  
+  private void Fn_OnStart() {
+    //Run On START
+    
+    //Limelight
+      limelight.pipelineSwitch(0);
+      limelight.start();
+      
+  }
+  
+  private void Fn_OnStop() {
+    //Run On STOP
+    
+    //Limelight
+      limelight.stop();
+      
+  }
+  
+  private void Fn_Limelight() {
+    //Limelight Code
+    
+    //Limelight IMU
+      YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
+      limelight.updateRobotOrientation(orientation.getYaw());
+      LLResult results = limelight.getLatestResult();
+      if (results != null && results.isValid()) {
+        List<LLResultTypes.FiducialResult> fiducials = results.getFiducialResults();
+        if (!fiducials.isEmpty()) {
+          int index = 0;
+          for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            int aprilTagID = fiducial.getFiducialId();
+            telemetry.addData("Detection " + index + " ID",aprilTagID);
+            index++;
+          }
+        } else {
+          telemetry.addLine("Limelight Fiducials Empty");
+        }
+      } else {
+        telemetry.addLine("No AprilTags Detected");
+      }
       
   }
   
