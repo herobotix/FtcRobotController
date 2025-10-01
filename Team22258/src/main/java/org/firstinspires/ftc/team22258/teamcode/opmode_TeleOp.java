@@ -8,7 +8,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.2]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.3]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -70,8 +70,8 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMotor.setDirection(DcMotor.Direction.REVERSE);
       BLMotor.setDirection(DcMotor.Direction.REVERSE);
       BRMotor.setDirection(DcMotor.Direction.REVERSE);
-      ItkMotor.setDirection(DcMotor.Direction.FORWARD);
-      OtkMotor.setDirection(DcMotor.Direction.FORWARD);
+      ItkMotor.setDirection(DcMotor.Direction.REVERSE);
+      OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       
       // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -142,7 +142,7 @@ public class opmode_TeleOp extends LinearOpMode {
     //Intake/Outtake Code
     
     //Intake
-      ItkMP = gamepad1.right_stick_y;
+      ItkMP = -gamepad1.right_stick_y;
       ItkMotor.setPower(ItkMP);
       
     //Outtake
