@@ -49,30 +49,10 @@ public class Temp extends LinearOpMode {
                 one.setPower(0);
             }
 
-            /*
-            if (gamepad1.right_bumper && !BP) {
-                BP = true;
-                power += 0.1;
-            } else if (!gamepad1.right_bumper && BP) {
-                BP = false;
-                power += 0.1;
-            }
 
-            if (gamepad1.left_bumper && !BP) {
-                BP = true;
-                power -= 0.1;
-            } else if (!gamepad1.left_bumper && BP) {
-                BP = false;
-                power -= 0.1;
-            }
 
-            if(power < 0 || power >1){
-                power = 0;
-            }
 
-            two.setPower(power);
-            one.setPower(power);
-  */
+
         }
     }
 }
