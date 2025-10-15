@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team22256.PP;
+package org.firstinspires.ftc.team22256.common.PP;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
