@@ -32,8 +32,12 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor BRMotor;
   double BRMP;
   
+  int TargetLock_GOAL = 1;
+  
   int fieldCentric = 2;
   double MPN;
+  
+  double powHead, powSide, powTurn;
   
   private DcMotor ItkMotor;
   double ItkMP;
@@ -55,7 +59,8 @@ public class opmode_TeleOp extends LinearOpMode {
     //Run Opmode
       while (opModeIsActive()) {
         Fn_Limelight();
-        Fn_Move();
+        Fn_FullMove();
+        Fn_MoveProcessing();
         Fn_IOtk();
         Fn_Telemetry();
         Fn_LoopEnd();
@@ -125,7 +130,9 @@ public class opmode_TeleOp extends LinearOpMode {
           int index = 0;
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int aprilTagID = fiducial.getFiducialId();
-            telemetry.addData("Detection " + index + " ID",aprilTagID);
+            double aprilTagX = fiducial.getTargetXDegrees();
+            telemetry.addData("Detection " + index + " ID:", aprilTagID);
+            telemetry.addData("at X: ", aprilTagX);
             index++;
           }
         } else {
@@ -137,32 +144,63 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private void Fn_Move() {
-    //Movement Code
+  private int Fn_Toggler(int ToggleState,boolean ToggleButton) {
+    ToggleState = ((ToggleState == 0 || ToggleState == 2)&&!ToggleButton)?
+      (ToggleState+1):
+      (((ToggleState == 1 || ToggleState == 3)&&ToggleButton)?
+        (3-ToggleState):
+        (ToggleState)
+      )
+    ;
+    return ToggleState;
+  }
+  
+  private void Fn_FullMove() {
+    //Player-controlled & Autonomous TeleOp Movement Code
     
     // Get/Reset Robot Rotation Value
       if (gamepad1.start) {rIMU.resetYaw();}
       Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-      
+    
     // Toggle Field-Centrism
-      fieldCentric = ((fieldCentric == 0 || fieldCentric == 2)&&!gamepad1.dpad_up)?
-          (fieldCentric+1):
-          (((fieldCentric == 1 || fieldCentric == 3)&&gamepad1.dpad_up)?
-              (3-fieldCentric):
-              (fieldCentric)
-          )
-      ;
+//      fieldCentric = ((fieldCentric == 0 || fieldCentric == 2)&&!gamepad1.dpad_up)?
+//        (fieldCentric+1):
+//        (((fieldCentric == 1 || fieldCentric == 3)&&gamepad1.dpad_up)?
+//          (3-fieldCentric):
+//          (fieldCentric)
+//        )
+//      ;
+      fieldCentric = Fn_Toggler(fieldCentric, gamepad1.dpad_up);
       
     // Inputs
-      double powHead, powSide, powTurn;
       if (fieldCentric > 1) {
-          powHead = gamepad1.left_stick_x * Math.sin(Rot) + gamepad1.left_stick_y * Math.cos(Rot);
-          powSide = gamepad1.left_stick_x * Math.cos(Rot) - gamepad1.left_stick_y * Math.sin(Rot);
+        powHead = gamepad1.left_stick_x * Math.sin(Rot) + gamepad1.left_stick_y * Math.cos(Rot);
+        powSide = gamepad1.left_stick_x * Math.cos(Rot) - gamepad1.left_stick_y * Math.sin(Rot);
       } else {
-          powHead = gamepad1.left_stick_y;
-          powSide = gamepad1.left_stick_x;
+        powHead = gamepad1.left_stick_y;
+        powSide = gamepad1.left_stick_x;
       }
       powTurn = gamepad1.right_stick_x;
+      
+    //AutonomousMovements
+      Fn_MoveAuto();
+      
+    //Processing
+      Fn_MoveProcessing();
+      
+  }
+  
+  private void Fn_MoveAuto() {
+    //Autonomous Movement Code
+    
+    //inputs
+      TargetLock_GOAL = Fn_Toggler(TargetLock_GOAL, gamepad1.x);
+      
+      if (TargetLock_GOAL >= 2) {}
+  }
+  
+  private void Fn_MoveProcessing() {
+    //Movement Processing Code
       
     // Drive & Strafe & Rotate
       FLMP = powHead + powSide - powTurn;
