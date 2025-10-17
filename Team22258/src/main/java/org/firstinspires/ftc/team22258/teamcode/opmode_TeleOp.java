@@ -140,6 +140,8 @@ public class opmode_TeleOp extends LinearOpMode {
             telemetry.addData("at X: ", aprilTagX);
             if (TargetLockGOAL&&(aprilTagID==((TargetLockGOAL_Target)?(20):(24)))) {
               TargetLockXRot = aprilTagX/360;
+            } else {
+              TargetLockXRot = gamepad1.right_stick_x;
             }
             index++;
           }
