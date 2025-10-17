@@ -36,7 +36,7 @@ public class opmode_TeleOp extends LinearOpMode {
   boolean TargetLockGOAL_Target = false;
   double TargetLockXRot;
   
-  boolean fieldCentric = 2;
+  boolean fieldCentric = true;
   double MPN;
   
   double powHead, powSide, powTurn;
