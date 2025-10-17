@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.4]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.5]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
