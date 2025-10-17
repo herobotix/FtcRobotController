@@ -186,12 +186,11 @@ public class opmode_TeleOp extends LinearOpMode {
       if (fieldCentric) {
         powHead = gamepad1.left_stick_x * Math.sin(Rot) + gamepad1.left_stick_y * Math.cos(Rot);
         powSide = gamepad1.left_stick_x * Math.cos(Rot) - gamepad1.left_stick_y * Math.sin(Rot);
-        powTurn = gamepad1.right_stick_x;
       } else {
         powHead = gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
-        powTurn = (TargetLockGOAL)?(TargetLockXRot):(gamepad1.right_stick_x);
       }
+      powTurn = (TargetLockGOAL)?(TargetLockXRot):(gamepad1.right_stick_x);
       
     //AutonomousMovements
       Fn_MoveAuto();
