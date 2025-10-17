@@ -32,9 +32,11 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor BRMotor;
   double BRMP;
   
-  int TargetLock_GOAL = 1;
+  boolean TargetLockGOAL = false;
+  boolean TargetLockGOAL_Target = false;
+  double TargetLockXRot;
   
-  int fieldCentric = 2;
+  boolean fieldCentric = 2;
   double MPN;
   
   double powHead, powSide, powTurn;
@@ -120,6 +122,9 @@ public class opmode_TeleOp extends LinearOpMode {
   private void Fn_Limelight() {
     //Limelight Code
     
+    //LockOn Detection
+      TargetLockGOAL_Target = (gamepad1.yWasPressed())?(!TargetLockGOAL_Target):(TargetLockGOAL_Target);
+    
     //Limelight IMU
       YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
       limelight.updateRobotOrientation(orientation.getYaw());
@@ -133,6 +138,9 @@ public class opmode_TeleOp extends LinearOpMode {
             double aprilTagX = fiducial.getTargetXDegrees();
             telemetry.addData("Detection " + index + " ID:", aprilTagID);
             telemetry.addData("at X: ", aprilTagX);
+            if (TargetLockGOAL&&(aprilTagID==((TargetLockGOAL_Target)?(20):(24)))) {
+              TargetLockXRot = aprilTagX/360;
+            }
             index++;
           }
         } else {
@@ -170,17 +178,18 @@ public class opmode_TeleOp extends LinearOpMode {
 //          (fieldCentric)
 //        )
 //      ;
-      fieldCentric = Fn_Toggler(fieldCentric, gamepad1.dpad_up);
+      fieldCentric = (gamepad1.bWasPressed())?(!fieldCentric):(fieldCentric);
       
     // Inputs
-      if (fieldCentric > 1) {
+      if (fieldCentric) {
         powHead = gamepad1.left_stick_x * Math.sin(Rot) + gamepad1.left_stick_y * Math.cos(Rot);
         powSide = gamepad1.left_stick_x * Math.cos(Rot) - gamepad1.left_stick_y * Math.sin(Rot);
+        powTurn = gamepad1.right_stick_x;
       } else {
         powHead = gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
+        powTurn = (TargetLockGOAL)?(TargetLockXRot):(gamepad1.right_stick_x);
       }
-      powTurn = gamepad1.right_stick_x;
       
     //AutonomousMovements
       Fn_MoveAuto();
@@ -194,9 +203,9 @@ public class opmode_TeleOp extends LinearOpMode {
     //Autonomous Movement Code
     
     //inputs
-      TargetLock_GOAL = Fn_Toggler(TargetLock_GOAL, gamepad1.x);
+      TargetLockGOAL = (gamepad1.xWasPressed())?(!TargetLockGOAL):(TargetLockGOAL);
       
-      if (TargetLock_GOAL >= 2) {}
+      if (TargetLockGOAL) {}
   }
   
   private void Fn_MoveProcessing() {
@@ -253,8 +262,8 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("LStickY", gamepad1.left_stick_y);
       telemetry.addData("RStickX", gamepad1.right_stick_x);
       telemetry.addData("RStickY", gamepad1.right_stick_y);
-      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
-      /*telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
+      /*telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
+      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
       telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);*/
       
     //Movement
@@ -269,7 +278,9 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Outtake Motor", OtkMP);
       
     //Misc
-      telemetry.addData("Field-Centric", (fieldCentric>1));
+      telemetry.addData("Field-Centric", (fieldCentric));
+      telemetry.addData("Target Lock onto GOAL", TargetLockGOAL);
+      telemetry.addData("Target Lock GOAL color", ((TargetLockGOAL_Target)?("20 ─ RED"):("24 ─ Blue")));
       
     //End Code
       telemetry.update();
