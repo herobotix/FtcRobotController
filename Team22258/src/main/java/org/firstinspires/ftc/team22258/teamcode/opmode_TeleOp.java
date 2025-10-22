@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.5]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.6]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -256,6 +256,7 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Input Motor", ItkMP);
       telemetry.addData("Outtake Motor", OtkMP);
       telemetry.addData("Outtake Servo", OtkSs);
+      telemetry.addData("OtkServo pos", OtkServo.getPosition());
       
     //Misc
       telemetry.addData("Field-Centric", (fieldCentric));
