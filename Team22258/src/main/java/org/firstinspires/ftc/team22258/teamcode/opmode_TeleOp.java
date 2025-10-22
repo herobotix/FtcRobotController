@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
@@ -45,7 +47,9 @@ public class opmode_TeleOp extends LinearOpMode {
   double ItkMP;
   
   private DcMotor OtkMotor;
+  private Servo OtkServo;
   double OtkMP;
+  boolean OtkSs = false;
   
   private Limelight3A limelight;
   
@@ -62,7 +66,6 @@ public class opmode_TeleOp extends LinearOpMode {
       while (opModeIsActive()) {
         Fn_Limelight();
         Fn_FullMove();
-        Fn_MoveProcessing();
         Fn_IOtk();
         Fn_Telemetry();
         Fn_LoopEnd();
@@ -83,6 +86,7 @@ public class opmode_TeleOp extends LinearOpMode {
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
+      OtkServo = hardwareMap.get(Servo.class, "OtkServo");
       limelight = hardwareMap.get(Limelight3A.class, "limelight");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
       
@@ -111,19 +115,11 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private void Fn_OnStop() {
-    //Run On STOP
-    
-    //Limelight
-      limelight.stop();
-      
-  }
-  
   private void Fn_Limelight() {
     //Limelight Code
     
     //LockOn Detection
-      TargetLockGOAL_Target = (gamepad1.yWasPressed())?(!TargetLockGOAL_Target):(TargetLockGOAL_Target);
+      TargetLockGOAL_Target = gamepad1.yWasPressed() == (!TargetLockGOAL_Target);
     
     //Limelight IMU
       YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
@@ -154,33 +150,14 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private int Fn_Toggler(int ToggleState,boolean ToggleButton) {
-    ToggleState = ((ToggleState == 0 || ToggleState == 2)&&!ToggleButton)?
-      (ToggleState+1):
-      (((ToggleState == 1 || ToggleState == 3)&&ToggleButton)?
-        (3-ToggleState):
-        (ToggleState)
-      )
-    ;
-    return ToggleState;
-  }
-  
   private void Fn_FullMove() {
     //Player-controlled & Autonomous TeleOp Movement Code
     
     // Get/Reset Robot Rotation Value
       if (gamepad1.start) {rIMU.resetYaw();}
       Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-    
-    // Toggle Field-Centrism
-//      fieldCentric = ((fieldCentric == 0 || fieldCentric == 2)&&!gamepad1.dpad_up)?
-//        (fieldCentric+1):
-//        (((fieldCentric == 1 || fieldCentric == 3)&&gamepad1.dpad_up)?
-//          (3-fieldCentric):
-//          (fieldCentric)
-//        )
-//      ;
-      fieldCentric = (gamepad1.bWasPressed())?(!fieldCentric):(fieldCentric);
+      
+      fieldCentric = gamepad1.bWasPressed() == (!fieldCentric);
       
     // Inputs
       if (fieldCentric) {
@@ -190,7 +167,7 @@ public class opmode_TeleOp extends LinearOpMode {
         powHead = gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
       }
-      powTurn = (TargetLockGOAL)?(TargetLockXRot):(gamepad1.right_stick_x);
+      powTurn = TargetLockXRot;
       
     //AutonomousMovements
       Fn_MoveAuto();
@@ -204,9 +181,8 @@ public class opmode_TeleOp extends LinearOpMode {
     //Autonomous Movement Code
     
     //inputs
-      TargetLockGOAL = (gamepad1.xWasPressed())?(!TargetLockGOAL):(TargetLockGOAL);
+      TargetLockGOAL = gamepad1.xWasPressed() == (!TargetLockGOAL);
       
-      if (TargetLockGOAL) {}
   }
   
   private void Fn_MoveProcessing() {
@@ -252,6 +228,8 @@ public class opmode_TeleOp extends LinearOpMode {
     //Outtake
       OtkMP = gamepad1.right_trigger;
       OtkMotor.setPower(OtkMP);
+      OtkSs = gamepad1.rightBumperWasPressed() == (!OtkSs);
+      OtkServo.setPosition(OtkSs?(1):(0));
       
   }
   
@@ -263,9 +241,9 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("LStickY", gamepad1.left_stick_y);
       telemetry.addData("RStickX", gamepad1.right_stick_x);
       telemetry.addData("RStickY", gamepad1.right_stick_y);
-      /*telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
-      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
-      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);*/
+//      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
+//      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
+//      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
       
     //Movement
       telemetry.addData("MPN", MPN);
@@ -277,11 +255,12 @@ public class opmode_TeleOp extends LinearOpMode {
     //IO-take
       telemetry.addData("Input Motor", ItkMP);
       telemetry.addData("Outtake Motor", OtkMP);
+      telemetry.addData("Outtake Servo", OtkSs);
       
     //Misc
       telemetry.addData("Field-Centric", (fieldCentric));
       telemetry.addData("Target Lock onto GOAL", TargetLockGOAL);
-      telemetry.addData("Target Lock GOAL color", ((TargetLockGOAL_Target)?("20 ─ RED"):("24 ─ Blue")));
+      telemetry.addData("Target Lock GOAL color", ((TargetLockGOAL_Target)?("24 ─ RED"):("20 ─ Blue")));
       
     //End Code
       telemetry.update();
@@ -297,6 +276,14 @@ public class opmode_TeleOp extends LinearOpMode {
       BRMP = 0;
       ItkMP = 0;
       OtkMP = 0;
+  }
+  
+  private void Fn_OnStop() {
+    //Run On STOP
+    
+    //Limelight
+    limelight.stop();
+    
   }
   
 }
