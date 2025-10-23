@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.6]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.7]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -49,7 +49,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor OtkMotor;
   private Servo OtkServo;
   double OtkMP;
-  boolean OtkSs = false;
+  boolean OtkSs = true;
   
   private Limelight3A limelight;
   
@@ -131,13 +131,11 @@ public class opmode_TeleOp extends LinearOpMode {
           int index = 0;
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int aprilTagID = fiducial.getFiducialId();
-            double aprilTagX = fiducial.getTargetXDegrees();
-            telemetry.addData("Detection " + index + " ID:", aprilTagID);
-            telemetry.addData("at X: ", aprilTagX);
+            double aprilTagX = fiducial.getTargetXDegrees()/3.6;
+            telemetry.addLine("Limelight ─");
+            telemetry.addData("Detection #" + index + " ID:", aprilTagID);
             if (TargetLockGOAL&&(aprilTagID==((TargetLockGOAL_Target)?(20):(24)))) {
-              TargetLockXRot = aprilTagX/360;
-            } else {
-              TargetLockXRot = gamepad1.right_stick_x;
+              TargetLockXRot = aprilTagX;
             }
             index++;
           }
@@ -146,6 +144,7 @@ public class opmode_TeleOp extends LinearOpMode {
         }
       } else {
         telemetry.addLine("No AprilTags Detected");
+        TargetLockXRot = 0;
       }
       
   }
@@ -167,7 +166,7 @@ public class opmode_TeleOp extends LinearOpMode {
         powHead = gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
       }
-      powTurn = TargetLockXRot;
+      powTurn = TargetLockGOAL?(TargetLockXRot):(gamepad1.right_stick_x);
       
     //AutonomousMovements
       Fn_MoveAuto();
@@ -189,10 +188,10 @@ public class opmode_TeleOp extends LinearOpMode {
     //Movement Processing Code
       
     // Drive & Strafe & Rotate
-      FLMP = powHead + powSide - powTurn;
-      FRMP = powHead - powSide + powTurn;
-      BLMP = powHead - powSide - powTurn;
-      BRMP = powHead + powSide + powTurn;
+      FLMP = powHead - powSide - powTurn;
+      FRMP = powHead + powSide + powTurn;
+      BLMP = powHead + powSide - powTurn;
+      BRMP = powHead - powSide + powTurn;
       
     // Power Control
       MPN = (
@@ -237,31 +236,35 @@ public class opmode_TeleOp extends LinearOpMode {
     //Telemetry Data
     
     //Gamepad 1
-      telemetry.addData("LStickX", gamepad1.left_stick_x);
-      telemetry.addData("LStickY", gamepad1.left_stick_y);
-      telemetry.addData("RStickX", gamepad1.right_stick_x);
-      telemetry.addData("RStickY", gamepad1.right_stick_y);
+//      telemetry.addData("LStickX", gamepad1.left_stick_x);
+//      telemetry.addData("LStickY", gamepad1.left_stick_y);
+//      telemetry.addData("RStickX", gamepad1.right_stick_x);
+//      telemetry.addData("RStickY", gamepad1.right_stick_y);
 //      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
 //      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
 //      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
-      
+    
     //Movement
-      telemetry.addData("MPN", MPN);
-      telemetry.addData("FLMP", FLMP);
-      telemetry.addData("FRMP", FRMP);
-      telemetry.addData("BLMP", BLMP);
-      telemetry.addData("BRMP", BRMP);
+      telemetry.addLine("Movement ─");
+//      telemetry.addData("MPN", MPN);
+//      telemetry.addData("FLMP", FLMP);
+//      telemetry.addData("FRMP", FRMP);
+//      telemetry.addData("BLMP", BLMP);
+//      telemetry.addData("BRMP", BRMP);
+      telemetry.addData("Head Power",powHead);
+      telemetry.addData("Side Power",powSide);
+      telemetry.addData("Turn Power",powTurn);
       
     //IO-take
-      telemetry.addData("Input Motor", ItkMP);
-      telemetry.addData("Outtake Motor", OtkMP);
-      telemetry.addData("Outtake Servo", OtkSs);
-      telemetry.addData("OtkServo pos", OtkServo.getPosition());
+      telemetry.addLine("IOtk ─");
+      telemetry.addData("Itk Motor Power", ItkMP);
+      telemetry.addData("Otk Motor Power", OtkMP);
+      telemetry.addData("Otk Servo State", (OtkServo.getPosition()==1)?("▲"):("▼"));
       
     //Misc
-      telemetry.addData("Field-Centric", (fieldCentric));
-      telemetry.addData("Target Lock onto GOAL", TargetLockGOAL);
-      telemetry.addData("Target Lock GOAL color", ((TargetLockGOAL_Target)?("24 ─ RED"):("20 ─ Blue")));
+      telemetry.addLine("Miscellaneous ─");
+      telemetry.addData("Centricity", (fieldCentric?(TargetLockGOAL?("Target"):("Robot")):(TargetLockGOAL?("Focus"):("Field")))+"-Centric");
+      telemetry.addData("Selected Target", ((TargetLockGOAL_Target)?("20 ─ Blue"):("24 ─ RED")));
       
     //End Code
       telemetry.update();
