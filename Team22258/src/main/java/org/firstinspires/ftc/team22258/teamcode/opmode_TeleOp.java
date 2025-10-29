@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.7]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.8]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -119,6 +119,7 @@ public class opmode_TeleOp extends LinearOpMode {
     //Limelight Code
     
     //LockOn Detection
+      TargetLockGOAL = gamepad1.xWasPressed() == (!TargetLockGOAL);
       TargetLockGOAL_Target = gamepad1.yWasPressed() == (!TargetLockGOAL_Target);
     
     //Limelight IMU
@@ -131,11 +132,15 @@ public class opmode_TeleOp extends LinearOpMode {
           int index = 0;
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int aprilTagID = fiducial.getFiducialId();
-            double aprilTagX = fiducial.getTargetXDegrees()/3.6;
+            double aprilTagXRot = fiducial.getTargetXDegrees()/(3.6*5);
             telemetry.addLine("Limelight ─");
             telemetry.addData("Detection #" + index + " ID:", aprilTagID);
-            if (TargetLockGOAL&&(aprilTagID==((TargetLockGOAL_Target)?(20):(24)))) {
-              TargetLockXRot = aprilTagX;
+            telemetry.addData("TargetXRot", aprilTagXRot);
+            if (TargetLockGOAL&&( aprilTagID == ((TargetLockGOAL_Target)?(20):(24)) )) {
+              TargetLockXRot = aprilTagXRot;
+              telemetry.addData("TargetLockXRot", TargetLockXRot);
+            } else {
+              TargetLockXRot = 0;
             }
             index++;
           }
@@ -144,7 +149,6 @@ public class opmode_TeleOp extends LinearOpMode {
         }
       } else {
         telemetry.addLine("No AprilTags Detected");
-        TargetLockXRot = 0;
       }
       
   }
@@ -176,13 +180,7 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private void Fn_MoveAuto() {
-    //Autonomous Movement Code
-    
-    //inputs
-      TargetLockGOAL = gamepad1.xWasPressed() == (!TargetLockGOAL);
-      
-  }
+  private void Fn_MoveAuto() {}
   
   private void Fn_MoveProcessing() {
     //Movement Processing Code
@@ -274,6 +272,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private void Fn_LoopEnd() {
     //Loop End Code
       
+      TargetLockXRot = 0;
       FLMP = 0;
       FRMP = 0;
       BLMP = 0;
