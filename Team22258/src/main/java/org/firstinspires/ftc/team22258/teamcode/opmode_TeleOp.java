@@ -6,6 +6,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -46,7 +47,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor ItkMotor;
   double ItkMP;
   
-  private DcMotor OtkMotor;
+  private DcMotorEx OtkMotor;
   private Servo OtkServo;
   double OtkMP;
   boolean OtkSs = true;
@@ -97,6 +98,8 @@ public class opmode_TeleOp extends LinearOpMode {
       BRMotor.setDirection(DcMotor.Direction.REVERSE);
       ItkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
+      OtkMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       
     // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -219,13 +222,15 @@ public class opmode_TeleOp extends LinearOpMode {
     //Intake/Outtake Code
     
     //Intake
-      ItkMP = -gamepad1.right_stick_y;
+      ItkMP = gamepad1.right_trigger;
       ItkMotor.setPower(ItkMP);
       
-    //Outtake
-      OtkMP = gamepad1.right_trigger;
-      OtkMotor.setPower(OtkMP);
-      OtkSs = gamepad1.rightBumperWasPressed() == (!OtkSs);
+    //Outtake Motor
+      OtkMP = -gamepad1.right_stick_y;
+      OtkMotor.setVelocity(OtkMP);
+      
+    //Outtake Servo
+      OtkSs = gamepad1.rightStickButtonWasPressed() == (!OtkSs);
       OtkServo.setPosition(OtkSs?(1):(0));
       
   }
@@ -271,7 +276,8 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private void Fn_LoopEnd() {
     //Loop End Code
-      
+    
+      OtkMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       TargetLockXRot = 0;
       FLMP = 0;
       FRMP = 0;
