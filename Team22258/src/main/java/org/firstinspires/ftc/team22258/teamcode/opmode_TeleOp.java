@@ -6,7 +6,6 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -47,7 +46,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor ItkMotor;
   double ItkMP;
   
-  private DcMotorEx OtkMotor;
+  private DcMotor OtkMotor;
   private Servo OtkServo;
   double OtkMP;
   boolean OtkSs = true;
@@ -98,7 +97,6 @@ public class opmode_TeleOp extends LinearOpMode {
       BRMotor.setDirection(DcMotor.Direction.REVERSE);
       ItkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
-      OtkMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       
     // Set Robot Orientation (IMU)
@@ -227,7 +225,7 @@ public class opmode_TeleOp extends LinearOpMode {
       
     //Outtake Motor
       OtkMP = -gamepad1.right_stick_y;
-      OtkMotor.setVelocity(OtkMP);
+      OtkMotor.setPower(OtkMP);
       
     //Outtake Servo
       OtkSs = gamepad1.rightStickButtonWasPressed() == (!OtkSs);
@@ -239,24 +237,28 @@ public class opmode_TeleOp extends LinearOpMode {
     //Telemetry Data
     
     //Gamepad 1
-//      telemetry.addData("LStickX", gamepad1.left_stick_x);
-//      telemetry.addData("LStickY", gamepad1.left_stick_y);
-//      telemetry.addData("RStickX", gamepad1.right_stick_x);
-//      telemetry.addData("RStickY", gamepad1.right_stick_y);
-//      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
-//      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
-//      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
-    
+      /*
+      telemetry.addData("LStickX", gamepad1.left_stick_x);
+      telemetry.addData("LStickY", gamepad1.left_stick_y);
+      telemetry.addData("RStickX", gamepad1.right_stick_x);
+      telemetry.addData("RStickY", gamepad1.right_stick_y);
+      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
+      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
+      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
+      */
+      
     //Movement
       telemetry.addLine("Movement ─");
-//      telemetry.addData("MPN", MPN);
-//      telemetry.addData("FLMP", FLMP);
-//      telemetry.addData("FRMP", FRMP);
-//      telemetry.addData("BLMP", BLMP);
-//      telemetry.addData("BRMP", BRMP);
       telemetry.addData("Head Power",powHead);
       telemetry.addData("Side Power",powSide);
       telemetry.addData("Turn Power",powTurn);
+      /*
+      telemetry.addData("MPN", MPN);
+      telemetry.addData("FLMP", FLMP);
+      telemetry.addData("FRMP", FRMP);
+      telemetry.addData("BLMP", BLMP);
+      telemetry.addData("BRMP", BRMP);
+      */
       
     //IO-take
       telemetry.addLine("IOtk ─");
@@ -276,8 +278,6 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private void Fn_LoopEnd() {
     //Loop End Code
-    
-      OtkMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       TargetLockXRot = 0;
       FLMP = 0;
       FRMP = 0;
