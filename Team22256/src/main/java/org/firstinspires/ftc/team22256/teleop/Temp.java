@@ -17,6 +17,7 @@ public class Temp extends LinearOpMode {
     private DcMotor one;
     private DcMotor two;
     private DcMotor frontRight,backRight,frontLeft,backLeft;
+    private DcMotor testMotor;
     @Override
     public void runOpMode() {
 
@@ -24,6 +25,8 @@ public class Temp extends LinearOpMode {
         // to the names assigned during the robot configuration step on the DS or RC devices.
         one  = hardwareMap.get(DcMotor.class, "one");
         two  = hardwareMap.get(DcMotor.class, "two");
+
+        testMotor = hardwareMap.get(DcMotor.class, "testMotor");
 
         frontRight  = hardwareMap.get(DcMotor.class, "frontRight");
         backRight  = hardwareMap.get(DcMotor.class, "backRight");
@@ -57,6 +60,13 @@ public class Temp extends LinearOpMode {
                 two.setPower(0);
                 one.setPower(0);
             }
+           if(gamepad1.right_trigger > 1){
+               testMotor.setPower(1);
+           } else if(gamepad1.left_trigger > 1){
+               testMotor.setPower(-1);
+           } else {
+               testMotor.setPower(0);
+           }
 
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
