@@ -14,7 +14,6 @@ public class Robot {
         backRight  = hardwareMap.get(DcMotor.class, "backRight");
         frontLeft  = hardwareMap.get(DcMotor.class, "frontLeft");
         backLeft  = hardwareMap.get(DcMotor.class, "backLeft");
-        drivetrain = new Drivetrain(hardwareMap);
         intake = new Intake();
         turret = new Turret();
 
