@@ -8,6 +8,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.team22256.common.Robot;
+import org.firstinspires.ftc.team22256.common.Intake;
+import org.firstinspires.ftc.team22256.common.Turret;
+import org.firstinspires.ftc.team22256.common.Drivetrain;
+
+
+
 @TeleOp
 
 public class Temp extends LinearOpMode {
@@ -18,6 +25,7 @@ public class Temp extends LinearOpMode {
     private DcMotor two;
     private DcMotor frontRight,backRight,frontLeft,backLeft;
     private DcMotor testMotor;
+
     @Override
     public void runOpMode() {
 
@@ -90,7 +98,6 @@ public class Temp extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             frontRight.setPower(frontRightPower);
             backRight.setPower(backRightPower);
-
 
 
 
