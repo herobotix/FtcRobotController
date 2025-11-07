@@ -4,14 +4,16 @@ package org.firstinspires.ftc.team22256.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp
 
-public class temp2 extends LinearOpMode {
+public class Kickertestshooter extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -20,6 +22,8 @@ public class temp2 extends LinearOpMode {
     private DcMotor shooterLeft, shooterRight;
     private DcMotor intake;
     private DcMotor turret;
+
+    private CRServo kicker;
 
     @Override
     public void runOpMode() {
@@ -37,17 +41,23 @@ public class temp2 extends LinearOpMode {
         shooterLeft  = hardwareMap.get(DcMotor.class, "shooterLeft");
         shooterRight  = hardwareMap.get(DcMotor.class, "shooterRight");
 
-
+        kicker= hardwareMap.get(CRServo.class, "kicker");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        kicker.setPower(0);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
 
         while (opModeIsActive()) {
+            if (gamepad1.left_trigger > 0.2f) {
+                kicker.setPower(1);
+            } else {
+                kicker.setPower(0);
+            }
 
             if (gamepad1.a){
                 turret.setPower(1);
