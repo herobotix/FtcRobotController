@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.12]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.13]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -49,6 +49,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor OtkMotor;
   private Servo OtkServo;
   double OtkMP;
+  boolean b_ThrottleSteps = true;
   boolean OtkSs = true;
   
   private Limelight3A limelight;
@@ -65,7 +66,7 @@ public class opmode_TeleOp extends LinearOpMode {
     //Run Opmode
       while (opModeIsActive()) {
         Fn_Limelight();
-        Fn_FullMove();
+        Fn_Move();
         Fn_IOtk();
         Fn_Telemetry();
         Fn_LoopEnd();
@@ -154,13 +155,14 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private void Fn_FullMove() {
-    //Player-controlled & Autonomous TeleOp Movement Code
+  private void Fn_Move() {
+    //Movement Code
     
     // Get/Reset Robot Rotation Value
       if (gamepad1.start) {rIMU.resetYaw();}
       Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
       
+    // Field-Centrism Toggle
       fieldCentric = gamepad1.bWasPressed() == (!fieldCentric);
       
     // Inputs
@@ -173,15 +175,10 @@ public class opmode_TeleOp extends LinearOpMode {
       }
       powTurn = TargetLockGOAL?(TargetLockXRot):(gamepad1.right_stick_x);
       
-    //AutonomousMovements
-      Fn_MoveAuto();
-      
     //Processing
       Fn_MoveProcessing();
       
   }
-  
-  private void Fn_MoveAuto() {}
   
   private void Fn_MoveProcessing() {
     //Movement Processing Code
@@ -224,12 +221,22 @@ public class opmode_TeleOp extends LinearOpMode {
       ItkMotor.setPower(ItkMP);
       
     //Outtake Motor
-      double h = 0.15, k = 0.75, x = -gamepad2.right_stick_y;
-      OtkMP = (Math.abs(x) < h)?
-        ( k * x / h ):
-        ((( 1 - k )*( Math.abs(x) - h )/( 1 - h ) + k )*( Math.signum(x) ))
+      double h0 = 0.15, k0 = 0.76, h1 = 0.49, k1 = 0.87, h2 = 0.83, k2 = 0.90, x = -gamepad2.right_stick_y;
+      b_ThrottleSteps = gamepad2.xWasPressed() == (!b_ThrottleSteps); //Toggle Throttle Type
+      OtkMP = (Math.abs(x) < h0)? //OtkMP Calc
+        ( k0 * x / h0):
+        ((b_ThrottleSteps)?             //Throttle Steps
+          (((Math.abs(x) < h1)?
+            ( k0 ):    //First Step
+            ((Math.abs(x) < h2)?
+              ( k1 ):  //Second Step
+              ( k2 )   //Third Step
+            )
+          ) * Math.signum(x)):
+          ((( 1 - k0)*( Math.abs(x) - h0)/( 1 - h0) + k0)*( Math.signum(x) )) //Throttle Curve
+        )
       ;
-      OtkMotor.setPower(OtkMP);
+      OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
       
     //Outtake Servo
       OtkSs = gamepad2.rightStickButtonWasPressed() == (!OtkSs);
@@ -239,36 +246,17 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private void Fn_Telemetry() {
     //Telemetry Data
-    
-    //Gamepad 1
-      /*
-      telemetry.addData("LStickX", gamepad1.left_stick_x);
-      telemetry.addData("LStickY", gamepad1.left_stick_y);
-      telemetry.addData("RStickX", gamepad1.right_stick_x);
-      telemetry.addData("RStickY", gamepad1.right_stick_y);
-      telemetry.addData("▲", gamepad1.dpad_up ? 1 : 0);
-      telemetry.addData("▼", gamepad1.dpad_down ? 1 : 0);
-      telemetry.addData("◄", gamepad1.dpad_left ? 1 : 0);
-      */
       
     //Movement
       telemetry.addLine("Movement ─");
       telemetry.addData("Head Power",powHead);
       telemetry.addData("Side Power",powSide);
       telemetry.addData("Turn Power",powTurn);
-      /*
-      telemetry.addData("MPN", MPN);
-      telemetry.addData("FLMP", FLMP);
-      telemetry.addData("FRMP", FRMP);
-      telemetry.addData("BLMP", BLMP);
-      telemetry.addData("BRMP", BRMP);
-      */
       
     //IO-take
       telemetry.addLine("IOtk ─");
-      telemetry.addData("Itk Motor Power", ItkMP);
-      telemetry.addData("Otk Motor Power", OtkMP);
-      telemetry.addData("Otk Servo State", (OtkServo.getPosition()==1)?("▲"):("▼"));
+      telemetry.addData("Otk Power", OtkMP);
+      telemetry.addData("Otk State", (OtkServo.getPosition()==1)?("▲"):("▼"));
       
     //Misc
       telemetry.addLine("Miscellaneous ─");
