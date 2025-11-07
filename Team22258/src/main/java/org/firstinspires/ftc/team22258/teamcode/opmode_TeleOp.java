@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.14]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.15]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -49,8 +49,8 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor OtkMotor;
   private Servo OtkServo;
   double OtkMP;
-  byte b_ThrottleType = 2;
-  byte b_ThrottleMode = 0;
+  byte b_ThrottleType = 3;
+  byte b_ThrottleMode = 3;
   boolean OtkSs = true;
   
   private Limelight3A limelight;
@@ -223,42 +223,69 @@ public class opmode_TeleOp extends LinearOpMode {
       
     //Outtake Motor
      /*Vars*/ double h0 = 0.15, k0 = 0.76, h1 = 0.49, k1 = 0.87, h2 = 0.83, k2 = 0.90, x = -gamepad2.right_stick_y;
-      b_ThrottleType = (byte) ((gamepad2.xWasPressed())? //Toggle Throttle Type
-        ((b_ThrottleType == 2)?
+      b_ThrottleType = (byte) ((gamepad2.xWasPressed() && gamepad2.left_bumper)? //Toggle Throttle Type
+        ((b_ThrottleType == 3)?
           (0):
           (b_ThrottleType + 1)
         ):
         (b_ThrottleType)
       );
-      b_ThrottleMode = (byte) ((gamepad2.yWasPressed())? //Toggle Throttle Mode
-        ((b_ThrottleMode == 2)?
-          (0):
-          (b_ThrottleMode + 1)
-        ):
-        (b_ThrottleMode)
-      );
-      OtkMP = (Math.abs(x) < h0)? //OtkMP Calc
-        ( k0 * x / h0):
-        ((b_ThrottleType == 0)?
-          ((( 1 - k0)*( Math.abs(x) - h0)/( 1 - h0) + k0)*( Math.signum(x) )): //Throttle "Curve"
-          ((b_ThrottleType == 1)?
-            ( Math.signum(x) * ((Math.abs(x) < h1)?  //Throttle "Steps"
-              ( k0 ):               //First Step
-              ((Math.abs(x) < h2)?
-                ( k1 ):             //Second Step
-                ( k2 )              //Third Step
+      b_ThrottleMode = (byte) ((b_ThrottleType == 1)? //Toggle Throttle Mode
+        ( Math.signum(x) * ((Math.abs(x) < h1)?  //Throttle "Steps"
+          ( 0 ):               //First Step
+          ((Math.abs(x) < h2)?
+            ( 1 ):             //Second Step
+            ( 2 )              //Third Step
+          )
+        )):
+        ((b_ThrottleType == 3)?
+          ((gamepad2.yWasPressed())?
+            ( 2 ):
+            ((gamepad2.bWasPressed())?
+              ( 1 ):
+              ((gamepad2.aWasPressed())?
+                ( 0 ):
+                ((gamepad2.xWasPressed())?
+                  ( 3 ):
+                  (b_ThrottleMode)
+                )
               )
-            )):
-            ( Math.signum(x) * ((b_ThrottleMode == 0)?  //Throttle "Modes"
-              ( k0 ):               //First Step
+            )
+          ):
+          ((gamepad2.yWasPressed())?
+            ((b_ThrottleMode == 2)?
+              (0):
+              (b_ThrottleMode + 1)
+            ):
+            (b_ThrottleMode)
+          )
+        )
+      );
+      OtkMP = ((b_ThrottleType == 3)? //OtkMP Calc
+        ((b_ThrottleMode == 0)?  //Throttle "Ranges"
+          ( k0 ):               //Short Range
+          ((b_ThrottleMode == 1)?
+            ( k1 ):             //Medium Range
+            ((b_ThrottleMode == 2)?
+              ( k2 ):           //Long Range
+              ( 0 )             //Stopped
+            )
+          )
+        ):
+        ((Math.abs(x) < h0)?
+          ( k0 * x / h0):
+          ((b_ThrottleType == 0)?
+            ((( 1 - k0)*( Math.abs(x) - h0)/( 1 - h0) + k0)*( Math.signum(x) )): //Throttle "Slopes"
+            ( Math.signum(x) * ((b_ThrottleMode == 0)?  //Throttle "Steps" & "Modes"
+              ( k0 ):               //First Step/Mode
               ((b_ThrottleMode == 1)?
-                ( k1 ):             //Second Step
-                ( k2 )              //Third Step
+                ( k1 ):             //Second Step/Mode
+                ( k2 )              //Third Step/Mode
               )
             ))
           )
         )
-      ;
+      );
       OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
       
     //Outtake Servo
@@ -275,11 +302,42 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Head Power",powHead);
       telemetry.addData("Side Power",powSide);
       telemetry.addData("Turn Power",powTurn);
+      telemetry.addLine();
       
     //IO-take
       telemetry.addLine("IOtk ─");
-      telemetry.addData("Otk Power", OtkMP);
-      telemetry.addData("Otk State", (OtkServo.getPosition()==1)?("▲"):("▼"));
+      telemetry.addData("Otk | " + ((OtkServo.getPosition()==1)?("▲ |"):("▼ |")), OtkMP);
+      telemetry.addData("Throttle " + (
+        ((b_ThrottleType==0)?
+          ("Type: \"Slopes\""):
+          ((b_ThrottleType==1)?
+            ("\"Step\""):
+            ((b_ThrottleType==2)?
+              ("\"Mode\""):
+              ("\"Range\"")
+            )
+          )
+        )
+      ), (
+        ((b_ThrottleType==0)?
+          (""):
+          ((b_ThrottleType==3)?
+            ((b_ThrottleMode == 0)?
+              ( "Short" ):
+              ((b_ThrottleMode == 1)?
+                ( "Medium" ):
+                ((b_ThrottleMode == 2)?
+                  ( "Long" ):
+                  ( "None" )
+                )
+              )
+            ):
+            (b_ThrottleMode)
+          )
+        )
+      ));
+      telemetry.addLine("\"No Intake Connected\"");
+      telemetry.addLine();
       
     //Misc
       telemetry.addLine("Miscellaneous ─");
