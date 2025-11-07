@@ -231,10 +231,8 @@ public class opmode_Auto extends LinearOpMode {
       BLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       BRM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }
-
-  /**
-   * Describe this function...
-   */
+  
+/*
   private void F_Clawrm(int Clawn) {
     LClaw.setPosition(0 == Clawn ? 0.75 : 0.25);
     RClaw.setPosition(1 == Clawn ? 0.75 : 0.25);
@@ -246,10 +244,9 @@ public class opmode_Auto extends LinearOpMode {
       telemetry.update();
     
   }
+*/
 
-  /**
-   * Describe this function...
-   */
+/*
   private void F_NewArmon(double FArmInput) {
     Arm.setPower(FArmInput);
     
@@ -258,7 +255,8 @@ public class opmode_Auto extends LinearOpMode {
       telemetry.update();
     
   }
-
+*/
+  
   /**
    * Describe this function...
    */
