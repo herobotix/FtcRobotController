@@ -5,7 +5,9 @@ package org.firstinspires.ftc.team22256.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -17,9 +19,11 @@ public class temp2 extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor backLeft,backRight,frontLeft,frontRight;
-    private DcMotor shooterLeft, shooterRight;
+    private DcMotorEx shooterLeft, shooterRight;
     private DcMotor intake;
     private DcMotor turret;
+
+    private Servo kicker;
 
     @Override
     public void runOpMode() {
@@ -34,13 +38,17 @@ public class temp2 extends LinearOpMode {
 
         intake  = hardwareMap.get(DcMotor.class, "intake");
 
-        shooterLeft  = hardwareMap.get(DcMotor.class, "shooterLeft");
-        shooterRight  = hardwareMap.get(DcMotor.class, "shooterRight");
+        shooterLeft  = hardwareMap.get(DcMotorEx.class, "shooterLeft");
+        shooterRight  = hardwareMap.get(DcMotorEx.class, "shooterRight");
+
+        kicker  = hardwareMap.get(Servo.class, "kicker");
 
 
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        int velocity = 0;
 
 
         telemetry.addData("Status", "Initialized");
@@ -49,32 +57,55 @@ public class temp2 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad1.a){
-                turret.setPower(1);
-            } else if(gamepad1.b){
-                turret.setPower(-1);
+            double x2 = gamepad2.left_stick_x;
+            turret.setPower(x2);
+
+
+            if (gamepad2.right_trigger > 0.2f) {
+                kicker.setPosition(1);
             } else {
-                turret.setPower(0);
+                kicker.setPosition(0);
             }
 
-            if (gamepad1.x){
+            if (gamepad2.left_trigger > 0.2f){
+                shooterLeft.setPower(-1);
+                shooterRight.setPower(-1);
+            } else if(gamepad2.left_bumper){
+                shooterLeft.setPower(1);
+                shooterRight.setPower(1);
+            } else {
+                shooterLeft.setPower(0);
+                shooterRight.setPower(0);
+            }
+
+            if (gamepad2.a){
                 intake.setPower(1);
-            } else if(gamepad1.y){
+            } else if(gamepad2.b){
                 intake.setPower(-1);
             } else {
                 intake.setPower(0);
             }
 
-            if (gamepad1.right_bumper){
-                shooterLeft.setPower(1);
-                shooterRight.setPower(1);
-            } else if(gamepad1.left_bumper){
-                shooterLeft.setPower(-1);
-                shooterRight.setPower(-1);
-            } else {
-                shooterLeft.setPower(0);
-                shooterRight.setPower(0);
+            if(gamepad2.dpad_left){
+                //short
+                velocity = (-1170);
+            } else if (gamepad2.dpad_right & gamepad2.left_bumper){
+                //long
+                velocity = (-1480);
+            }else if(gamepad2.dpad_up & gamepad2.left_bumper){
+                //medium
+                velocity = (-1350);
+            } else if(gamepad2.dpad_down & gamepad2.left_bumper) {
+                //off
+                velocity = 0;
             }
+            if(gamepad2.rightBumperWasPressed()){
+                velocity = -(velocity);
+            }
+            shooterLeft.setVelocity(velocity);
+            shooterRight.setVelocity(velocity);
+
+
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -106,6 +137,7 @@ public class temp2 extends LinearOpMode {
             telemetry.addData("frontRightPower",frontRightPower);
             telemetry.addData("backRightPower",backRightPower);
             telemetry.update();
+
 
         }
     }

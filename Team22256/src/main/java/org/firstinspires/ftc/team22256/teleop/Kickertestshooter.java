@@ -23,7 +23,7 @@ public class Kickertestshooter extends LinearOpMode {
     private DcMotor intake;
     private DcMotor turret;
 
-    private CRServo kicker;
+    private Servo kicker;
 
     @Override
     public void runOpMode() {
@@ -41,50 +41,49 @@ public class Kickertestshooter extends LinearOpMode {
         shooterLeft  = hardwareMap.get(DcMotor.class, "shooterLeft");
         shooterRight  = hardwareMap.get(DcMotor.class, "shooterRight");
 
-        kicker= hardwareMap.get(CRServo.class, "kicker");
+        kicker= hardwareMap.get(Servo.class, "kicker");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        kicker.setPower(0);
+        kicker.setPosition(0);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.left_trigger > 0.2f) {
-                kicker.setPower(1);
+
+            double x2 = gamepad2.left_stick_x;
+            turret.setPower(x2);
+
+
+            if (gamepad2.right_trigger > 0.2f) {
+                kicker.setPosition(1);
             } else {
-                kicker.setPower(0);
+                kicker.setPosition(0);
             }
 
-            if (gamepad1.a){
-                turret.setPower(1);
-            } else if(gamepad1.b){
-                turret.setPower(-1);
+            if (gamepad2.left_trigger > 0.2f){
+                shooterLeft.setPower(-1);
+                shooterRight.setPower(-1);
+            } else if(gamepad2.left_bumper){
+                shooterLeft.setPower(1);
+                shooterRight.setPower(1);
             } else {
-                turret.setPower(0);
+                shooterLeft.setPower(0);
+                shooterRight.setPower(0);
             }
 
-            if (gamepad1.x){
+            if (gamepad2.a){
                 intake.setPower(1);
-            } else if(gamepad1.y){
+            } else if(gamepad2.b){
                 intake.setPower(-1);
             } else {
                 intake.setPower(0);
             }
 
-            if (gamepad1.right_bumper){
-                shooterLeft.setPower(1);
-                shooterRight.setPower(1);
-            } else if(gamepad1.left_bumper){
-                shooterLeft.setPower(-1);
-                shooterRight.setPower(-1);
-            } else {
-                shooterLeft.setPower(0);
-                shooterRight.setPower(0);
-            }
+
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
