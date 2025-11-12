@@ -47,6 +47,7 @@ public class temp2 extends LinearOpMode {
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterRight.setDirection(DcMotorEx.Direction.REVERSE);
 
         int velocity = 0;
 
@@ -86,12 +87,16 @@ public class temp2 extends LinearOpMode {
                 intake.setPower(0);
             }
 
+            //  -1150 Short
+            //  -1330 Medium
+            //  -1593 Long
+
             if(gamepad2.dpad_left){
                 //short
                 velocity = (-1170);
             } else if (gamepad2.dpad_right & gamepad2.left_bumper){
                 //long
-                velocity = (-1480);
+                velocity = (-1593);
             }else if(gamepad2.dpad_up & gamepad2.left_bumper){
                 //medium
                 velocity = (-1350);

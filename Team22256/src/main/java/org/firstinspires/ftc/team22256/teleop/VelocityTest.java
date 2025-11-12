@@ -9,16 +9,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team22256.common.Robot;
-import org.firstinspires.ftc.team22256.common.Intake;
-import org.firstinspires.ftc.team22256.common.Turret;
-import org.firstinspires.ftc.team22256.common.Drivetrain;
-
-
 
 @TeleOp
 
-public class Temp extends LinearOpMode {
+public class VelocityTest extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -46,6 +40,7 @@ public class Temp extends LinearOpMode {
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         int velocity = 0;
         // Wait for the game to start (driver presses START)
@@ -68,6 +63,10 @@ public class Temp extends LinearOpMode {
              velocity -= 100;
          }else if(gamepad1.dpad_up){
              velocity = 0;
+         } else if(gamepad1.leftBumperWasPressed()){
+             velocity -= 1;
+         } else if (gamepad1.rightBumperWasPressed()){
+             velocity += 1;
          }
          shooterLeft.setVelocity(velocity);
          shooterRight.setVelocity(velocity);
@@ -78,6 +77,8 @@ public class Temp extends LinearOpMode {
             //y=(0.000372)x^2+(3.176)x+(1094)
 
          telemetry.addData("Velocity",velocity);
+         telemetry.addData("Right Velocity",shooterRight.getVelocity());
+         telemetry.addData("Left Velocity",shooterLeft.getVelocity());
          telemetry.update();
 
 
