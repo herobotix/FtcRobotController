@@ -49,7 +49,10 @@ public class temp2 extends LinearOpMode {
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterRight.setDirection(DcMotorEx.Direction.REVERSE);
 
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         int velocity = 0;
+        double currentTurretPosition;
 
 
         telemetry.addData("Status", "Initialized");
@@ -58,8 +61,14 @@ public class temp2 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            //GamePad2(Griffin) is for turret intake and shooting
+            //GamePad1(Austin) is for driving
+
+            currentTurretPosition = turret.getCurrentPosition();
+
             double x2 = gamepad2.left_stick_x;
             turret.setPower(x2);
+            //116 for 180 degrees
 
 
             if (gamepad2.right_trigger > 0.2f) {
@@ -93,23 +102,26 @@ public class temp2 extends LinearOpMode {
 
             if(gamepad2.dpad_left){
                 //short
-                velocity = (-1170);
-            } else if (gamepad2.dpad_right & gamepad2.left_bumper){
+                velocity = (-1150);
+            } else if (gamepad2.dpad_right){
                 //long
                 velocity = (-1593);
-            }else if(gamepad2.dpad_up & gamepad2.left_bumper){
+            }else if(gamepad2.dpad_up){
                 //medium
-                velocity = (-1350);
-            } else if(gamepad2.dpad_down & gamepad2.left_bumper) {
+                velocity = (-1330);
+            } else if(gamepad2.dpad_down) {
                 //off
                 velocity = 0;
             }
+
             if(gamepad2.rightBumperWasPressed()){
                 velocity = -(velocity);
             }
-            shooterLeft.setVelocity(velocity);
-            shooterRight.setVelocity(velocity);
 
+            if(gamepad2.left_bumper){
+                shooterLeft.setVelocity(velocity);
+                shooterRight.setVelocity(velocity);
+            }
 
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -141,6 +153,7 @@ public class temp2 extends LinearOpMode {
             telemetry.addData("backLeftPower",backLeftPower);
             telemetry.addData("frontRightPower",frontRightPower);
             telemetry.addData("backRightPower",backRightPower);
+            telemetry.addData("turret position",currentTurretPosition);
             telemetry.update();
 
 

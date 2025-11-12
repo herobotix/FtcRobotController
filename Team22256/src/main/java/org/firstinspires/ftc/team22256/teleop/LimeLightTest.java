@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.team22256.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -8,8 +9,13 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.team22256.common.PDController;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import java.util.List;
 
@@ -36,24 +42,28 @@ import java.util.List;
  *   below the name of the Limelight on the top level configuration screen.
  */
 @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")
-@Disabled
 public class LimeLightTest extends LinearOpMode {
 
     private Limelight3A limelight;
+    private DcMotor turret;
 
+    private PDController Controller0 = new PDController(0.09,0);
     @Override
     public void runOpMode() throws InterruptedException
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        turret = hardwareMap.get(DcMotor.class, "turret");
 
         telemetry.setMsTransmissionInterval(11);
 
         limelight.pipelineSwitch(0);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
 
         /*
          * Starts polling for data.  If you neglect to call start(), getLatestResult() will return null.
          */
         limelight.start();
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData(">", "Robot Ready.  Press Play.");
         telemetry.update();
@@ -76,44 +86,19 @@ public class LimeLightTest extends LinearOpMode {
                 double targetingLatency = result.getTargetingLatency();
                 double parseLatency = result.getParseLatency();
                 telemetry.addData("LL Latency", captureLatency + targetingLatency);
-                telemetry.addData("Parse Latency", parseLatency);
-                telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
-
                 telemetry.addData("tx", result.getTx());
-                telemetry.addData("txnc", result.getTxNC());
                 telemetry.addData("ty", result.getTy());
-                telemetry.addData("tync", result.getTyNC());
-
                 telemetry.addData("Botpose", botpose.toString());
-
-
-
-                // Access classifier results
-                List<LLResultTypes.ClassifierResult> classifierResults = result.getClassifierResults();
-                for (LLResultTypes.ClassifierResult cr : classifierResults) {
-                    telemetry.addData("Classifier", "Class: %s, Confidence: %.2f", cr.getClassName(), cr.getConfidence());
-                }
-
-                // Access detector results
-                List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
-                for (LLResultTypes.DetectorResult dr : detectorResults) {
-                    telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.getClassName(), dr.getTargetArea());
-                }
-
-                // Access fiducial results
-                List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-                for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
-                }
-
-                // Access color results
-                List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-                for (LLResultTypes.ColorResult cr : colorResults) {
-                    telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
-                }
             } else {
                 telemetry.addData("Limelight", "No data available");
             }
+
+            double error = result.getTx();
+
+            double power = Controller0.UpdatePD(error);
+            turret.setPower(power);
+
+
 
             telemetry.update();
         }
