@@ -3,12 +3,12 @@ package org.firstinspires.ftc.team22258.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@Autonomous(name = "Opmode (Auto) [1.1.1]")
+@Autonomous(name = "Opmode (Auto) [1.1.2]")
 public class opmode_Auto extends LinearOpMode {
 
   private DcMotor Arm;
@@ -16,8 +16,8 @@ public class opmode_Auto extends LinearOpMode {
   private DcMotor FRM;
   private DcMotor BLM;
   private DcMotor BRM;
-  private Servo LClaw;
-  private Servo RClaw;
+  //private Servo LClaw;
+  //private Servo RClaw;
 
   public final double Pi = 3.1415926535;
   public final double sqrt8 = 2.8284271247;
@@ -42,12 +42,12 @@ public class opmode_Auto extends LinearOpMode {
   double BLMD;
   double BRMD;
   
-  double Lynn;
+  /*double Lynn;
   double Lake;
   double Rick;
   double FArmInput;
   int Clawn = 0;
-  double Naptime;
+  double Naptime;*/
   
   double MPN;
 
@@ -60,8 +60,8 @@ public class opmode_Auto extends LinearOpMode {
     FRM = hardwareMap.get(DcMotor.class, "FRM");
     BLM = hardwareMap.get(DcMotor.class, "BLM");
     BRM = hardwareMap.get(DcMotor.class, "BRM");
-    LClaw = hardwareMap.get(Servo.class, "LClaw");
-    RClaw = hardwareMap.get(Servo.class, "RClaw");
+    //LClaw = hardwareMap.get(Servo.class, "LClaw");
+    //RClaw = hardwareMap.get(Servo.class, "RClaw");
 
       F_IMU();
       F_Startup();
@@ -89,7 +89,7 @@ public class opmode_Auto extends LinearOpMode {
    * Describe this function...
    */
   private void F_Startup() {
-    //Stop, Resest, & Run using Motor Encoders
+    //Stop, Reset, & Run using Motor Encoders
       FLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       FLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       FRM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -260,9 +260,9 @@ public class opmode_Auto extends LinearOpMode {
   /**
    * Describe this function...
    */
-  private void F_Pause(double Naptime) {
-      sleep((long)(Naptime*1000));
-  }
+//  private void F_Pause(double Naptime) {
+//      sleep((long)(Naptime*1000));
+//  }
   
    /* //selection
     F_Move(
