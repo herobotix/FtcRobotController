@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.16]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.17]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -135,7 +135,7 @@ public class opmode_TeleOp extends LinearOpMode {
           int index = 0;
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int aprilTagID = fiducial.getFiducialId();
-            double aprilTagXRot = fiducial.getTargetXDegrees()/(3.6*5);
+            double aprilTagXRot = fiducial.getTargetXDegrees()/(3.6* 4.7 );
             telemetry.addLine("Limelight ─");
             telemetry.addData("Detection #" + index + " ID:", aprilTagID);
             telemetry.addData("TargetXRot", aprilTagXRot);
@@ -223,7 +223,7 @@ public class opmode_TeleOp extends LinearOpMode {
       
     //Outtake Motor
      /*Vars*/ //double h0 = 0.15, h1 = 0.49, h2 = 0.83, x = -gamepad2.right_stick_y;
-              double k0 = 0.76, k1 = 0.87, k2 = 0.90;
+              double k0 = 0.76, k1 = 0.87, k2 = 0.93;
       /*b_ThrottleType = (byte) ((gamepad2.xWasPressed() && gamepad2.left_bumper)? //Toggle Throttle Type
         ((b_ThrottleType == 3)?
           (0):
