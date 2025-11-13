@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.15]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.16]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -49,7 +49,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor OtkMotor;
   private Servo OtkServo;
   double OtkMP;
-  byte b_ThrottleType = 3;
+  //byte b_ThrottleType = 3;
   byte b_ThrottleMode = 3;
   boolean OtkSs = true;
   
@@ -222,15 +222,16 @@ public class opmode_TeleOp extends LinearOpMode {
       ItkMotor.setPower(ItkMP);
       
     //Outtake Motor
-     /*Vars*/ double h0 = 0.15, k0 = 0.76, h1 = 0.49, k1 = 0.87, h2 = 0.83, k2 = 0.90, x = -gamepad2.right_stick_y;
-      b_ThrottleType = (byte) ((gamepad2.xWasPressed() && gamepad2.left_bumper)? //Toggle Throttle Type
+     /*Vars*/ //double h0 = 0.15, h1 = 0.49, h2 = 0.83, x = -gamepad2.right_stick_y;
+              double k0 = 0.76, k1 = 0.87, k2 = 0.90;
+      /*b_ThrottleType = (byte) ((gamepad2.xWasPressed() && gamepad2.left_bumper)? //Toggle Throttle Type
         ((b_ThrottleType == 3)?
           (0):
           (b_ThrottleType + 1)
         ):
         (b_ThrottleType)
-      );
-      b_ThrottleMode = (byte) ((b_ThrottleType == 1)? //Toggle Throttle Mode
+      );*/
+      b_ThrottleMode = (byte) (/*(b_ThrottleType == 1)? //Toggle Throttle Mode
         ( Math.signum(x) * ((Math.abs(x) < h1)?  //Throttle "Steps"
           ( 0 ):               //First Step
           ((Math.abs(x) < h2)?
@@ -238,7 +239,7 @@ public class opmode_TeleOp extends LinearOpMode {
             ( 2 )              //Third Step
           )
         )):
-        ((b_ThrottleType == 3)?
+        ((b_ThrottleType == 3)?*/
           ((gamepad2.yWasPressed())?
             ( 2 ):
             ((gamepad2.bWasPressed())?
@@ -251,7 +252,7 @@ public class opmode_TeleOp extends LinearOpMode {
                 )
               )
             )
-          ):
+          )/*:
           ((gamepad2.yWasPressed())?
             ((b_ThrottleMode == 2)?
               (0):
@@ -259,9 +260,9 @@ public class opmode_TeleOp extends LinearOpMode {
             ):
             (b_ThrottleMode)
           )
-        )
+        )*/
       );
-      OtkMP = ((b_ThrottleType == 3)? //OtkMP Calc
+      OtkMP = (/*(b_ThrottleType == 3)?*/ //OtkMP Calc
         ((b_ThrottleMode == 0)?  //Throttle "Ranges"
           ( k0 ):               //Short Range
           ((b_ThrottleMode == 1)?
@@ -271,7 +272,7 @@ public class opmode_TeleOp extends LinearOpMode {
               ( 0 )             //Stopped
             )
           )
-        ):
+        )/*:
         ((Math.abs(x) < h0)?
           ( k0 * x / h0):
           ((b_ThrottleType == 0)?
@@ -284,7 +285,7 @@ public class opmode_TeleOp extends LinearOpMode {
               )
             ))
           )
-        )
+        )*/
       );
       OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
       
@@ -307,22 +308,22 @@ public class opmode_TeleOp extends LinearOpMode {
     //IO-take
       telemetry.addLine("IOtk ─");
       telemetry.addData("Otk | " + ((OtkServo.getPosition()==1)?("▲ |"):("▼ |")), OtkMP);
-      telemetry.addData("Throttle " + (
+      telemetry.addData("Throttle " + (/*
         ((b_ThrottleType==0)?
           ("Type: \"Slopes\""):
           ((b_ThrottleType==1)?
             ("\"Step\""):
             ((b_ThrottleType==2)?
               ("\"Mode\""):
-              ("\"Range\"")
+              (*/"\"Range\""/*)
             )
           )
         )
-      ), (
-        ((b_ThrottleType==0)?
+      */), (
+        (/*(b_ThrottleType==0)?
           (""):
           ((b_ThrottleType==3)?
-            ((b_ThrottleMode == 0)?
+            (*/(b_ThrottleMode == 0)?
               ( "Short" ):
               ((b_ThrottleMode == 1)?
                 ( "Medium" ):
@@ -331,11 +332,11 @@ public class opmode_TeleOp extends LinearOpMode {
                   ( "None" )
                 )
               )
-            ):
+            )/*:
             (b_ThrottleMode)
           )
         )
-      ));
+      */));
       telemetry.addLine("\"No Intake Connected\"");
       telemetry.addLine();
       
