@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@Autonomous(name = "Opmode (Auto) [1.1.4]")
+@Autonomous(name = "Opmode (Auto) [1.1.5]")
 public class opmode_Auto extends LinearOpMode {
 
   //private DcMotor Arm;
@@ -51,7 +51,7 @@ public class opmode_Auto extends LinearOpMode {
   
   double MPN;
 
-  private IMU imu;
+  private IMU rIMU;
   
   @Override
   public void runOpMode() {
@@ -76,13 +76,13 @@ public class opmode_Auto extends LinearOpMode {
    */
   private void F_IMU() {
     // Retrieve the IMU from the hardware map
-    imu = hardwareMap.get(IMU.class, "imu");
+    rIMU = hardwareMap.get(IMU.class, "rIMU");
     // Adjust the orientation parameters to match your robot
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
             RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
     // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-    imu.initialize(parameters);
+    rIMU.initialize(parameters);
   }
 
   /**
