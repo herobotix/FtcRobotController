@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.17]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.18]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -290,7 +290,7 @@ public class opmode_TeleOp extends LinearOpMode {
       OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
       
     //Outtake Servo
-      OtkSs = gamepad2.rightStickButtonWasPressed() == (!OtkSs);
+      OtkSs = gamepad2.rightBumperWasPressed() == (!OtkSs);
       OtkServo.setPosition(OtkSs?(1):(0));
       
   }
