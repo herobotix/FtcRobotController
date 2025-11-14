@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.19]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.20]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -136,7 +136,7 @@ public class opmode_TeleOp extends LinearOpMode {
           int index = 0;
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int aprilTagID = fiducial.getFiducialId();
-            double aprilTagXRot = fiducial.getTargetXDegrees()/(3.6* 4.7 );
+            double aprilTagXRot = fiducial.getTargetXDegrees()/(3.6* 5 );
             telemetry.addData("Detection #" + index + " ID:", aprilTagID);
             telemetry.addData("TargetXRot", aprilTagXRot);
             if (TargetLockGOAL&&( aprilTagID == ((TargetLockGOAL_Target)?(20):(24)) )) {
