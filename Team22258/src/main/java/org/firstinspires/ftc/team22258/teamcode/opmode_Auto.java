@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@Autonomous(name = "Opmode (Auto) [1.1.3]")
+@Autonomous(name = "Opmode (Auto) [1.1.4]")
 public class opmode_Auto extends LinearOpMode {
 
   //private DcMotor Arm;
@@ -56,10 +56,10 @@ public class opmode_Auto extends LinearOpMode {
   @Override
   public void runOpMode() {
     //Arm = hardwareMap.get(DcMotor.class, "Arm");
-    FLM = hardwareMap.get(DcMotor.class, "FLM");
-    FRM = hardwareMap.get(DcMotor.class, "FRM");
-    BLM = hardwareMap.get(DcMotor.class, "BLM");
-    BRM = hardwareMap.get(DcMotor.class, "BRM");
+    FLM = hardwareMap.get(DcMotor.class, "FLMotor");
+    FRM = hardwareMap.get(DcMotor.class, "FRMotor");
+    BLM = hardwareMap.get(DcMotor.class, "BLMotor");
+    BRM = hardwareMap.get(DcMotor.class, "BRMotor");
     //LClaw = hardwareMap.get(Servo.class, "LClaw");
     //RClaw = hardwareMap.get(Servo.class, "RClaw");
 
