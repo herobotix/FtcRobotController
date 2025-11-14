@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@Autonomous(name = "Opmode (Auto) [1.1.5]")
+@Autonomous(name = "Opmode (Auto) [1.1.6]")
 public class opmode_Auto extends LinearOpMode {
 
   //private DcMotor Arm;
@@ -89,6 +89,12 @@ public class opmode_Auto extends LinearOpMode {
    * Describe this function...
    */
   private void F_Startup() {
+    //Set Motor Directions
+      FLM.setDirection(DcMotor.Direction.FORWARD);
+      FRM.setDirection(DcMotor.Direction.REVERSE);
+      BLM.setDirection(DcMotor.Direction.REVERSE);
+      BRM.setDirection(DcMotor.Direction.REVERSE);
+    
     //Stop, Reset, & Run using Motor Encoders
       FLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       FLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
