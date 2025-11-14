@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.18]")
+@TeleOp(name = "Opmode (TeleOp) [1.1.19]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -129,6 +129,7 @@ public class opmode_TeleOp extends LinearOpMode {
       YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
       limelight.updateRobotOrientation(orientation.getYaw());
       LLResult results = limelight.getLatestResult();
+      telemetry.addLine("Limelight ─");
       if (results != null && results.isValid()) {
         List<LLResultTypes.FiducialResult> fiducials = results.getFiducialResults();
         if (!fiducials.isEmpty()) {
@@ -136,7 +137,6 @@ public class opmode_TeleOp extends LinearOpMode {
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int aprilTagID = fiducial.getFiducialId();
             double aprilTagXRot = fiducial.getTargetXDegrees()/(3.6* 4.7 );
-            telemetry.addLine("Limelight ─");
             telemetry.addData("Detection #" + index + " ID:", aprilTagID);
             telemetry.addData("TargetXRot", aprilTagXRot);
             if (TargetLockGOAL&&( aprilTagID == ((TargetLockGOAL_Target)?(20):(24)) )) {
@@ -149,9 +149,11 @@ public class opmode_TeleOp extends LinearOpMode {
           }
         } else {
           telemetry.addLine("Limelight Fiducials Empty");
+          telemetry.addLine();
         }
       } else {
         telemetry.addLine("No AprilTags Detected");
+        telemetry.addLine();
       }
       
   }
@@ -342,7 +344,7 @@ public class opmode_TeleOp extends LinearOpMode {
       
     //Misc
       telemetry.addLine("Miscellaneous ─");
-      telemetry.addData("Centricity", (fieldCentric?(TargetLockGOAL?("Target"):("Robot")):(TargetLockGOAL?("Focus"):("Field")))+"-Centric");
+      telemetry.addData("Centricity", (fieldCentric?(TargetLockGOAL?("Focus"):("Field")):(TargetLockGOAL?("Target"):("Robot")))+"-Centric");
       telemetry.addData("Selected Target", ((TargetLockGOAL_Target)?("20 ─ Blue"):("24 ─ RED")));
       
     //End Code
