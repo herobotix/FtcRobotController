@@ -23,7 +23,7 @@ public class Kickertestshooter extends LinearOpMode {
     private DcMotor intake;
     private DcMotor turret;
 
-    private Servo kicker;
+    private CRServo kicker;
 
     @Override
     public void runOpMode() {
@@ -41,12 +41,11 @@ public class Kickertestshooter extends LinearOpMode {
         shooterLeft  = hardwareMap.get(DcMotor.class, "shooterLeft");
         shooterRight  = hardwareMap.get(DcMotor.class, "shooterRight");
 
-        kicker= hardwareMap.get(Servo.class, "kicker");
+        kicker= hardwareMap.get(CRServo.class, "kicker");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        kicker.setPosition(0);
+        ;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -59,17 +58,17 @@ public class Kickertestshooter extends LinearOpMode {
 
 
             if (gamepad2.right_trigger > 0.2f) {
-                kicker.setPosition(1);
+                kicker.setPower(1);
             } else {
-                kicker.setPosition(0);
+                kicker.setPower(0);
             }
 
             if (gamepad2.left_trigger > 0.2f){
-                shooterLeft.setPower(-1);
-                shooterRight.setPower(-1);
+                shooterLeft.setPower(-0.75 );
+                shooterRight.setPower(0.75);
             } else if(gamepad2.left_bumper){
-                shooterLeft.setPower(1);
-                shooterRight.setPower(1);
+                shooterLeft.setPower(0.4);
+                shooterRight.setPower(-0.4);
             } else {
                 shooterLeft.setPower(0);
                 shooterRight.setPower(0);

@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.team22256.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 
 import java.util.List;
+@Configurable
 @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")
 public class LimeLightTest extends LinearOpMode {
 
@@ -28,6 +30,8 @@ public class LimeLightTest extends LinearOpMode {
     private double currentTurretPos = 0;
     private final double TICKS_PER_DEGREE = (double) 116 /180;
     private double turretOutput = 0;
+    private static double p = 0;
+    private static double d = 0;
 
 
     @Override
@@ -35,7 +39,7 @@ public class LimeLightTest extends LinearOpMode {
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         turret = hardwareMap.get(DcMotor.class, "turret");
-        Controller0 = new PDController(0,0);
+        Controller0 = new PDController(p,d);
 
         telemetry.setMsTransmissionInterval(11);
 
@@ -82,6 +86,8 @@ public class LimeLightTest extends LinearOpMode {
             turretOutput = Controller0.calculate(currentTurretPos,target);//Use PID to calculate output
             turret.setPower(turretOutput);
 
+            telemetry.addData("target",target);
+            telemetry.addData("output",turretOutput);
             telemetry.update();
         }
         limelight.stop();

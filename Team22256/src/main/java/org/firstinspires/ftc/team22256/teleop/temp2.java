@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -23,7 +24,8 @@ public class temp2 extends LinearOpMode {
     private DcMotor intake;
     private DcMotor turret;
 
-    private Servo kicker;
+    private CRServo kicker;
+    private boolean toggle = false;
 
     @Override
     public void runOpMode() {
@@ -41,7 +43,7 @@ public class temp2 extends LinearOpMode {
         shooterLeft  = hardwareMap.get(DcMotorEx.class, "shooterLeft");
         shooterRight  = hardwareMap.get(DcMotorEx.class, "shooterRight");
 
-        kicker  = hardwareMap.get(Servo.class, "kicker");
+        kicker  = hardwareMap.get(CRServo.class, "kicker");
 
 
 
@@ -72,9 +74,9 @@ public class temp2 extends LinearOpMode {
 
 
             if (gamepad2.right_trigger > 0.2f) {
-                kicker.setPosition(1);
+                kicker.setPower(-1);
             } else {
-                kicker.setPosition(0);
+                kicker.setPower(0);
             }
 
             if (gamepad2.left_trigger > 0.2f){
@@ -88,12 +90,17 @@ public class temp2 extends LinearOpMode {
                 shooterRight.setPower(0);
             }
 
-            if (gamepad2.a){
-                intake.setPower(1);
-            } else if(gamepad2.b){
-                intake.setPower(-1);
+            if(gamepad2.aWasPressed()){
+                toggle = !toggle;
+            }
+            if (toggle) {
+                if (gamepad2.b) {
+                    intake.setPower(-1);   // reverse
+                } else {
+                    intake.setPower(1);    // forward
+                }
             } else {
-                intake.setPower(0);
+                intake.setPower(0);        // off
             }
 
             //  -1150 Short
