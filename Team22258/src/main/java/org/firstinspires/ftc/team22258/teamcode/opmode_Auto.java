@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 
-@Autonomous(name = "Opmode (Auto) [1.1.6]")
+@Autonomous(name = "Opmode (Auto) [1.1.7]")
 public class opmode_Auto extends LinearOpMode {
 
   //private DcMotor Arm;
@@ -285,7 +285,7 @@ public class opmode_Auto extends LinearOpMode {
     */
   private void F_Run() {
     F_Move(
-      12.0, 0.5,
+      -12.0, 0.5,
       0.0, 0.0,
       0.0, 0.0
     );
