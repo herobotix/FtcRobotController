@@ -67,7 +67,9 @@ public class Kickertestshooter extends LinearOpMode {
             turret.setPower(x2);
 
 
-           /* if (gamepad2.right_trigger > 0.2f) {
+           /*
+            NOT IN USE
+            if (gamepad2.right_trigger > 0.2f) {
                 kicker.setPower(1);
             } else {
                 kicker.setPower(0);
@@ -94,6 +96,32 @@ public class Kickertestshooter extends LinearOpMode {
                     case IDLE:
                         shooterLeft.setVelocity(-1355);
                         shooterRight.setVelocity(1355);
+                        launcherstate = LauncherState.SHOOTER_SPEED;
+                        break;
+                    case SHOOTER_SPEED:
+                        if (shooterLeft.getVelocity() <= -1340 &&
+                                shooterRight.getVelocity() > 1360) {
+                            launcherstate = LauncherState.INTAKE_WHEEL_AND_KICKER;
+                        }
+                        break;
+                    case INTAKE_WHEEL_AND_KICKER:
+                        kicker.setPower(1);
+                        intake.setPower(1);
+                        break;
+                }
+            } else {
+                launcherstate = LauncherState.IDLE;
+                shooterLeft.setVelocity(0);
+                shooterRight.setVelocity(0);
+                kicker.setPower(0);
+                intake.setPower(0);
+            }
+
+            if (gamepad2.right_bumper) {
+                switch (launcherstate) {
+                    case IDLE:
+                        shooterLeft.setVelocity(-1600);
+                        shooterRight.setVelocity(1600);
                         launcherstate = LauncherState.SHOOTER_SPEED;
                         break;
                     case SHOOTER_SPEED:
