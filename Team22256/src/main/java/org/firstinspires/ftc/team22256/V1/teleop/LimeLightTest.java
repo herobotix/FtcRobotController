@@ -1,37 +1,32 @@
 
 package org.firstinspires.ftc.team22256.teleop;
 
-import com.acmerobotics.dashboard.FtcDashboard;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import com.arcrobotics.ftclib.controller.PDController;
-
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
-
-
-import java.util.List;
 @Configurable
 @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")
 public class LimeLightTest extends LinearOpMode {
 
     private Limelight3A limelight;
     private DcMotor turret;
-    private PDController Controller0;
+    private PIDFController Controller0;
     private double  error= 0;
     private double currentTurretPos = 0;
     private final double TICKS_PER_DEGREE = (double) 116 /180;
     private double turretOutput = 0;
-    private static double p = 0;
-    private static double d = 0;
+    private static double p = 0.035;
+    private static double i  =0;
+    private static double d = 0.001;
+    private static double f = 0;
 
 
     @Override
@@ -39,12 +34,13 @@ public class LimeLightTest extends LinearOpMode {
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         turret = hardwareMap.get(DcMotor.class, "turret");
-        Controller0 = new PDController(p,d);
+        Controller0 = new PIDFController(p,i,d,f);
 
         telemetry.setMsTransmissionInterval(11);
 
         limelight.pipelineSwitch(0);
         limelight.start();
+
 
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -76,18 +72,24 @@ public class LimeLightTest extends LinearOpMode {
                 telemetry.addData("Botpose", botpose.toString());
             } else {
                 telemetry.addData("Limelight", "No data available");
+
             }
 
-
-            error = result.getTx() * TICKS_PER_DEGREE;//Distance from limelight to AprilTag in degrees
-            double target = currentTurretPos + error;
             currentTurretPos = turret.getCurrentPosition();
+            error = result.getTx() * TICKS_PER_DEGREE;//Distance from limelight to AprilTag in degrees
+            double target =  (currentTurretPos + error);
+
+
 
             turretOutput = Controller0.calculate(currentTurretPos,target);//Use PID to calculate output
+          // turretOutput = Controller0.calculate(result.getTx(),0);
             turret.setPower(turretOutput);
 
             telemetry.addData("target",target);
             telemetry.addData("output",turretOutput);
+            telemetry.addData("error",error);
+            telemetry.addData("current position",currentTurretPos);
+            telemetry.addData("turret power",turret.getPower());
             telemetry.update();
         }
         limelight.stop();
