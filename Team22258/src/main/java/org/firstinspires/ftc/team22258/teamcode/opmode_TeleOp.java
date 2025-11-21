@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.0]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.1]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -49,7 +49,6 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor OtkMotor;
   private Servo OtkServo;
   double OtkMP;
-  //byte b_ThrottleType = 3;
   byte b_ThrottleMode = 3;
   boolean OtkSs = true;
   
@@ -227,19 +226,19 @@ public class opmode_TeleOp extends LinearOpMode {
      /*Vars*/ double k0 = 0.67, k1 = 0.76, k2 = 0.93;
       b_ThrottleMode = //Toggle Throttle Mode
         (byte) (
-          ((gamepad2.a)? ( 0 ):
-          ((gamepad2.b)? ( 1 ):
-          ((gamepad2.x)? ( 2 ):
-          ((gamepad2.y)? ( 3 ):
+          ((gamepad2.x)? ( 0 ):
+          ((gamepad2.y)? ( 1 ):
+          ((gamepad2.b)? ( 2 ):
+          ((gamepad2.a)? ( 3 ):
           (b_ThrottleMode)
         )))))
       ;
       OtkMP = //OtkMP Calc
         (
-          ((b_ThrottleMode == 0)? ( k0 ): //Short Range
-          ((b_ThrottleMode == 1)? ( k1 ): //Medium Range
-          ((b_ThrottleMode == 2)? ( 0 ):  //Long Range
-          ( k2 )                          //Stopped
+          ((b_ThrottleMode == 0)? ( 0 ):  //Stopped
+          ((b_ThrottleMode == 1)? ( k0 ): //Long Range
+          ((b_ThrottleMode == 3)? ( k1 ): //Medium Range
+          ( k2 )                          //Short Range
         ))))
       ;
       OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
