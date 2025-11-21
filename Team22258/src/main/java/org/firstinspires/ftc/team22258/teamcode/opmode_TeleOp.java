@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.1.21]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.0]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -136,11 +136,11 @@ public class opmode_TeleOp extends LinearOpMode {
           int index = 0;
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int aprilTagID = fiducial.getFiducialId();
-            double aprilTagXRot = fiducial.getTargetXDegrees()/(3.6* 5 );
+            double aprilTagXRot = fiducial.getTargetXDegrees()/(360);
             telemetry.addData("Detection #" + index + " ID:", aprilTagID);
             telemetry.addData("TargetXRot", aprilTagXRot);
             if (TargetLockGOAL&&( aprilTagID == ((TargetLockGOAL_Target)?(20):(24)) )) {
-              TargetLockXRot = aprilTagXRot;
+              TargetLockXRot = aprilTagXRot * (20);
               telemetry.addData("TargetLockXRot", TargetLockXRot);
             } else {
               TargetLockXRot = 0;
@@ -224,71 +224,24 @@ public class opmode_TeleOp extends LinearOpMode {
       ItkMotor.setPower(ItkMP);
       
     //Outtake Motor
-     /*Vars*/ //double h0 = 0.15, h1 = 0.49, h2 = 0.83, x = -gamepad2.right_stick_y;
-              double k0 = 0.67, k1 = 0.76, k2 = 0.93;
-      /*b_ThrottleType = (byte) ((gamepad2.xWasPressed() && gamepad2.left_bumper)? //Toggle Throttle Type
-        ((b_ThrottleType == 3)?
-          (0):
-          (b_ThrottleType + 1)
-        ):
-        (b_ThrottleType)
-      );*/
-      b_ThrottleMode = (byte) (/*(b_ThrottleType == 1)? //Toggle Throttle Mode
-        ( Math.signum(x) * ((Math.abs(x) < h1)?  //Throttle "Steps"
-          ( 0 ):               //First Step
-          ((Math.abs(x) < h2)?
-            ( 1 ):             //Second Step
-            ( 2 )              //Third Step
-          )
-        )):
-        ((b_ThrottleType == 3)?*/
-          ((gamepad2.yWasPressed())?
-            ( 2 ):
-            ((gamepad2.bWasPressed())?
-              ( 1 ):
-              ((gamepad2.aWasPressed())?
-                ( 0 ):
-                ((gamepad2.xWasPressed())?
-                  ( 3 ):
-                  (b_ThrottleMode)
-                )
-              )
-            )
-          )/*:
-          ((gamepad2.yWasPressed())?
-            ((b_ThrottleMode == 2)?
-              (0):
-              (b_ThrottleMode + 1)
-            ):
-            (b_ThrottleMode)
-          )
-        )*/
-      );
-      OtkMP = (/*(b_ThrottleType == 3)?*/ //OtkMP Calc
-        ((b_ThrottleMode == 0)?  //Throttle "Ranges"
-          ( k0 ):               //Short Range
-          ((b_ThrottleMode == 1)?
-            ( k1 ):             //Medium Range
-            ((b_ThrottleMode == 2)?
-              ( k2 ):           //Long Range
-              ( 0 )             //Stopped
-            )
-          )
-        )/*:
-        ((Math.abs(x) < h0)?
-          ( k0 * x / h0):
-          ((b_ThrottleType == 0)?
-            ((( 1 - k0)*( Math.abs(x) - h0)/( 1 - h0) + k0)*( Math.signum(x) )): //Throttle "Slopes"
-            ( Math.signum(x) * ((b_ThrottleMode == 0)?  //Throttle "Steps" & "Modes"
-              ( k0 ):               //First Step/Mode
-              ((b_ThrottleMode == 1)?
-                ( k1 ):             //Second Step/Mode
-                ( k2 )              //Third Step/Mode
-              )
-            ))
-          )
-        )*/
-      );
+     /*Vars*/ double k0 = 0.67, k1 = 0.76, k2 = 0.93;
+      b_ThrottleMode = //Toggle Throttle Mode
+        (byte) (
+          ((gamepad2.a)? ( 0 ):
+          ((gamepad2.b)? ( 1 ):
+          ((gamepad2.x)? ( 2 ):
+          ((gamepad2.y)? ( 3 ):
+          (b_ThrottleMode)
+        )))))
+      ;
+      OtkMP = //OtkMP Calc
+        (
+          ((b_ThrottleMode == 0)? ( k0 ): //Short Range
+          ((b_ThrottleMode == 1)? ( k1 ): //Medium Range
+          ((b_ThrottleMode == 2)? ( 0 ):  //Long Range
+          ( k2 )                          //Stopped
+        ))))
+      ;
       OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
       
     //Outtake Servo
@@ -309,43 +262,40 @@ public class opmode_TeleOp extends LinearOpMode {
       
     //IO-take
       telemetry.addLine("IOtk ─");
-      telemetry.addData("Otk | " + ((OtkServo.getPosition()==1)?("▲ |"):("▼ |")), OtkMP);
-      telemetry.addData("Throttle " + (/*
-        ((b_ThrottleType==0)?
-          ("Type: \"Slopes\""):
-          ((b_ThrottleType==1)?
-            ("\"Step\""):
-            ((b_ThrottleType==2)?
-              ("\"Mode\""):
-              (*/"\"Range\""/*)
-            )
+      telemetry.addData("Otk | " + (
+          (
+            (OtkServo.getPosition()==1)? ("▲ |"):
+            ("▼ |")
           )
-        )
-      */), (
-        (/*(b_ThrottleType==0)?
-          (""):
-          ((b_ThrottleType==3)?
-            (*/(b_ThrottleMode == 0)?
-              ( "Short" ):
-              ((b_ThrottleMode == 1)?
-                ( "Medium" ):
-                ((b_ThrottleMode == 2)?
-                  ( "Long" ):
-                  ( "None" )
-                )
-              )
-            )/*:
-            (b_ThrottleMode)
-          )
-        )
-      */));
+        ), (
+        (
+          ((b_ThrottleMode == 0)? ( "Short" ):
+          ((b_ThrottleMode == 1)? ( "Medium" ):
+          ((b_ThrottleMode == 2)? ( "Long" ):
+          ( "None" )
+        ))))) + "\"Range\""
+      );
       telemetry.addLine("\"No Intake Connected\"");
       telemetry.addLine();
       
     //Misc
       telemetry.addLine("Miscellaneous ─");
-      telemetry.addData("Centricity", (fieldCentric?(TargetLockGOAL?("Focus"):("Field")):(TargetLockGOAL?("Target"):("Robot")))+"-Centric");
-      telemetry.addData("Selected Target", ((TargetLockGOAL_Target)?("20 ─ Blue"):("24 ─ RED")));
+      telemetry.addData("Centricity", (
+        (
+          fieldCentric? (
+            TargetLockGOAL? ("Focus"):
+            ("Field")
+          ):
+          TargetLockGOAL? ("Target"):
+          ("Robot")
+        )) + "-Centric"
+      );
+      telemetry.addData("Selected Target", (
+        (TargetLockGOAL_Target)?
+          ("20 ─ Blue"):
+          ("24 ─ RED")
+        )
+      );
       
     //End Code
       telemetry.update();
@@ -354,13 +304,16 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private void Fn_LoopEnd() {
     //Loop End Code
-      TargetLockXRot = 0;
-      FLMP = 0;
-      FRMP = 0;
-      BLMP = 0;
-      BRMP = 0;
-      ItkMP = 0;
-      OtkMP = 0;
+      { /* Zero Values */
+        TargetLockXRot =
+        FLMP =
+        FRMP =
+        BLMP =
+        BRMP =
+        ItkMP =
+        OtkMP =
+        (0)
+      ;}
   }
   
   private void Fn_OnStop() {
