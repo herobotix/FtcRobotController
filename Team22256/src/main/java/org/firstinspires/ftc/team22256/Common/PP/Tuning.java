@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team22256.common.PP;
+package org.firstinspires.ftc.team22256.Common.PP;
 
 import static org.firstinspires.ftc.team22256.common.PP.Tuning.changes;
 import static org.firstinspires.ftc.team22256.common.PP.Tuning.drawOnlyCurrent;
