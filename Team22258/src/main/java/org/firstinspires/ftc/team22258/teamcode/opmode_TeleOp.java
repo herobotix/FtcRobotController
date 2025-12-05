@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.1]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.2]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -49,7 +49,7 @@ public class opmode_TeleOp extends LinearOpMode {
   private DcMotor OtkMotor;
   private Servo OtkServo;
   double OtkMP;
-  byte b_ThrottleMode = 3;
+  byte b_ThrottleMode = 0;
   boolean OtkSs = true;
   
   private Limelight3A limelight;
@@ -92,10 +92,10 @@ public class opmode_TeleOp extends LinearOpMode {
       rIMU = hardwareMap.get(IMU.class, "rIMU");
       
     // Set Motor Behaviors
-      FLMotor.setDirection(DcMotor.Direction.FORWARD);
-      FRMotor.setDirection(DcMotor.Direction.REVERSE);
-      BLMotor.setDirection(DcMotor.Direction.REVERSE);
-      BRMotor.setDirection(DcMotor.Direction.REVERSE);
+      FLMotor.setDirection(DcMotor.Direction.REVERSE);
+      FRMotor.setDirection(DcMotor.Direction.FORWARD);
+      BLMotor.setDirection(DcMotor.Direction.FORWARD);
+      BRMotor.setDirection(DcMotor.Direction.FORWARD);
       ItkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -169,10 +169,10 @@ public class opmode_TeleOp extends LinearOpMode {
       
     // Inputs
       if (fieldCentric) {
-        powHead = gamepad1.left_stick_x * Math.sin(Rot) + gamepad1.left_stick_y * Math.cos(Rot);
-        powSide = gamepad1.left_stick_x * Math.cos(Rot) - gamepad1.left_stick_y * Math.sin(Rot);
+        powHead = gamepad1.left_stick_x * Math.sin(Rot) + -gamepad1.left_stick_y * Math.cos(Rot);
+        powSide = gamepad1.left_stick_x * Math.cos(Rot) + -gamepad1.left_stick_y * Math.sin(Rot);
       } else {
-        powHead = gamepad1.left_stick_y;
+        powHead = -gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
       }
       powTurn = TargetLockGOAL?(TargetLockXRot):(gamepad1.right_stick_x);
@@ -186,10 +186,10 @@ public class opmode_TeleOp extends LinearOpMode {
     //Movement Processing Code
       
     // Drive & Strafe & Rotate
-      FLMP = powHead - powSide - powTurn;
-      FRMP = powHead + powSide + powTurn;
-      BLMP = powHead + powSide - powTurn;
-      BRMP = powHead - powSide + powTurn;
+      FLMP = powHead + powSide + powTurn;
+      FRMP = powHead - powSide - powTurn;
+      BLMP = powHead - powSide + powTurn;
+      BRMP = powHead + powSide - powTurn;
       
     // Power Control
       MPN = (
