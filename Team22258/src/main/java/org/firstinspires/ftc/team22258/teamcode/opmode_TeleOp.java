@@ -52,7 +52,7 @@ public class opmode_TeleOp extends LinearOpMode {
   byte b_ThrottleMode = 0;
   boolean OtkSs = true;
   
-  private Limelight3A limelight;
+  private LIMELIGHT Limelight;
   
   @Override
   public void runOpMode() {
@@ -112,8 +112,7 @@ public class opmode_TeleOp extends LinearOpMode {
     //Run On START
     
     //Limelight
-      limelight.pipelineSwitch(0);
-      limelight.start();
+      Limelight.Init();
       
   }
   
@@ -126,7 +125,7 @@ public class opmode_TeleOp extends LinearOpMode {
     
     //Limelight IMU
       YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
-      limelight.updateRobotOrientation(orientation.getYaw());
+    Limelight.limelight.updateRobotOrientation(orientation.getYaw());
       LLResult results = limelight.getLatestResult();
       telemetry.addLine("Limelight ─");
       if (results != null && results.isValid()) {
