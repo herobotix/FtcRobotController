@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp
+@TeleOp (name="KickerTestShooter")
 
 public class Kickertestshooter extends LinearOpMode {
 
