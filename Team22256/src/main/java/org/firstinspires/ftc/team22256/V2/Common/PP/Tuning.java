@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.team22256.Common.PP;
+package org.firstinspires.ftc.team22256.V2.Common.PP;
 
-import static org.firstinspires.ftc.team22256.Common.PP.Tuning.changes;
-import static org.firstinspires.ftc.team22256.Common.PP.Tuning.drawOnlyCurrent;
-import static org.firstinspires.ftc.team22256.Common.PP.Tuning.draw;
-import static org.firstinspires.ftc.team22256.Common.PP.Tuning.follower;
-import static org.firstinspires.ftc.team22256.Common.PP.Tuning.stopRobot;
-import static org.firstinspires.ftc.team22256.Common.PP.Tuning.telemetryM;
+import static org.firstinspires.ftc.team22256.V2.Common.PP.Tuning.changes;
+import static org.firstinspires.ftc.team22256.V2.Common.PP.Tuning.drawOnlyCurrent;
+import static org.firstinspires.ftc.team22256.V2.Common.PP.Tuning.draw;
+import static org.firstinspires.ftc.team22256.V2.Common.PP.Tuning.follower;
+import static org.firstinspires.ftc.team22256.V2.Common.PP.Tuning.stopRobot;
+import static org.firstinspires.ftc.team22256.V2.Common.PP.Tuning.telemetryM;
 
 import com.bylazar.configurables.PanelsConfigurables;
 import com.bylazar.configurables.annotations.Configurable;
