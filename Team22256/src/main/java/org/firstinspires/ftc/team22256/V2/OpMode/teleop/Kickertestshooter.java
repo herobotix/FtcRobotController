@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.team22256.teleop;
+package org.firstinspires.ftc.team22256.V2.OpMode.teleop;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp
+@TeleOp (name="KickerTestShooter")
 
 public class Kickertestshooter extends LinearOpMode {
 
@@ -39,10 +39,10 @@ public class Kickertestshooter extends LinearOpMode {
     public void runOpMode() {
 
 
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "rightFront");
+        backRight = hardwareMap.get(DcMotor.class, "rightBack");
+        frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
+        backLeft = hardwareMap.get(DcMotor.class, "leftBack");
 
         turret = hardwareMap.get(DcMotor.class, "turret");
 
