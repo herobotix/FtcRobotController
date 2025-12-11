@@ -1,22 +1,16 @@
 package org.firstinspires.ftc.team22258.teamcode;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-
-import java.util.List;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.2]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.3]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
@@ -33,10 +27,6 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private DcMotor BRMotor;
   double BRMP;
-  
-  boolean TargetLockGOAL = false;
-  boolean TargetLockGOAL_Target = false;
-  double TargetLockXRot;
   
   boolean fieldCentric = true;
   double MPN;
@@ -65,7 +55,7 @@ public class opmode_TeleOp extends LinearOpMode {
       
     //Run Opmode
       while (opModeIsActive()) {
-        Fn_Limelight();
+        Limelight.Run(gamepad1, telemetry);
         Fn_Move();
         Fn_IOtk();
         Fn_Telemetry();
@@ -88,8 +78,14 @@ public class opmode_TeleOp extends LinearOpMode {
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
       OtkServo = hardwareMap.get(Servo.class, "OtkServo");
-      limelight = hardwareMap.get(Limelight3A.class, "limelight");
+      
       rIMU = hardwareMap.get(IMU.class, "rIMU");
+    
+    // Set Robot Orientation (IMU)
+      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+      rIMU.initialize(parameters);
       
     // Set Motor Behaviors
       FLMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -99,60 +95,16 @@ public class opmode_TeleOp extends LinearOpMode {
       ItkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-      
-    // Set Robot Orientation (IMU)
-      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-      RevHubOrientationOnRobot.LogoFacingDirection.UP,
-      RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-      rIMU.initialize(parameters);
-      
+    
+      Limelight.Init(hardwareMap);
+    
   }
   
   private void Fn_OnStart() {
     //Run On START
     
     //Limelight
-      Limelight.Init();
-      
-  }
-  
-  private void Fn_Limelight() {
-    //Limelight Code
-    
-    //LockOn Detection
-      TargetLockGOAL = gamepad1.xWasPressed() == (!TargetLockGOAL);
-      TargetLockGOAL_Target = gamepad1.yWasPressed() == (!TargetLockGOAL_Target);
-    
-    //Limelight IMU
-      YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
-    Limelight.limelight.updateRobotOrientation(orientation.getYaw());
-      LLResult results = limelight.getLatestResult();
-      telemetry.addLine("Limelight ─");
-      if (results != null && results.isValid()) {
-        List<LLResultTypes.FiducialResult> fiducials = results.getFiducialResults();
-        if (!fiducials.isEmpty()) {
-          int index = 0;
-          for (LLResultTypes.FiducialResult fiducial : fiducials) {
-            int aprilTagID = fiducial.getFiducialId();
-            double aprilTagXRot = fiducial.getTargetXDegrees()/(360);
-            telemetry.addData("Detection #" + index + " ID:", aprilTagID);
-            telemetry.addData("TargetXRot", aprilTagXRot);
-            if (TargetLockGOAL&&( aprilTagID == ((TargetLockGOAL_Target)?(20):(24)) )) {
-              TargetLockXRot = aprilTagXRot * (20);
-              telemetry.addData("TargetLockXRot", TargetLockXRot);
-            } else {
-              TargetLockXRot = 0;
-            }
-            index++;
-          }
-        } else {
-          telemetry.addLine("Limelight Fiducials Empty");
-          telemetry.addLine();
-        }
-      } else {
-        telemetry.addLine("No AprilTags Detected");
-        telemetry.addLine();
-      }
+      Limelight.Start();
       
   }
   
@@ -163,10 +115,8 @@ public class opmode_TeleOp extends LinearOpMode {
       if (gamepad1.start) {rIMU.resetYaw();}
       Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
       
-    // Field-Centrism Toggle
-      fieldCentric = gamepad1.bWasPressed() == (!fieldCentric);
-      
     // Inputs
+      fieldCentric = gamepad1.bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
       if (fieldCentric) {
         powHead = gamepad1.left_stick_x * Math.sin(Rot) + -gamepad1.left_stick_y * Math.cos(Rot);
         powSide = gamepad1.left_stick_x * Math.cos(Rot) + -gamepad1.left_stick_y * Math.sin(Rot);
@@ -174,7 +124,7 @@ public class opmode_TeleOp extends LinearOpMode {
         powHead = -gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
       }
-      powTurn = TargetLockGOAL?(TargetLockXRot):(gamepad1.right_stick_x);
+      powTurn = Limelight.isTargetLockGOAL()?(Limelight.getTargetLockXRot()):(gamepad1.right_stick_x);
       
     //Processing
       Fn_MoveProcessing();
@@ -281,15 +231,15 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Centricity", (
         (
           fieldCentric? (
-            TargetLockGOAL? ("Focus"):
+            Limelight.isTargetLockGOAL()? ("Focus"):
             ("Field")
           ):
-          TargetLockGOAL? ("Target"):
+            Limelight.isTargetLockGOAL()? ("Target"):
           ("Robot")
         )) + "-Centric"
       );
       telemetry.addData("Selected Target", (
-        (TargetLockGOAL_Target)?
+        (Limelight.getTargetLockColor() == LIMELIGHT.TargetLockColor.BLUE)?
           ("20 ─ Blue"):
           ("24 ─ RED")
         )
@@ -302,8 +252,7 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private void Fn_LoopEnd() {
     //Loop End Code
-      { /* Zero Values */
-        TargetLockXRot =
+      /* Zero Values */
         FLMP =
         FRMP =
         BLMP =
@@ -311,14 +260,15 @@ public class opmode_TeleOp extends LinearOpMode {
         ItkMP =
         OtkMP =
         (0)
-      ;}
+      ;
+      Limelight.setTargetLockXRot(0);
   }
   
   private void Fn_OnStop() {
     //Run On STOP
     
     //Limelight
-    limelight.stop();
+    Limelight.Stop();
     
   }
   
