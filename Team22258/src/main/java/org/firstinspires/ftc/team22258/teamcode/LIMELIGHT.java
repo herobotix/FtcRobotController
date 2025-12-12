@@ -75,7 +75,7 @@ public class LIMELIGHT {
     TargetLockGOAL = gamepad1.xWasPressed() == (!TargetLockGOAL);
     TargetLockGOAL_Target = gamepad1.yWasPressed() == (!TargetLockGOAL_Target);
     
-    //Limelight IMU
+    //
     YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
     limelight.updateRobotOrientation(orientation.getYaw());
     LLResult results = limelight.getLatestResult();

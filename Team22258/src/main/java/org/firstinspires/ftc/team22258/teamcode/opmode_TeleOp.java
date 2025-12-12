@@ -10,10 +10,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.3]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.4]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double Rot;
+  double targetRot;
   private IMU rIMU;
   
   private DcMotor FLMotor;
@@ -78,14 +79,18 @@ public class opmode_TeleOp extends LinearOpMode {
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
       OtkServo = hardwareMap.get(Servo.class, "OtkServo");
-      
       rIMU = hardwareMap.get(IMU.class, "rIMU");
-    
+      
     // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
         RevHubOrientationOnRobot.LogoFacingDirection.UP,
-        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)
+      );
       rIMU.initialize(parameters);
+      
+    // Set Robot Rotation Value
+      Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+      targetRot = Rot;
       
     // Set Motor Behaviors
       FLMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -96,6 +101,7 @@ public class opmode_TeleOp extends LinearOpMode {
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     
+      Limelight = new LIMELIGHT();
       Limelight.Init(hardwareMap);
     
   }
@@ -120,11 +126,41 @@ public class opmode_TeleOp extends LinearOpMode {
       if (fieldCentric) {
         powHead = gamepad1.left_stick_x * Math.sin(Rot) + -gamepad1.left_stick_y * Math.cos(Rot);
         powSide = gamepad1.left_stick_x * Math.cos(Rot) + -gamepad1.left_stick_y * Math.sin(Rot);
+        
+        if (!Limelight.isTargetLockGOAL()) {
+          //Calculate Target Rotation
+            targetRot = targetRot + gamepad1.right_stick_x;
+            targetRot = (
+              (targetRot > Math.PI)?  (targetRot - (2 * Math.PI)):
+              (targetRot < -Math.PI)? (targetRot + (2 * Math.PI)):
+              (targetRot)
+            );
+            
+          //Calculate Turn Power
+            powTurn = (targetRot - Rot) / (2*Math.PI);
+            powTurn = ( // FIX THIS
+              (powTurn > Math.PI)?  (powTurn - (2 * Math.PI)):
+              (powTurn < -Math.PI)? (powTurn + (2 * Math.PI)):
+              (powTurn)
+            );
+            powTurn = (
+              (Math.abs(powTurn - (2 * Math.PI)) < Math.PI)?  (powTurn - (2 * Math.PI)):
+              (powTurn < -Math.PI)? (powTurn + (2 * Math.PI)):
+              (powTurn)
+            );
+            
+        } else {
+          powTurn = Limelight.getTargetLockXRot();
+        }
+        
       } else {
         powHead = -gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
+        powTurn = (
+          Limelight.isTargetLockGOAL()? (Limelight.getTargetLockXRot()):
+          (gamepad1.right_stick_x)
+        );
       }
-      powTurn = Limelight.isTargetLockGOAL()?(Limelight.getTargetLockXRot()):(gamepad1.right_stick_x);
       
     //Processing
       Fn_MoveProcessing();
@@ -142,11 +178,12 @@ public class opmode_TeleOp extends LinearOpMode {
       
     // Power Control
       MPN = (
-        Math.max(1,
+        Math.max(
           Math.max(
             Math.max( Math.abs(FLMP), Math.abs(FRMP) ),
             Math.max( Math.abs(BLMP), Math.abs(BRMP) )
-          )
+          ),
+          (1)
         )
       );
       if (MPN > 1){
@@ -206,41 +243,54 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Head Power",powHead);
       telemetry.addData("Side Power",powSide);
       telemetry.addData("Turn Power",powTurn);
+      telemetry.addData("Target Rot",targetRot);
+      telemetry.addData("Current Rot",Rot);
       telemetry.addLine();
       
     //IO-take
       telemetry.addLine("IOtk ─");
-      telemetry.addData("Otk | " + (
+      telemetry.addData(
+        ( "Otk | " +
           (
             (OtkServo.getPosition()==1)? ("▲ |"):
             ("▼ |")
           )
-        ), (
+        ),
         (
-          ((b_ThrottleMode == 0)? ( "Short" ):
-          ((b_ThrottleMode == 1)? ( "Medium" ):
-          ((b_ThrottleMode == 2)? ( "Long" ):
-          ( "None" )
-        ))))) + "\"Range\""
+          (
+            (b_ThrottleMode == 0)? ( "Short" ):
+            (b_ThrottleMode == 1)? ( "Medium" ):
+            (b_ThrottleMode == 2)? ( "Long" ):
+            ( "None" )
+          ) + "\"Range\""
+        )
       );
       telemetry.addLine("\"No Intake Connected\"");
       telemetry.addLine();
       
     //Misc
       telemetry.addLine("Miscellaneous ─");
-      telemetry.addData("Centricity", (
+      telemetry.addData(
         (
-          fieldCentric? (
-            Limelight.isTargetLockGOAL()? ("Focus"):
-            ("Field")
-          ):
+          "Centricity"
+        ),
+        (
+          (
+            fieldCentric? (
+              Limelight.isTargetLockGOAL()? ("Focus"):
+              ("Field")
+            ):
             Limelight.isTargetLockGOAL()? ("Target"):
-          ("Robot")
-        )) + "-Centric"
+            ("Robot")
+          ) + "-Centric"
+        )
       );
-      telemetry.addData("Selected Target", (
-        (Limelight.getTargetLockColor() == LIMELIGHT.TargetLockColor.BLUE)?
-          ("20 ─ Blue"):
+      telemetry.addData(
+        (
+          "Selected Target"
+        ),
+        (
+          (Limelight.getTargetLockColor() == LIMELIGHT.TargetLockColor.BLUE)? ("20 ─ Blue"):
           ("24 ─ RED")
         )
       );
