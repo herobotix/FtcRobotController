@@ -10,10 +10,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.4]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.5]")
 public class opmode_TeleOp extends LinearOpMode {
   
-  double Rot;
+  double currentRot;
   double targetRot;
   private IMU rIMU;
   
@@ -89,8 +89,8 @@ public class opmode_TeleOp extends LinearOpMode {
       rIMU.initialize(parameters);
       
     // Set Robot Rotation Value
-      Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-      targetRot = Rot;
+      currentRot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+      targetRot = currentRot;
       
     // Set Motor Behaviors
       FLMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -114,50 +114,35 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
+  private double NormalizeAngle(double iAngle) {
+    return (( iAngle + Math.PI ) % ( 2 * Math.PI )) - Math.PI;
+  }
+  
   private void Fn_Move() {
     //Movement Code
     
     // Get/Reset Robot Rotation Value
       if (gamepad1.start) {rIMU.resetYaw();}
-      Rot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+      currentRot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
       
     // Inputs
       fieldCentric = gamepad1.bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
       if (fieldCentric) {
-        powHead = gamepad1.left_stick_x * Math.sin(Rot) + -gamepad1.left_stick_y * Math.cos(Rot);
-        powSide = gamepad1.left_stick_x * Math.cos(Rot) + -gamepad1.left_stick_y * Math.sin(Rot);
-        
-        if (!Limelight.isTargetLockGOAL()) {
-          //Calculate Target Rotation
-            targetRot = targetRot + gamepad1.right_stick_x;
-            targetRot = (
-              (targetRot > Math.PI)?  (targetRot - (2 * Math.PI)):
-              (targetRot < -Math.PI)? (targetRot + (2 * Math.PI)):
-              (targetRot)
-            );
-            
-          //Calculate Turn Power
-            powTurn = (targetRot - Rot) / (2*Math.PI);
-            powTurn = ( // FIX THIS
-              (powTurn > Math.PI)?  (powTurn - (2 * Math.PI)):
-              (powTurn < -Math.PI)? (powTurn + (2 * Math.PI)):
-              (powTurn)
-            );
-            powTurn = (
-              (Math.abs(powTurn - (2 * Math.PI)) < Math.PI)?  (powTurn - (2 * Math.PI)):
-              (powTurn < -Math.PI)? (powTurn + (2 * Math.PI)):
-              (powTurn)
-            );
-            
+        powHead = gamepad1.left_stick_x * Math.sin(currentRot) + -gamepad1.left_stick_y * Math.cos(currentRot);
+        powSide = gamepad1.left_stick_x * Math.cos(currentRot) + -gamepad1.left_stick_y * Math.sin(currentRot);
+        if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.NONE) {
+          targetRot = NormalizeAngle(targetRot + gamepad1.right_stick_x / (200) );
+          powTurn = NormalizeAngle(targetRot - currentRot) / (2*Math.PI);
+          //Base this on if gamepad1.right_stick_x is not 0
         } else {
-          powTurn = Limelight.getTargetLockXRot();
+          powTurn = Limelight.getPowTurn();
         }
         
       } else {
         powHead = -gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
         powTurn = (
-          Limelight.isTargetLockGOAL()? (Limelight.getTargetLockXRot()):
+          (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? (Limelight.getPowTurn()):
           (gamepad1.right_stick_x)
         );
       }
@@ -243,8 +228,8 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Head Power",powHead);
       telemetry.addData("Side Power",powSide);
       telemetry.addData("Turn Power",powTurn);
-      telemetry.addData("Target Rot",targetRot);
-      telemetry.addData("Current Rot",Rot);
+      telemetry.addData("Target currentRot",targetRot);
+      telemetry.addData("Current currentRot", currentRot);
       telemetry.addLine();
       
     //IO-take
@@ -277,10 +262,10 @@ public class opmode_TeleOp extends LinearOpMode {
         (
           (
             fieldCentric? (
-              Limelight.isTargetLockGOAL()? ("Focus"):
+              (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? ("Focus"):
               ("Field")
             ):
-            Limelight.isTargetLockGOAL()? ("Target"):
+            (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? ("Target"):
             ("Robot")
           ) + "-Centric"
         )
@@ -290,8 +275,9 @@ public class opmode_TeleOp extends LinearOpMode {
           "Selected Target"
         ),
         (
-          (Limelight.getTargetLockColor() == LIMELIGHT.TargetLockColor.BLUE)? ("20 ─ Blue"):
-          ("24 ─ RED")
+          (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE)? ("20 ─ Blue"):
+          (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED)? ("24 ─ RED"):
+          ("NONE")
         )
       );
       
@@ -311,7 +297,7 @@ public class opmode_TeleOp extends LinearOpMode {
         OtkMP =
         (0)
       ;
-      Limelight.setTargetLockXRot(0);
+      Limelight.setPowTurn(0);
   }
   
   private void Fn_OnStop() {

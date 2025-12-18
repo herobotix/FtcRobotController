@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.team22258.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -11,44 +8,41 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import java.util.List;
 
 public class LIMELIGHT {
   
-  public enum TargetLockColor {
+  public enum TargetLock {
+    NONE,
     RED,
     BLUE
   }
   
-  private TargetLockColor targetLockColor;
+  //private LockTarget lockTarget;
+  private TargetLock targetLock = TargetLock.NONE;
   
   private Limelight3A limelight;
   private IMU rIMU;
   
-  boolean TargetLockGOAL = false;
-  boolean TargetLockGOAL_Target = false;
-  double TargetLockXRot;
+  double powTurn;
   
-  public boolean isTargetLockGOAL() {
-    return TargetLockGOAL;
+  public TargetLock getTargetLock() {
+    return targetLock;
   }
   
-  public boolean isTargetLockGOAL_Target() {
-    return TargetLockGOAL_Target;
+  public void setTargetLock(TargetLock iState) {
+    targetLock = iState;
   }
   
-  public TargetLockColor getTargetLockColor() {
-    return targetLockColor;
+  public double getPowTurn() {
+    return powTurn;
   }
   
-  public double getTargetLockXRot() {
-    return TargetLockXRot;
-  }
-  
-  public void setTargetLockXRot(double targetLockXRot) {
-    TargetLockXRot = targetLockXRot;
+  public void setPowTurn(double powTurn) {
+    this.powTurn = powTurn;
   }
   
   public void Init(HardwareMap hardwareMap) {
@@ -72,10 +66,14 @@ public class LIMELIGHT {
     //Limelight Code
     
     //LockOn Detection
-    TargetLockGOAL = gamepad1.xWasPressed() == (!TargetLockGOAL);
-    TargetLockGOAL_Target = gamepad1.yWasPressed() == (!TargetLockGOAL_Target);
+    if (gamepad1.xWasPressed()) {
+      setTargetLock(
+        (targetLock == TargetLock.NONE)? (TargetLock.BLUE):
+        (targetLock == TargetLock.BLUE)? (TargetLock.RED):
+        (TargetLock.NONE)
+      );
+    }
     
-    //
     YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
     limelight.updateRobotOrientation(orientation.getYaw());
     LLResult results = limelight.getLatestResult();
@@ -89,11 +87,17 @@ public class LIMELIGHT {
           double aprilTagXRot = fiducial.getTargetXDegrees()/(360);
           telemetry.addData("Detection #" + index + " ID:", aprilTagID);
           telemetry.addData("TargetXRot", aprilTagXRot);
-          if (TargetLockGOAL&&( aprilTagID == ((TargetLockGOAL_Target)?(20):(24)) )) {
-            TargetLockXRot = aprilTagXRot * (20);
-            telemetry.addData("TargetLockXRot", TargetLockXRot);
+          if (
+            ( getTargetLock() != TargetLock.NONE ) &&
+            ( aprilTagID == (
+              (targetLock == TargetLock.BLUE)? (20):
+              (24)
+            ))
+          ) {
+            powTurn = aprilTagXRot * (20);
+            telemetry.addData("Target Rotation", powTurn);
           } else {
-            TargetLockXRot = 0;
+            powTurn = 0;
           }
           index++;
         }
