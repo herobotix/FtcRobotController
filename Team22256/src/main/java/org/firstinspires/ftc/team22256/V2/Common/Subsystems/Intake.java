@@ -11,9 +11,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import dev.nextftc.core.subsystems.Subsystem;
 
-public class Intake {
 
+public class Intake implements Subsystem {
+    public static final Intake INSTANCE = new Intake();
+    private Intake(){ }
     private DcMotor intake;
 
     public enum IntakeState{
@@ -22,7 +25,10 @@ public class Intake {
         STOPPED;
     }
 
-    private IntakeState intakeState;
+
+     IntakeState intakeState = IntakeState.STOPPED;
+
+
     public Intake(HardwareMap hardwareMap){
         intake = hardwareMap.get(DcMotor.class,"intake");
     }
