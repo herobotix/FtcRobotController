@@ -19,26 +19,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-
-
-@Autonomous(name = "Opmode (Auto) [1.2.1]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto) [1.2.2]", group = "Autonomous")
 @Configurable
 public class opmode_Auto extends LinearOpMode {
   
   public static class Paths {
     
     public PathChain SetupOuttake;
-    public PathChain FirstAlign;
-    public PathChain FirstIntake;
-    public PathChain FirstOuttake;
-    public PathChain SecondAlign;
-    public PathChain SecondIntake;
-    public PathChain SecondOuttake;
-    public PathChain ThirdAlign;
-    public PathChain ThirdIntake;
-    public PathChain ThirdOuttake;
+    public PathChain Align1;
+    public PathChain Intake1;
+    public PathChain Outtake1;
+    public PathChain Align2;
+    public PathChain Intake2;
+    public PathChain Outtake2;
+    public PathChain Align3;
+    public PathChain Intake3;
+    public PathChain Outtake3;
     public PathChain EndAlign;
     
     public Paths(Follower follower) {
@@ -50,7 +47,7 @@ public class opmode_Auto extends LinearOpMode {
         .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(54.5))
         .build();
       
-      FirstAlign = follower
+      Align1 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 36.000))
@@ -61,7 +58,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      FirstIntake = follower
+      Intake1 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 36.000), new Pose(20.000, 36.000))
@@ -69,7 +66,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      FirstOuttake = follower
+      Outtake1 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -84,7 +81,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      SecondAlign = follower
+      Align2 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 60.000))
@@ -95,7 +92,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      SecondIntake = follower
+      Intake2 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 60.000), new Pose(20.000, 60.000))
@@ -103,7 +100,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      SecondOuttake = follower
+      Outtake2 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -118,7 +115,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      ThirdAlign = follower
+      Align3 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 84.000))
@@ -129,7 +126,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      ThirdIntake = follower
+      Intake3 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 84.000), new Pose(20.000, 84.000))
@@ -137,7 +134,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      ThirdOuttake = follower
+      Outtake3 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -168,8 +165,29 @@ public class opmode_Auto extends LinearOpMode {
   
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pedro Pathing follower instance
-  private int pathState; // Current autonomous path state (state machine)
+  
   private Paths paths; // Paths defined in the Paths class
+  
+  private enum PathState {
+    SETUP,
+    FIRE1,
+    ALIGN1,
+    INTAKE1,
+    OUTTAKE1,
+    FIRE2,
+    ALIGN2,
+    INTAKE2,
+    OUTTAKE2,
+    FIRE3,
+    ALIGN3,
+    INTAKE3,
+    OUTTAKE3,
+    FIRE4,
+    ALIGN4,
+    END,
+    NULL
+  }
+  private PathState pathState; // Current autonomous path state (state machine)
   
   private Timer pathTimer, opmodeTimer;
   
@@ -178,6 +196,11 @@ public class opmode_Auto extends LinearOpMode {
   private DcMotor ItkMotor;
   private DcMotor OtkMotor;
   private Servo OtkServo;
+  
+  private enum ServoState {
+    OPEN,
+    CLOSED
+  }
   
   private LIMELIGHT Limelight;
   
@@ -204,7 +227,7 @@ public class opmode_Auto extends LinearOpMode {
       follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
       
       paths = new Paths(follower); // Build paths
-      pathState = 0;
+      pathState = PathState.SETUP;
     
     // Telemetry
       panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -236,7 +259,7 @@ public class opmode_Auto extends LinearOpMode {
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       ItkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-      OtkServo.setPosition(1);
+      setOtkServoPos(ServoState.OPEN);
       
     // Limelight
       Limelight = new LIMELIGHT();
@@ -266,123 +289,117 @@ public class opmode_Auto extends LinearOpMode {
   
   public void autonomousPathUpdate() {
     switch (pathState) {
-      case 0:
+        /* You could check for
+        - Follower State: "if(!follower.isBusy()) {}"
+         // If the follower has finished its assigned task.
+        - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
+         // If a certain amount of time has passed since last pathState change.
+        - Robot Position: "if(follower.getPose().getX() > 36) {}" //
+         // If the robot is at a certain position.
+        */
+      case SETUP:
         follower.followPath(paths.SetupOuttake);
         OtkMotor.setPower(0.67);
-        setPathState(1);
+        setPathState(PathState.FIRE1);
         break;
-      case 1:
-            /* You could check for
-            - Follower State: "if(!follower.isBusy()) {}"
-            - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-            - Robot Position: "if(follower.getPose().getX() > 36) {}"
-            */
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+      case FIRE1:
         if(!follower.isBusy()) {
-          follower.followPath(paths.FirstAlign,true);
+          setOtkServoPos(ServoState.OPEN);
+          setPathState(PathState.ALIGN1);
+        } break;
+      case ALIGN1:
+        if(pathTimer.getElapsedTimeSeconds() > 2) {
+          follower.followPath(paths.Align1,true);
+          setOtkServoPos(ServoState.CLOSED);
           OtkMotor.setPower(0);
-          setPathState(2);
-        }
-        break;
-      case 2:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup1Pose's position */
+          setPathState(PathState.INTAKE1);
+        } break;
+      case INTAKE1:
         if(!follower.isBusy()) {
-          follower.followPath(paths.FirstIntake);
-          setPathState(3);
-        }
-        break;
-      case 3:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+          follower.followPath(paths.Intake1);
+          setPathState(PathState.OUTTAKE1);
+        } break;
+      case OUTTAKE1:
         if(!follower.isBusy()) {
-          /* Score Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-          follower.followPath(paths.FirstOuttake,true);
+          follower.followPath(paths.Outtake1,true);
           OtkMotor.setPower(0.67);
-          setPathState(4);
-        }
-        break;
-      case 4:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup2Pose's position */
+          setPathState(PathState.FIRE2);
+        } break;
+      case FIRE2:
         if(!follower.isBusy()) {
-          /* Grab Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-          follower.followPath(paths.SecondAlign,true);
+          setOtkServoPos(ServoState.OPEN);
+          setPathState(PathState.ALIGN2);
+        } break;
+      case ALIGN2:
+        if(pathTimer.getElapsedTimeSeconds() > 2) {
+          follower.followPath(paths.Align2,true);
+          setOtkServoPos(ServoState.CLOSED);
           OtkMotor.setPower(0);
-          setPathState(5);
-        }
-        break;
-      case 5:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+          setPathState(PathState.INTAKE2);
+        } break;
+      case INTAKE2:
         if(!follower.isBusy()) {
-          /* Score Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-          follower.followPath(paths.SecondIntake);
-          setPathState(6);
-        }
-        break;
-      case 6:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
+          follower.followPath(paths.Intake2);
+          setPathState(PathState.OUTTAKE2);
+        } break;
+      case OUTTAKE2:
         if(!follower.isBusy()) {
-          /* Grab Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-          follower.followPath(paths.SecondOuttake, true);
+          follower.followPath(paths.Outtake2, true);
           OtkMotor.setPower(0.67);
-          setPathState(7);
-        }
-        break;
-      case 7:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup2Pose's position */
+          setPathState(PathState.FIRE3);
+        } break;
+      case FIRE3:
         if(!follower.isBusy()) {
-          /* Grab Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-          follower.followPath(paths.ThirdAlign,true);
+          setOtkServoPos(ServoState.OPEN);
+          setPathState(PathState.ALIGN3);
+        } break;
+      case ALIGN3:
+        if(pathTimer.getElapsedTimeSeconds() > 2) {
+          follower.followPath(paths.Align3,true);
+          setOtkServoPos(ServoState.CLOSED);
           OtkMotor.setPower(0);
-          setPathState(8);
-        }
-        break;
-      case 8:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+          setPathState(PathState.INTAKE3);
+        } break;
+      case INTAKE3:
         if(!follower.isBusy()) {
-          /* Score Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-          follower.followPath(paths.ThirdIntake);
-          setPathState(9);
-        }
-        break;
-      case 9:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
+          follower.followPath(paths.Intake3);
+          setPathState(PathState.OUTTAKE3);
+        } break;
+      case OUTTAKE3:
         if(!follower.isBusy()) {
-          /* Grab Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-          follower.followPath(paths.ThirdOuttake, true);
+          follower.followPath(paths.Outtake3, true);
           OtkMotor.setPower(0.67);
-          setPathState(10);
-        }
-        break;
-      case 10:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
+          setPathState(PathState.FIRE4);
+        } break;
+      case FIRE4:
         if(!follower.isBusy()) {
-          /* Grab Sample */
-          /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
+          setOtkServoPos(ServoState.OPEN);
+          setPathState(PathState.ALIGN4);
+        } break;
+      case ALIGN4:
+        if(pathTimer.getElapsedTimeSeconds() > 2) {
           follower.followPath(paths.EndAlign, true);
+          setOtkServoPos(ServoState.CLOSED);
           OtkMotor.setPower(0);
-          setPathState(11);
-        }
-        break;
-      case 11:
-        /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+          setPathState(PathState.END);
+        } break;
+      case END:
         if(!follower.isBusy()) {
-          /* Set the state to a Case we won't use or define, so it just stops running an new paths */
-          setPathState(-1);
-        }
-        break;
+          setPathState(PathState.NULL);
+        } break;
     }
   }
   
   /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
-  public void setPathState(int pState) {
+  private void setPathState(PathState pState) {
     pathState = pState;
     pathTimer.resetTimer();
+  }
+  
+  private void setOtkServoPos(ServoState sState) {
+    OtkServo.setPosition(
+      (sState==ServoState.OPEN)?1:0
+    );
   }
   
   private void Fn_OnStop() {
