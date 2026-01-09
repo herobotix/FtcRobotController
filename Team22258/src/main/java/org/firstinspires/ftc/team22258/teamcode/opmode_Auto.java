@@ -20,31 +20,40 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
 
-@Autonomous(name = "Opmode (Auto) [1.2.2]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto) [1.2.3]", group = "Autonomous")
 @Configurable
 public class opmode_Auto extends LinearOpMode {
   
   public static class Paths {
     
-    public PathChain SetupOuttake;
+    public PathChain SetupAlign;
+    public PathChain Outtake1;
     public PathChain Align1;
     public PathChain Intake1;
-    public PathChain Outtake1;
+    public PathChain Outtake2;
     public PathChain Align2;
     public PathChain Intake2;
-    public PathChain Outtake2;
+    public PathChain Outtake3;
     public PathChain Align3;
     public PathChain Intake3;
-    public PathChain Outtake3;
+    public PathChain Outtake4;
     public PathChain EndAlign;
     
     public Paths(Follower follower) {
-      SetupOuttake = follower
+      SetupAlign = follower
         .pathBuilder()
         .addPath(
-          new BezierLine(new Pose(56.500, 8.500), new Pose(56.500, 13.000))
+          new BezierLine(new Pose(56.500, 8.500), new Pose(56.500, 10.750))
         )
-        .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(54.5))
+        .setConstantHeadingInterpolation(Math.toRadians(180))
+        .build();
+      
+      Outtake1 = follower
+        .pathBuilder()
+        .addPath(
+          new BezierLine(new Pose(56.500, 10.750), new Pose(56.500, 13.000))
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-125.5))
         .build();
       
       Align1 = follower
@@ -53,7 +62,7 @@ public class opmode_Auto extends LinearOpMode {
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 36.000))
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(54.5),
+          Math.toRadians(-125.5),
           Math.toRadians(180)
         )
         .build();
@@ -66,7 +75,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      Outtake1 = follower
+      Outtake2 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -77,7 +86,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .setLinearHeadingInterpolation(
           Math.toRadians(180),
-          Math.toRadians(54.5)
+          Math.toRadians(-125.5)
         )
         .build();
       
@@ -87,7 +96,7 @@ public class opmode_Auto extends LinearOpMode {
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 60.000))
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(54.5),
+          Math.toRadians(-125.5),
           Math.toRadians(180)
         )
         .build();
@@ -100,7 +109,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      Outtake2 = follower
+      Outtake3 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -111,7 +120,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .setLinearHeadingInterpolation(
           Math.toRadians(180),
-          Math.toRadians(54.5)
+          Math.toRadians(-125.5)
         )
         .build();
       
@@ -121,7 +130,7 @@ public class opmode_Auto extends LinearOpMode {
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 84.000))
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(54.5),
+          Math.toRadians(-125.5),
           Math.toRadians(180)
         )
         .build();
@@ -134,7 +143,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      Outtake3 = follower
+      Outtake4 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -145,7 +154,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .setLinearHeadingInterpolation(
           Math.toRadians(180),
-          Math.toRadians(54.5)
+          Math.toRadians(-125.5)
         )
         .build();
       
@@ -158,7 +167,7 @@ public class opmode_Auto extends LinearOpMode {
             new Pose(48.000, 24.000)
           )
         )
-        .setLinearHeadingInterpolation(Math.toRadians(54.5), Math.toRadians(90))
+        .setLinearHeadingInterpolation(Math.toRadians(-125.5), Math.toRadians(90))
         .build();
     }
   }
@@ -170,18 +179,19 @@ public class opmode_Auto extends LinearOpMode {
   
   private enum PathState {
     SETUP,
+    OUTTAKE1,
     FIRE1,
     ALIGN1,
     INTAKE1,
-    OUTTAKE1,
+    OUTTAKE2,
     FIRE2,
     ALIGN2,
     INTAKE2,
-    OUTTAKE2,
+    OUTTAKE3,
     FIRE3,
     ALIGN3,
     INTAKE3,
-    OUTTAKE3,
+    OUTTAKE4,
     FIRE4,
     ALIGN4,
     END,
@@ -195,7 +205,8 @@ public class opmode_Auto extends LinearOpMode {
   
   private DcMotor ItkMotor;
   private DcMotor OtkMotor;
-  private Servo OtkServo;
+  private Servo OtkServo1;
+  private Servo OtkServo2;
   
   private enum ServoState {
     OPEN,
@@ -244,7 +255,8 @@ public class opmode_Auto extends LinearOpMode {
     // Map Hardware
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
-      OtkServo = hardwareMap.get(Servo.class, "OtkServo");
+      OtkServo1 = hardwareMap.get(Servo.class, "OtkServo1");
+      OtkServo2 = hardwareMap.get(Servo.class, "OtkServo2");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
     
     // Set Robot Orientation (IMU)
@@ -298,10 +310,15 @@ public class opmode_Auto extends LinearOpMode {
          // If the robot is at a certain position.
         */
       case SETUP:
-        follower.followPath(paths.SetupOuttake);
-        OtkMotor.setPower(0.67);
-        setPathState(PathState.FIRE1);
+        follower.followPath(paths.SetupAlign);
+        setPathState(PathState.OUTTAKE1);
         break;
+      case OUTTAKE1:
+        if(!follower.isBusy()) {
+          follower.followPath(paths.Outtake1);
+          OtkMotor.setPower(0.67);
+          setPathState(PathState.FIRE1);
+        } break;
       case FIRE1:
         if(!follower.isBusy()) {
           setOtkServoPos(ServoState.OPEN);
@@ -317,11 +334,11 @@ public class opmode_Auto extends LinearOpMode {
       case INTAKE1:
         if(!follower.isBusy()) {
           follower.followPath(paths.Intake1);
-          setPathState(PathState.OUTTAKE1);
+          setPathState(PathState.OUTTAKE2);
         } break;
-      case OUTTAKE1:
+      case OUTTAKE2:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Outtake1,true);
+          follower.followPath(paths.Outtake2,true);
           OtkMotor.setPower(0.67);
           setPathState(PathState.FIRE2);
         } break;
@@ -340,11 +357,11 @@ public class opmode_Auto extends LinearOpMode {
       case INTAKE2:
         if(!follower.isBusy()) {
           follower.followPath(paths.Intake2);
-          setPathState(PathState.OUTTAKE2);
+          setPathState(PathState.OUTTAKE3);
         } break;
-      case OUTTAKE2:
+      case OUTTAKE3:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Outtake2, true);
+          follower.followPath(paths.Outtake3, true);
           OtkMotor.setPower(0.67);
           setPathState(PathState.FIRE3);
         } break;
@@ -363,11 +380,11 @@ public class opmode_Auto extends LinearOpMode {
       case INTAKE3:
         if(!follower.isBusy()) {
           follower.followPath(paths.Intake3);
-          setPathState(PathState.OUTTAKE3);
+          setPathState(PathState.OUTTAKE4);
         } break;
-      case OUTTAKE3:
+      case OUTTAKE4:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Outtake3, true);
+          follower.followPath(paths.Outtake4, true);
           OtkMotor.setPower(0.67);
           setPathState(PathState.FIRE4);
         } break;
@@ -397,7 +414,10 @@ public class opmode_Auto extends LinearOpMode {
   }
   
   private void setOtkServoPos(ServoState sState) {
-    OtkServo.setPosition(
+    OtkServo1.setPosition(
+      (sState==ServoState.OPEN)?1:0
+    );
+    OtkServo2.setPosition(
       (sState==ServoState.OPEN)?1:0
     );
   }
