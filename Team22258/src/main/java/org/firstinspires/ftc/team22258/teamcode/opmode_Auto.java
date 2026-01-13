@@ -20,27 +20,27 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
 
-@Autonomous(name = "Opmode (Auto) [1.2.3]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto) [1.2.4]", group = "Autonomous")
 @Configurable
 public class opmode_Auto extends LinearOpMode {
   
   public static class Paths {
     
-    public PathChain SetupAlign;
-    public PathChain Outtake1;
-    public PathChain Align1;
-    public PathChain Intake1;
-    public PathChain Outtake2;
-    public PathChain Align2;
-    public PathChain Intake2;
-    public PathChain Outtake3;
-    public PathChain Align3;
-    public PathChain Intake3;
-    public PathChain Outtake4;
-    public PathChain EndAlign;
+    public PathChain SETUP;
+    public PathChain OUTTAKE0;
+    public PathChain ALIGN1;
+    public PathChain INTAKE1;
+    public PathChain OUTTAKE1;
+    public PathChain ALIGN2;
+    public PathChain INTAKE2;
+    public PathChain OUTTAKE2;
+    public PathChain ALIGN3;
+    public PathChain INTAKE3;
+    public PathChain OUTTAKE3;
+    public PathChain ALIGN4;
     
     public Paths(Follower follower) {
-      SetupAlign = follower
+      SETUP = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 8.500), new Pose(56.500, 10.750))
@@ -48,7 +48,7 @@ public class opmode_Auto extends LinearOpMode {
         .setConstantHeadingInterpolation(Math.toRadians(180))
         .build();
       
-      Outtake1 = follower
+      OUTTAKE0 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 10.750), new Pose(56.500, 13.000))
@@ -56,7 +56,7 @@ public class opmode_Auto extends LinearOpMode {
         .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-125.5))
         .build();
       
-      Align1 = follower
+      ALIGN1 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 36.000))
@@ -67,7 +67,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      Intake1 = follower
+      INTAKE1 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 36.000), new Pose(20.000, 36.000))
@@ -75,7 +75,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      Outtake2 = follower
+      OUTTAKE1 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -90,7 +90,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      Align2 = follower
+      ALIGN2 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 60.000))
@@ -101,7 +101,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      Intake2 = follower
+      INTAKE2 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 60.000), new Pose(20.000, 60.000))
@@ -109,7 +109,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      Outtake3 = follower
+      OUTTAKE2 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -124,7 +124,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      Align3 = follower
+      ALIGN3 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 13.000), new Pose(56.500, 84.000))
@@ -135,7 +135,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      Intake3 = follower
+      INTAKE3 = follower
         .pathBuilder()
         .addPath(
           new BezierLine(new Pose(56.500, 84.000), new Pose(20.000, 84.000))
@@ -143,7 +143,7 @@ public class opmode_Auto extends LinearOpMode {
         .setTangentHeadingInterpolation()
         .build();
       
-      Outtake4 = follower
+      OUTTAKE3 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -158,7 +158,7 @@ public class opmode_Auto extends LinearOpMode {
         )
         .build();
       
-      EndAlign = follower
+      ALIGN4 = follower
         .pathBuilder()
         .addPath(
           new BezierCurve(
@@ -179,34 +179,42 @@ public class opmode_Auto extends LinearOpMode {
   
   private enum PathState {
     SETUP,
-    OUTTAKE1,
-    FIRE1,
+    OUTTAKE0,
+    FIRE0,
     ALIGN1,
     INTAKE1,
-    OUTTAKE2,
-    FIRE2,
+    OUTTAKE1,
+    FIRE1,
     ALIGN2,
     INTAKE2,
-    OUTTAKE3,
-    FIRE3,
+    OUTTAKE2,
+    FIRE2,
     ALIGN3,
     INTAKE3,
-    OUTTAKE4,
-    FIRE4,
+    OUTTAKE3,
+    FIRE3,
     ALIGN4,
-    END,
-    NULL
+    END
   }
+//  private enum PathType {
+//    SETUP,
+//    ALIGN,
+//    INTAKE,
+//    OUTTAKE,
+//    FIRE,
+//    END
+//  }
   private PathState pathState; // Current autonomous path state (state machine)
+//  private byte pathNum = 0;
   
-  private Timer pathTimer, opmodeTimer;
+  private Timer pathTimer/*, opmodeTimer*/;
   
   private IMU rIMU;
   
   private DcMotor ItkMotor;
   private DcMotor OtkMotor;
-  private Servo OtkServo1;
-  private Servo OtkServo2;
+  private Servo LServo;
+  private Servo RServo;
   
   private enum ServoState {
     OPEN,
@@ -249,14 +257,14 @@ public class opmode_Auto extends LinearOpMode {
     // Timer
     
       pathTimer = new Timer();
-      opmodeTimer = new Timer();
-      opmodeTimer.resetTimer();
+      /*opmodeTimer = new Timer();
+      opmodeTimer.resetTimer();*/
     
     // Map Hardware
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
-      OtkServo1 = hardwareMap.get(Servo.class, "OtkServo1");
-      OtkServo2 = hardwareMap.get(Servo.class, "OtkServo2");
+      LServo = hardwareMap.get(Servo.class, "LServo");
+      RServo = hardwareMap.get(Servo.class, "RServo");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
     
     // Set Robot Orientation (IMU)
@@ -301,111 +309,129 @@ public class opmode_Auto extends LinearOpMode {
   
   public void autonomousPathUpdate() {
     switch (pathState) {
-        /* You could check for
-        - Follower State: "if(!follower.isBusy()) {}"
-         // If the follower has finished its assigned task.
-        - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-         // If a certain amount of time has passed since last pathState change.
-        - Robot Position: "if(follower.getPose().getX() > 36) {}" //
-         // If the robot is at a certain position.
-        */
       case SETUP:
-        follower.followPath(paths.SetupAlign);
-        setPathState(PathState.OUTTAKE1);
+        setOtkServoPos(ServoState.CLOSED);
+        OtkMotor.setPower(0);
+        follower.followPath(paths.SETUP,true);
+        setPathState(PathState.OUTTAKE0);
         break;
+      case OUTTAKE0:
+        if(!follower.isBusy()) {
+          OtkMotor.setPower(0.67);
+          ItkMotor.setPower(0);
+          follower.followPath(paths.OUTTAKE0,true);
+          setPathState(PathState.FIRE0);
+        } break;
+      case FIRE0:
+        if(!follower.isBusy()) {
+          setOtkServoPos(ServoState.OPEN);
+//          pathNum++;
+          setPathState(PathState.ALIGN1);
+        } break;
+      case ALIGN1:
+        if(pathTimer.getElapsedTimeSeconds() > 2) {
+          setOtkServoPos(ServoState.CLOSED);
+          OtkMotor.setPower(0);
+          follower.followPath(paths.ALIGN1,true);
+          setPathState(PathState.INTAKE1);
+        } break;
+      case INTAKE1:
+        if(!follower.isBusy()) {
+          ItkMotor.setPower(1);
+          follower.followPath(paths.INTAKE1);
+          setPathState(PathState.OUTTAKE1);
+        } break;
       case OUTTAKE1:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Outtake1);
           OtkMotor.setPower(0.67);
+          ItkMotor.setPower(0);
+          follower.followPath(paths.OUTTAKE1,true);
           setPathState(PathState.FIRE1);
         } break;
       case FIRE1:
         if(!follower.isBusy()) {
           setOtkServoPos(ServoState.OPEN);
-          setPathState(PathState.ALIGN1);
+//          pathNum++;
+          setPathState(PathState.ALIGN2);
         } break;
-      case ALIGN1:
+      case ALIGN2:
         if(pathTimer.getElapsedTimeSeconds() > 2) {
-          follower.followPath(paths.Align1,true);
           setOtkServoPos(ServoState.CLOSED);
           OtkMotor.setPower(0);
-          setPathState(PathState.INTAKE1);
+          follower.followPath(paths.ALIGN2,true);
+          setPathState(PathState.INTAKE2);
         } break;
-      case INTAKE1:
+      case INTAKE2:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Intake1);
+          ItkMotor.setPower(1);
+          follower.followPath(paths.INTAKE2);
           setPathState(PathState.OUTTAKE2);
         } break;
       case OUTTAKE2:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Outtake2,true);
           OtkMotor.setPower(0.67);
+          ItkMotor.setPower(0);
+          follower.followPath(paths.OUTTAKE2, true);
           setPathState(PathState.FIRE2);
         } break;
       case FIRE2:
         if(!follower.isBusy()) {
           setOtkServoPos(ServoState.OPEN);
-          setPathState(PathState.ALIGN2);
+//          pathNum++;
+          setPathState(PathState.ALIGN3);
         } break;
-      case ALIGN2:
+      case ALIGN3:
         if(pathTimer.getElapsedTimeSeconds() > 2) {
-          follower.followPath(paths.Align2,true);
           setOtkServoPos(ServoState.CLOSED);
           OtkMotor.setPower(0);
-          setPathState(PathState.INTAKE2);
+          follower.followPath(paths.ALIGN3,true);
+          setPathState(PathState.INTAKE3);
         } break;
-      case INTAKE2:
+      case INTAKE3:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Intake2);
+          ItkMotor.setPower(1);
+          follower.followPath(paths.INTAKE3);
           setPathState(PathState.OUTTAKE3);
         } break;
       case OUTTAKE3:
         if(!follower.isBusy()) {
-          follower.followPath(paths.Outtake3, true);
           OtkMotor.setPower(0.67);
+          ItkMotor.setPower(0);
+          follower.followPath(paths.OUTTAKE3, true);
           setPathState(PathState.FIRE3);
         } break;
       case FIRE3:
         if(!follower.isBusy()) {
           setOtkServoPos(ServoState.OPEN);
-          setPathState(PathState.ALIGN3);
-        } break;
-      case ALIGN3:
-        if(pathTimer.getElapsedTimeSeconds() > 2) {
-          follower.followPath(paths.Align3,true);
-          setOtkServoPos(ServoState.CLOSED);
-          OtkMotor.setPower(0);
-          setPathState(PathState.INTAKE3);
-        } break;
-      case INTAKE3:
-        if(!follower.isBusy()) {
-          follower.followPath(paths.Intake3);
-          setPathState(PathState.OUTTAKE4);
-        } break;
-      case OUTTAKE4:
-        if(!follower.isBusy()) {
-          follower.followPath(paths.Outtake4, true);
-          OtkMotor.setPower(0.67);
-          setPathState(PathState.FIRE4);
-        } break;
-      case FIRE4:
-        if(!follower.isBusy()) {
-          setOtkServoPos(ServoState.OPEN);
+//          pathNum++;
           setPathState(PathState.ALIGN4);
         } break;
       case ALIGN4:
         if(pathTimer.getElapsedTimeSeconds() > 2) {
-          follower.followPath(paths.EndAlign, true);
           setOtkServoPos(ServoState.CLOSED);
           OtkMotor.setPower(0);
+          follower.followPath(paths.ALIGN4, true);
           setPathState(PathState.END);
-        } break;
-      case END:
-        if(!follower.isBusy()) {
-          setPathState(PathState.NULL);
         } break;
     }
   }
+  
+//  private PathChain path(PathType pType) {
+//    switch (pType) {
+//      case SETUP: return paths.SETUP; break;
+//      case ALIGN: switch (pathNum) {
+//        case 1: return paths.ALIGN1; break;
+//        case 2: return paths.ALIGN2; break;
+//        case 3: return paths.ALIGN3; break;
+//        case 4: return paths.ALIGN4; break;
+//      } break;
+//      case INTAKE: switch (pathNum) {
+//        case 1: return paths.INTAKE1; break;
+//        case 2: return paths.INTAKE2; break;
+//        case 3: return paths.INTAKE3; break;
+//      } break;
+//    }
+//  }
   
   /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
   private void setPathState(PathState pState) {
@@ -414,10 +440,10 @@ public class opmode_Auto extends LinearOpMode {
   }
   
   private void setOtkServoPos(ServoState sState) {
-    OtkServo1.setPosition(
+    LServo.setPosition(
       (sState==ServoState.OPEN)?1:0
     );
-    OtkServo2.setPosition(
+    RServo.setPosition(
       (sState==ServoState.OPEN)?1:0
     );
   }
