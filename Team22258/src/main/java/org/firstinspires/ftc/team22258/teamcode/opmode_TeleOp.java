@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.6]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.7]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double currentRot;
@@ -39,6 +39,7 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private DcMotor OtkMotor;
   double OtkMP;
+  boolean OtkMS = false;
   byte b_ThrottleMode = 0;
   
   private Servo LServo;
@@ -198,7 +199,7 @@ public class opmode_TeleOp extends LinearOpMode {
     //Intake/Outtake Code
     
     //Intake
-      ItkMP = gamepad2.right_trigger;
+      ItkMP = gamepad2.left_trigger - gamepad2.right_trigger;
       ItkMotor.setPower(ItkMP);
       
     //Outtake Motor
@@ -212,8 +213,9 @@ public class opmode_TeleOp extends LinearOpMode {
           (b_ThrottleMode)
         )))))
       ;
+    OtkMS = gamepad2.leftBumperWasPressed() == (!OtkMS);
       OtkMP = //OtkMP Calc
-        (
+        (OtkMS?(1):(-1)) * (
           ((b_ThrottleMode == 0)? ( 0 ):  //Stopped
           ((b_ThrottleMode == 1)? ( k0 ): //Long Range
           ((b_ThrottleMode == 3)? ( k1 ): //Medium Range
@@ -224,16 +226,16 @@ public class opmode_TeleOp extends LinearOpMode {
       
     //Outtake Servo
       OtkSs = (gamepad2.rightBumperWasPressed())?((OtkSs==ServoState.OPEN)?ServoState.CLOSED:ServoState.OPEN):OtkSs;
-      setOtkServoPos(OtkSs);
+      setOtkServoPos();
       
   }
   
-  private void setOtkServoPos(ServoState sState) {
+  private void setOtkServoPos() {
     LServo.setPosition(
-      (sState== ServoState.OPEN)?1:0
+      (OtkSs==ServoState.OPEN)?1:0
     );
     RServo.setPosition(
-      (sState== ServoState.OPEN)?1:0
+      (OtkSs==ServoState.OPEN)?0:1
     );
   }
   
