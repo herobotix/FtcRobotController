@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.5]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.6]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double currentRot;
@@ -38,10 +38,17 @@ public class opmode_TeleOp extends LinearOpMode {
   double ItkMP;
   
   private DcMotor OtkMotor;
-  private Servo OtkServo;
   double OtkMP;
   byte b_ThrottleMode = 0;
-  boolean OtkSs = true;
+  
+  private Servo LServo;
+  private Servo RServo;
+  
+  private enum ServoState {
+    OPEN,
+    CLOSED
+  }
+  ServoState OtkSs = ServoState.CLOSED;
   
   private LIMELIGHT Limelight;
   
@@ -78,7 +85,8 @@ public class opmode_TeleOp extends LinearOpMode {
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
       OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
-      OtkServo = hardwareMap.get(Servo.class, "OtkServo");
+      LServo = hardwareMap.get(Servo.class, "LServo");
+      RServo = hardwareMap.get(Servo.class, "RServo");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
       
     // Set Robot Orientation (IMU)
@@ -215,9 +223,18 @@ public class opmode_TeleOp extends LinearOpMode {
       OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
       
     //Outtake Servo
-      OtkSs = gamepad2.rightBumperWasPressed() == (!OtkSs);
-      OtkServo.setPosition(OtkSs?(1):(0));
+      OtkSs = (gamepad2.rightBumperWasPressed())?((OtkSs==ServoState.OPEN)?ServoState.CLOSED:ServoState.OPEN):OtkSs;
+      setOtkServoPos(OtkSs);
       
+  }
+  
+  private void setOtkServoPos(ServoState sState) {
+    LServo.setPosition(
+      (sState== ServoState.OPEN)?1:0
+    );
+    RServo.setPosition(
+      (sState== ServoState.OPEN)?1:0
+    );
   }
   
   private void Fn_Telemetry() {
@@ -237,8 +254,8 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData(
         ( "Otk | " +
           (
-            (OtkServo.getPosition()==1)? ("▲ |"):
-            ("▼ |")
+            (OtkSs==ServoState.OPEN)? ("Open |"):
+            ("Closed |")
           )
         ),
         (
