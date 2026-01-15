@@ -11,7 +11,7 @@ import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.7]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.8]")
 public class opmode_TeleOp extends LinearOpMode {
   
   double currentRot;
@@ -51,7 +51,7 @@ public class opmode_TeleOp extends LinearOpMode {
       while (opModeIsActive()) {
         Limelight.Run(gamepad1, telemetry);
         Fn_Move();
-        IOtake.Fn_IOtk(gamepad1);
+        IOtake.IOtk(gamepad2);
         Fn_Telemetry();
         Fn_LoopEnd();
         
@@ -120,22 +120,30 @@ public class opmode_TeleOp extends LinearOpMode {
       if (fieldCentric) {
         powHead = gamepad1.left_stick_x * Math.sin(currentRot) + -gamepad1.left_stick_y * Math.cos(currentRot);
         powSide = gamepad1.left_stick_x * Math.cos(currentRot) + -gamepad1.left_stick_y * Math.sin(currentRot);
-        if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.NONE) {
-          targetRot = NormalizeAngle(targetRot + gamepad1.right_stick_x / (200) );
-          powTurn = NormalizeAngle(targetRot - currentRot) / (2*Math.PI);
-          //Base this on if gamepad1.right_stick_x is not 0
-        } else {
-          powTurn = Limelight.getPowTurn();
-        }
+        /*
+          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.NONE) {
+            targetRot = NormalizeAngle(targetRot + gamepad1.right_stick_x / (200) );
+            powTurn = NormalizeAngle(targetRot - currentRot) / (2*Math.PI);
+            //Base this on if gamepad1.right_stick_x is not 0
+          } else {
+            powTurn = Limelight.getPowTurn();
+          }
+        */
         
       } else {
         powHead = -gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
-        powTurn = (
-          (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? (Limelight.getPowTurn()):
-          (gamepad1.right_stick_x)
-        );
+        /*
+          powTurn = (
+            (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? (Limelight.getPowTurn()):
+              (gamepad1.right_stick_x)
+          );
+        */
       }
+      powTurn = (
+        (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? (Limelight.getPowTurn()):
+        (gamepad1.right_stick_x)
+      );
       
     //Processing
       Fn_MoveProcessing();

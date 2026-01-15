@@ -26,7 +26,7 @@ public class IOTAKE {
     NONE,
     SHORT,
     MEDIUM,
-    LONG,
+    LONG
   }
   double NONE = 0.00, SHORT = 0.67, MEDIUM = 0.76, LONG = 0.93;
   
@@ -64,7 +64,7 @@ public class IOTAKE {
     ItkMP = power;
   }
   
-  public void Fn_IOtk(Gamepad gamepad2) {
+  public void IOtk(Gamepad gamepad2) {
     //Intake/Outtake Code
     
     //Intake
