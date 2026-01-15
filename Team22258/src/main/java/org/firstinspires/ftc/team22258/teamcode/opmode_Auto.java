@@ -18,6 +18,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
+import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
 @Autonomous(name = "Opmode (Auto) [1.2.4]", group = "Autonomous")

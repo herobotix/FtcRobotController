@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team22258.teamcode;
+package org.firstinspires.ftc.team22258.teamcode.classes;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import java.util.List;
@@ -56,10 +55,6 @@ public class LIMELIGHT {
     //Initialize Limelight
     limelight.pipelineSwitch(0);
     limelight.start();
-  }
-  
-  public LIMELIGHT() {
-  
   }
   
   public void Run(Gamepad gamepad1, Telemetry telemetry) {
@@ -110,6 +105,36 @@ public class LIMELIGHT {
       telemetry.addLine();
     }
     
+  }
+  
+  public void doTelemetry(Telemetry telemetry, boolean fieldCentric) {
+    
+    telemetry.addLine("Miscellaneous ─");
+    telemetry.addData(
+      (
+        "Centricity"
+      ),
+      (
+        (
+          fieldCentric? (
+            (getTargetLock() != LIMELIGHT.TargetLock.NONE)? ("Focus"):
+              ("Field")
+          ):
+            (getTargetLock() != LIMELIGHT.TargetLock.NONE)? ("Target"):
+              ("Robot")
+        ) + "-Centric"
+      )
+    );
+    telemetry.addData(
+      (
+        "Selected Target"
+      ),
+      (
+        (getTargetLock() == LIMELIGHT.TargetLock.BLUE)? ("20 ─ Blue"):
+          (getTargetLock() == LIMELIGHT.TargetLock.RED)? ("24 ─ RED"):
+            ("NONE")
+      )
+    );
   }
   
   public void Stop() {

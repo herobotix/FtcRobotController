@@ -5,9 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
+import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 
 
 @TeleOp(name = "Opmode (TeleOp) [1.2.7]")
@@ -34,24 +35,8 @@ public class opmode_TeleOp extends LinearOpMode {
   
   double powHead, powSide, powTurn;
   
-  private DcMotor ItkMotor;
-  double ItkMP;
-  
-  private DcMotor OtkMotor;
-  double OtkMP;
-  boolean OtkMS = false;
-  byte b_ThrottleMode = 0;
-  
-  private Servo LServo;
-  private Servo RServo;
-  
-  private enum ServoState {
-    OPEN,
-    CLOSED
-  }
-  ServoState OtkSs = ServoState.CLOSED;
-  
   private LIMELIGHT Limelight;
+  private IOTAKE IOtake;
   
   @Override
   public void runOpMode() {
@@ -66,7 +51,7 @@ public class opmode_TeleOp extends LinearOpMode {
       while (opModeIsActive()) {
         Limelight.Run(gamepad1, telemetry);
         Fn_Move();
-        Fn_IOtk();
+        IOtake.Fn_IOtk(gamepad1);
         Fn_Telemetry();
         Fn_LoopEnd();
         
@@ -84,10 +69,6 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
       BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
-      ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
-      OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
-      LServo = hardwareMap.get(Servo.class, "LServo");
-      RServo = hardwareMap.get(Servo.class, "RServo");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
       
     // Set Robot Orientation (IMU)
@@ -106,12 +87,12 @@ public class opmode_TeleOp extends LinearOpMode {
       FRMotor.setDirection(DcMotor.Direction.FORWARD);
       BLMotor.setDirection(DcMotor.Direction.FORWARD);
       BRMotor.setDirection(DcMotor.Direction.FORWARD);
-      ItkMotor.setDirection(DcMotor.Direction.REVERSE);
-      OtkMotor.setDirection(DcMotor.Direction.REVERSE);
-      OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     
+    // Classes
       Limelight = new LIMELIGHT();
       Limelight.Init(hardwareMap);
+      IOtake = new IOTAKE();
+      IOtake.Init(hardwareMap);
     
   }
   
@@ -195,54 +176,10 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private void Fn_IOtk() {
-    //Intake/Outtake Code
-    
-    //Intake
-      ItkMP = gamepad2.left_trigger - gamepad2.right_trigger;
-      ItkMotor.setPower(ItkMP);
-      
-    //Outtake Motor
-     /*Vars*/ double k0 = 0.67, k1 = 0.76, k2 = 0.93;
-      b_ThrottleMode = //Toggle Throttle Mode
-        (byte) (
-          ((gamepad2.x)? ( 0 ):
-          ((gamepad2.y)? ( 1 ):
-          ((gamepad2.b)? ( 2 ):
-          ((gamepad2.a)? ( 3 ):
-          (b_ThrottleMode)
-        )))))
-      ;
-    OtkMS = gamepad2.leftBumperWasPressed() == (!OtkMS);
-      OtkMP = //OtkMP Calc
-        (OtkMS?(1):(-1)) * (
-          ((b_ThrottleMode == 0)? ( 0 ):  //Stopped
-          ((b_ThrottleMode == 1)? ( k0 ): //Long Range
-          ((b_ThrottleMode == 3)? ( k1 ): //Medium Range
-          ( k2 )                          //Short Range
-        ))))
-      ;
-      OtkMotor.setPower(OtkMP); //Set Outtake Motor Power
-      
-    //Outtake Servo
-      OtkSs = (gamepad2.rightBumperWasPressed())?((OtkSs==ServoState.OPEN)?ServoState.CLOSED:ServoState.OPEN):OtkSs;
-      setOtkServoPos();
-      
-  }
-  
-  private void setOtkServoPos() {
-    LServo.setPosition(
-      (OtkSs==ServoState.OPEN)?1:0
-    );
-    RServo.setPosition(
-      (OtkSs==ServoState.OPEN)?0:1
-    );
-  }
-  
   private void Fn_Telemetry() {
-    //Telemetry Data
+    // Telemetry Data
       
-    //Movement
+    // Movement
       telemetry.addLine("Movement ─");
       telemetry.addData("Head Power",powHead);
       telemetry.addData("Side Power",powSide);
@@ -251,56 +188,11 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Current currentRot", currentRot);
       telemetry.addLine();
       
-    //IO-take
-      telemetry.addLine("IOtk ─");
-      telemetry.addData(
-        ( "Otk | " +
-          (
-            (OtkSs==ServoState.OPEN)? ("Open |"):
-            ("Closed |")
-          )
-        ),
-        (
-          (
-            (b_ThrottleMode == 0)? ( "Short" ):
-            (b_ThrottleMode == 1)? ( "Medium" ):
-            (b_ThrottleMode == 2)? ( "Long" ):
-            ( "None" )
-          ) + "\"Range\""
-        )
-      );
-      telemetry.addLine("\"No Intake Connected\"");
-      telemetry.addLine();
+    // Classes
+      Limelight.doTelemetry(telemetry, fieldCentric);
+      IOtake.doTelemetry(telemetry);
       
-    //Misc
-      telemetry.addLine("Miscellaneous ─");
-      telemetry.addData(
-        (
-          "Centricity"
-        ),
-        (
-          (
-            fieldCentric? (
-              (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? ("Focus"):
-              ("Field")
-            ):
-            (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? ("Target"):
-            ("Robot")
-          ) + "-Centric"
-        )
-      );
-      telemetry.addData(
-        (
-          "Selected Target"
-        ),
-        (
-          (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE)? ("20 ─ Blue"):
-          (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED)? ("24 ─ RED"):
-          ("NONE")
-        )
-      );
-      
-    //End Code
+    // End Code
       telemetry.update();
       
   }
@@ -312,11 +204,11 @@ public class opmode_TeleOp extends LinearOpMode {
         FRMP =
         BLMP =
         BRMP =
-        ItkMP =
-        OtkMP =
         (0)
       ;
       Limelight.setPowTurn(0);
+      IOtake.setFlywheelSpeed(0.);
+      IOtake.setIntakeMotorPower(0.);
   }
   
   private void Fn_OnStop() {
