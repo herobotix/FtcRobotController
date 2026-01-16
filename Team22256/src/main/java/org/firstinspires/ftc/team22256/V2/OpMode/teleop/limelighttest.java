@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.team22256.teleop;
+package org.firstinspires.ftc.team22256.V2.OpMode.Teleop;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.bylazar.configurables.annotations.Configurable;
