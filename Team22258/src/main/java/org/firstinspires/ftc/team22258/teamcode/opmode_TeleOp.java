@@ -9,9 +9,11 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
+import com.bylazar.configurables.annotations.Configurable;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.8]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.9]")
+@Configurable
 public class opmode_TeleOp extends LinearOpMode {
   
   double currentRot;
@@ -104,9 +106,9 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private double NormalizeAngle(double iAngle) {
+  /*private double NormalizeAngle(double iAngle) {
     return (( iAngle + Math.PI ) % ( 2 * Math.PI )) - Math.PI;
-  }
+  }*/
   
   private void Fn_Move() {
     //Movement Code
@@ -121,7 +123,7 @@ public class opmode_TeleOp extends LinearOpMode {
         powHead = gamepad1.left_stick_x * Math.sin(currentRot) + -gamepad1.left_stick_y * Math.cos(currentRot);
         powSide = gamepad1.left_stick_x * Math.cos(currentRot) + -gamepad1.left_stick_y * Math.sin(currentRot);
         /*
-          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.NONE) {
+          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
             targetRot = NormalizeAngle(targetRot + gamepad1.right_stick_x / (200) );
             powTurn = NormalizeAngle(targetRot - currentRot) / (2*Math.PI);
             //Base this on if gamepad1.right_stick_x is not 0
@@ -135,13 +137,13 @@ public class opmode_TeleOp extends LinearOpMode {
         powSide = gamepad1.left_stick_x;
         /*
           powTurn = (
-            (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? (Limelight.getPowTurn()):
+            (Limelight.getTargetLock() != LIMELIGHT.TargetLock.OFF)? (Limelight.getPowTurn()):
               (gamepad1.right_stick_x)
           );
         */
       }
       powTurn = (
-        (Limelight.getTargetLock() != LIMELIGHT.TargetLock.NONE)? (Limelight.getPowTurn()):
+        (Limelight.getTargetLock() != LIMELIGHT.TargetLock.OFF)? (Limelight.getPowTurn()):
         (gamepad1.right_stick_x)
       );
       
@@ -215,7 +217,7 @@ public class opmode_TeleOp extends LinearOpMode {
         (0)
       ;
       Limelight.setPowTurn(0);
-      IOtake.setFlywheelSpeed(0.);
+      IOtake.setFlywheelPower(0.);
       IOtake.setIntakeMotorPower(0.);
   }
   

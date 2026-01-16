@@ -1,45 +1,50 @@
 package org.firstinspires.ftc.team22258.teamcode.classes;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Configurable
 public class IOTAKE {
   
+  // Definitions
   
-  private DcMotor ItkMotor;
-  double ItkMP;
-  
-  private DcMotor OtkMotor;
-  double flywheelSpeed;
-  
-  private enum FlywheelDirection {
-    FORWARDS,
-    BACKWARDS
-  }
-  FlywheelDirection flywheelDirection = FlywheelDirection.FORWARDS;
-  
-  public enum FlywheelState {
-    NONE,
-    SHORT,
-    MEDIUM,
-    LONG
-  }
-  double NONE = 0.00, SHORT = 0.67, MEDIUM = 0.76, LONG = 0.93;
-  
-  private FlywheelState flywheelState;
-  
-  private Servo LServo;
-  private Servo RServo;
-  
-  private enum ServoState {
-    OPEN,
-    CLOSED
-  }
-  ServoState OtkSs = ServoState.CLOSED;
+    public enum FlywheelState {
+      OFF,
+      MIN,
+      MID,
+      MAX
+    }
+    public static double
+      OFF = 0.00,
+      MIN = 0.67,
+      MID = 0.76,
+      MAX = 0.93
+    ;
+    
+    boolean flywheelDirection = true;
+    private FlywheelState flywheelState;
+    
+    private DcMotor ItkMotor;
+    double ItkMP;
+    
+    private DcMotor OtkMotor;
+    double flywheelPower;
+    
+    
+    
+    private Servo LServo;
+    private Servo RServo;
+    
+    private enum ServoState {
+      OPEN,
+      CLOSED
+    }
+    ServoState OtkSs = ServoState.CLOSED;
   
   public void Init(HardwareMap hardwareMap) {
     // Initialization Code
@@ -57,61 +62,44 @@ public class IOTAKE {
       
   }
   
-  public void setFlywheelSpeed(double speed) {
-    flywheelSpeed = speed;
-  }
-  public void setIntakeMotorPower(double power) {
-    ItkMP = power;
-  }
+  public void setFlywheelPower(double speed) { flywheelPower = speed; }
   
-  public void IOtk(Gamepad gamepad2) {
+  public void setIntakeMotorPower(double power) { ItkMP = power; }
+  
+  public void IOtk(Gamepad gamepad) {
     //Intake/Outtake Code
     
     //Intake
-      ItkMP = gamepad2.left_trigger - gamepad2.right_trigger;
-      ItkMotor.setPower(ItkMP);
+      setIntakeMotorPower( gamepad.left_trigger - gamepad.right_trigger );
     
     //Outtake Motor
-      flywheelState = ( //Toggle Throttle Mode
-        ((gamepad2.x)? ( FlywheelState.NONE ):
-          ((gamepad2.a)? ( FlywheelState.SHORT ):
-            ((gamepad2.b)? ( FlywheelState.MEDIUM ):
-              ((gamepad2.y)? ( FlywheelState.LONG ):
-                (flywheelState)
-              )
-            )
-          )
-        )
-      );
-      switch (flywheelDirection) {
-        case FORWARDS:
-          flywheelDirection = FlywheelDirection.BACKWARDS;
-          break;
-        case BACKWARDS:
-          flywheelDirection = FlywheelDirection.FORWARDS;
-          break;
-      }
+      if (gamepad.x) { flywheelState = FlywheelState .OFF ;}
+      if (gamepad.a) { flywheelState = FlywheelState .MIN ;}
+      if (gamepad.b) { flywheelState = FlywheelState .MID ;}
+      if (gamepad.y) { flywheelState = FlywheelState .MAX ;}
+      if (gamepad.leftBumperWasPressed()) flywheelDirection = !flywheelDirection;
       switch(flywheelState) {
-        case NONE:
-          flywheelSpeed = NONE;
-          break;
-        case SHORT:
-          flywheelSpeed = SHORT;
-          break;
-        case MEDIUM:
-          flywheelSpeed = MEDIUM;
-          break;
-        case LONG:
-          flywheelSpeed = LONG;
-          break;
+        case OFF: flywheelPower = OFF; break;
+        case MIN: flywheelPower = MIN; break;
+        case MID: flywheelPower = MID; break;
+        case MAX: flywheelPower = MAX; break;
       }
-      flywheelSpeed = flywheelSpeed * ((flywheelDirection == FlywheelDirection.FORWARDS)?(1):(-1));
+      flywheelPower = flywheelPower * (flywheelDirection?1:-1);
     
-    //Set Flywheel Power
-      OtkMotor.setPower(flywheelSpeed);
+    // Set Flywheel Power
+      OtkMotor.setPower(flywheelPower);
+      
+    // Set Intake Power
+      ItkMotor.setPower(ItkMP);
       
     //Outtake Servo
-      OtkSs = (gamepad2.rightBumperWasPressed())?((OtkSs== ServoState.OPEN)? ServoState.CLOSED: ServoState.OPEN):OtkSs;
+      OtkSs =
+        (gamepad.rightBumperWasPressed())?
+          ((OtkSs == ServoState .OPEN )? (ServoState .CLOSED ):
+          (ServoState .OPEN )
+        ):
+        (OtkSs)
+      ;
       setOtkServoPos();
     
   }
@@ -145,9 +133,9 @@ public class IOTAKE {
         ),
         (
           (
-            (flywheelState == FlywheelState.SHORT)? ( "Short Range" ):
-              (flywheelState == FlywheelState.MEDIUM)? ( "Medium Range" ):
-                (flywheelState == FlywheelState.LONG)? ( "Long Range" ):
+            (flywheelState == FlywheelState.MIN)? ( "Short Range" ):
+              (flywheelState == FlywheelState.MID)? ( "Medium Range" ):
+                (flywheelState == FlywheelState.MAX)? ( "Long Range" ):
                   ( "OFF" )
           )
         )
