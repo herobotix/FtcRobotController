@@ -40,11 +40,13 @@ public class Intake implements Subsystem {
             .requires(this);
     public Command outtaking = new LambdaCommand()
             .setStart(() -> intake.setPower(outtakePower))
-            .setIsDone(() -> true);
+            .setIsDone(() -> true)
+            .requires(this);
 
     public Command stop = new LambdaCommand()
             .setStart(() -> intake.setPower(stopPower))
-            .setIsDone(() -> true);
+            .setIsDone(() -> true)
+            .requires(this);
     public double getIntakePower() {
         return intakePower;
     }
