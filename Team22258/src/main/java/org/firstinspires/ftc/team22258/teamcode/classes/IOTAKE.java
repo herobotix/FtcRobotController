@@ -27,7 +27,7 @@ public class IOTAKE {
     ;
     
     boolean flywheelDirection = true;
-    private FlywheelState flywheelState;
+    private FlywheelState flywheelState = FlywheelState.OFF;
     
     private DcMotor ItkMotor;
     double ItkMP;
