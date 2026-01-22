@@ -12,7 +12,7 @@ import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.9]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.10]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   
@@ -122,25 +122,9 @@ public class opmode_TeleOp extends LinearOpMode {
       if (fieldCentric) {
         powHead = gamepad1.left_stick_x * Math.sin(currentRot) + -gamepad1.left_stick_y * Math.cos(currentRot);
         powSide = gamepad1.left_stick_x * Math.cos(currentRot) + -gamepad1.left_stick_y * Math.sin(currentRot);
-        /*
-          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
-            targetRot = NormalizeAngle(targetRot + gamepad1.right_stick_x / (200) );
-            powTurn = NormalizeAngle(targetRot - currentRot) / (2*Math.PI);
-            //Base this on if gamepad1.right_stick_x is not 0
-          } else {
-            powTurn = Limelight.getPowTurn();
-          }
-        */
-        
       } else {
         powHead = -gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
-        /*
-          powTurn = (
-            (Limelight.getTargetLock() != LIMELIGHT.TargetLock.OFF)? (Limelight.getPowTurn()):
-              (gamepad1.right_stick_x)
-          );
-        */
       }
       powTurn = (
         (Limelight.getTargetLock() != LIMELIGHT.TargetLock.OFF)? (Limelight.getPowTurn()):

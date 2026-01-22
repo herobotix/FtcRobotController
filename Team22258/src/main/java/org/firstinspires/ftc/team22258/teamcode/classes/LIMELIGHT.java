@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team22258.teamcode.classes;
 
+
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -12,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import java.util.List;
 
+@Configurable
 public class LIMELIGHT {
   
   // Definitions
@@ -27,6 +30,7 @@ public class LIMELIGHT {
     private IMU rIMU;
     
     double powTurn;
+    public static double powTurnMod = 15;
     
   // Main Functions
     
@@ -76,7 +80,7 @@ public class LIMELIGHT {
                 (24)
               ))
             ) {
-              powTurn = aprilTagXRot * (20);
+              powTurn = aprilTagXRot * powTurnMod;
               telemetry.addData("Target Rotation", powTurn);
             } else {
               powTurn = 0;
