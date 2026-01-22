@@ -6,12 +6,13 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 
 public class Limelight implements Subsystem {
 
-    public static final Limelight INSTANCE = new Limelight();
+    public  final static Limelight INSTANCE = new Limelight();
 
-    private Limelight3A limelight;
+    private static Limelight3A limelight;
     private Limelight(){}
 
     public Command intializeLimelight(){
@@ -32,9 +33,16 @@ public class Limelight implements Subsystem {
                 .setIsDone(() -> true)
                 .requires(this);
     }
-    public double getTx(){
+    public static double getTx(){
         LLResult llResult = limelight.getLatestResult();
         return (llResult != null && llResult.isValid() ? llResult.getTx() : Double.NaN);
+    }
+
+    @Override
+    public void initialize(){
+        if (limelight != null) limelight.start();
+        limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(0);
     }
 
 }
