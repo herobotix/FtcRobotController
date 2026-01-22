@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 public class ColorSensorTest extends LinearOpMode {
 
-NormalizedColorSensor sensor;
+NormalizedColorSensor sensor6, sensor1, sensor2, sensor3, sensor4, sensor5;
 public enum COLOR_DETECTED{
     RED,
     GREEN,
@@ -24,7 +24,14 @@ public enum COLOR_DETECTED{
     @Override
     public void runOpMode() {
 
-        sensor = hardwareMap.get(NormalizedColorSensor.class,"color1");
+        sensor1 = hardwareMap.get(NormalizedColorSensor.class,"clr-1");
+        sensor2 = hardwareMap.get(NormalizedColorSensor.class,"clr-2");
+        sensor3 = hardwareMap.get(NormalizedColorSensor.class,"clr-3");
+        sensor4 = hardwareMap.get(NormalizedColorSensor.class,"clr-4");
+        sensor5 = hardwareMap.get(NormalizedColorSensor.class,"clr-5");
+        sensor6 = hardwareMap.get(NormalizedColorSensor.class,"clr-6");
+
+
 
 
         telemetry.addData("Status", "Initialized");
@@ -32,26 +39,24 @@ public enum COLOR_DETECTED{
         waitForStart();
 
         while (opModeIsActive()) {
-            NormalizedRGBA colors = sensor.getNormalizedColors();
-            float red = colors.red;
-            float green = colors.green;
-            float blue = colors.blue;
-            float alpha = colors.alpha;
-
-            float normRed = red / alpha;
-            float normBlue = blue / alpha;
-            float normGreen = green / alpha;
+            NormalizedRGBA colors1 = sensor1.getNormalizedColors();
+            NormalizedRGBA colors2 = sensor2.getNormalizedColors();
+            NormalizedRGBA colors3 = sensor3.getNormalizedColors();
+            NormalizedRGBA colors4 = sensor4.getNormalizedColors();
+            NormalizedRGBA colors5 = sensor5.getNormalizedColors();
+            NormalizedRGBA colors6 = sensor6.getNormalizedColors();
 
 
 
 
-            telemetry.addData("RED",red);
-            telemetry.addData("GREEN",green);
-            telemetry.addData("BLUE",blue);
-            telemetry.addData("ALPHA",alpha);
-            telemetry.addData("NORM RED",normRed);
-            telemetry.addData("NORM GREEN",normGreen);
-            telemetry.addData("NORM BLUE",normBlue);
+
+
+            telemetry.addData("clr 1:",colors1.blue);
+            telemetry.addData("clr 2:",colors2.blue);
+            telemetry.addData("clr 3:",colors3.blue);
+            telemetry.addData("clr 4:",colors4.blue);
+            telemetry.addData("clr 5:",colors5.blue);
+            telemetry.addData("clr 6:",colors6.blue);
             telemetry.update();
 
         }
