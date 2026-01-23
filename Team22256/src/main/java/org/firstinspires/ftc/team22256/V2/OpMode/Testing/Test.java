@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team22256.V2.OpMode.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Intake;
+import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Sorter;
 
 import dev.nextftc.bindings.BindingManager;
 import dev.nextftc.core.components.BindingsComponent;
@@ -28,7 +29,7 @@ public class Test extends NextFTCOpMode {
     public Test(){
         addComponents(
                 BindingsComponent.INSTANCE,
-                new SubsystemComponent(Intake.INSTANCE)
+                new SubsystemComponent(Intake.INSTANCE, Sorter.INSTANCE)
         );
     }
 
@@ -52,18 +53,21 @@ public class Test extends NextFTCOpMode {
         );
 
         Gamepads.gamepad1().b()
-                .whenTrue(new SetPower(frontRight,1))
-                .whenFalse(new SetPower(frontRight,0)
+                .toggleOnBecomesTrue()
+                .whenBecomesTrue(Sorter.RK_Up)
+                .whenBecomesFalse(Sorter.RK_Down
                 );
 
         Gamepads.gamepad1().x()
-                .whenTrue(new SetPower(backRight,1))
-                .whenFalse(new SetPower(backRight,0)
+                .toggleOnBecomesTrue()
+                .whenBecomesTrue(Sorter.LK_Up)
+                .whenBecomesFalse(Sorter.LK_Down
                 );
 
         Gamepads.gamepad1().y()
-                .whenTrue(new SetPower(backLeft,1))
-                .whenFalse(new SetPower(backLeft,0)
+                .toggleOnBecomesTrue()
+                .whenBecomesTrue(Sorter.BK_Up)
+                .whenBecomesFalse(Sorter.BK_Down
                 );
 
     }
