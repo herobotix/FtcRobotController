@@ -18,7 +18,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Red) [1.2.5]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.5]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   
