@@ -10,25 +10,37 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.List;
 
 @Configurable
 public class LIMELIGHT {
+  // Limelight Class
   
-  // Definitions
-    public enum TargetLock {
-      OFF,
-      RED,
-      BLUE
-    }
-    
-    private TargetLock targetLock = TargetLock .OFF ;
-    
+  // Hardware Definitions
     private Limelight3A limelight;
     private IMU rIMU;
     
+  // Target Lock Definitions
+    public enum TargetLock {
+      OFF(-1),
+      RED(20),
+      BLUE(24);
+      
+      private final int value;
+      TargetLock(int value){
+        this.value = value;
+      }
+      
+      public int getValue() {
+        return value;
+      }
+      
+    }
+    private TargetLock targetLock = TargetLock .OFF ;
+    
+  // Turn Power Definitions
     double powTurn;
     public static double powTurnMod = 15;
     
@@ -56,36 +68,32 @@ public class LIMELIGHT {
           targetLock = (
             (targetLock == TargetLock .OFF )? ( TargetLock .BLUE ):
             (targetLock == TargetLock .BLUE )? ( TargetLock .RED ):
-            (TargetLock.OFF)
+            (TargetLock .OFF )
           );
         }
       
-      YawPitchRollAngles orientation = rIMU.getRobotYawPitchRollAngles();
-      limelight.updateRobotOrientation(orientation.getYaw());
-      LLResult results = limelight.getLatestResult();
+      double robotYawDegrees = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit .DEGREES );
+      limelight.updateRobotOrientation( robotYawDegrees );
+      
       telemetry.addLine("Limelight ─");
-      if (results != null && results.isValid()) {
+      
+      LLResult results = limelight.getLatestResult();
+      if (results != null && results.isValid() ) {
+        
         List<LLResultTypes.FiducialResult> fiducials = results.getFiducialResults();
-        if (!fiducials.isEmpty()) {
-          int index = 0;
+        
+        if (!fiducials.isEmpty() ) {
+          
           for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            
             int aprilTagID = fiducial.getFiducialId();
-            double aprilTagXRot = fiducial.getTargetXDegrees()/(360);
-            telemetry.addData("Detection #" + index + " ID:", aprilTagID);
-            telemetry.addData("TargetXRot", aprilTagXRot);
-            if (
-              ( targetLock != TargetLock .OFF ) &&
-              ( aprilTagID == (
-                (targetLock == TargetLock .BLUE )? (20):
-                (24)
-              ))
-            ) {
-              powTurn = aprilTagXRot * powTurnMod;
+            telemetry.addData("ID:", aprilTagID);
+            
+            if (aprilTagID == targetLock.getValue() ) {
+              powTurn = powTurnMod * fiducial.getTargetXDegrees() / 360;
               telemetry.addData("Target Rotation", powTurn);
-            } else {
-              powTurn = 0;
             }
-            index++;
+            
           }
         } else {
           telemetry.addLine("Limelight Fiducials Empty");

@@ -12,11 +12,11 @@ import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.10]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.11]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   
-  double currentRot;
+  double robotYawRadians;
   double targetRot;
   private IMU rIMU;
   
@@ -45,25 +45,25 @@ public class opmode_TeleOp extends LinearOpMode {
     //Begin
     
     //Init & Wait
-      Fn_Init();
+      OnInit();
       waitForStart();
-      Fn_OnStart();
+      OnStart();
       
     //Run Opmode
       while (opModeIsActive()) {
         Limelight.Run(gamepad1, telemetry);
+        Fn_Inputs();
         Fn_Move();
         IOtake.IOtk(gamepad2);
-        Fn_Telemetry();
-        Fn_LoopEnd();
+        doTelemetry();
+        LoopEnd();
         
       }
-      Fn_OnStop();
+      OnStop();
       
   }
   
-  
-  private void Fn_Init() {
+  private void OnInit() {
     // Initialization Code
     
     // Map Hardware
@@ -81,8 +81,8 @@ public class opmode_TeleOp extends LinearOpMode {
       rIMU.initialize(parameters);
       
     // Set Robot Rotation Value
-      currentRot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-      targetRot = currentRot;
+      robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+      targetRot = robotYawRadians;
       
     // Set Motor Behaviors
       FLMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -98,7 +98,7 @@ public class opmode_TeleOp extends LinearOpMode {
     
   }
   
-  private void Fn_OnStart() {
+  private void OnStart() {
     //Run On START
     
     //Limelight
@@ -106,39 +106,35 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  /*private double NormalizeAngle(double iAngle) {
-    return (( iAngle + Math.PI ) % ( 2 * Math.PI )) - Math.PI;
-  }*/
+  private void Fn_Inputs() {
+    // Inputs Code
+    
+    // Reset Robot Rotation Value
+      if (gamepad1.start) {rIMU.resetYaw();}
+      
+    // Inputs
+      fieldCentric = gamepad1.bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
+      powHead = -gamepad1.left_stick_y;
+      powSide = gamepad1.left_stick_x;
+      powTurn = (
+        (Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):
+        (gamepad1.right_stick_x)
+      );
+      
+  }
   
   private void Fn_Move() {
     //Movement Code
     
-    // Get/Reset Robot Rotation Value
-      if (gamepad1.start) {rIMU.resetYaw();}
-      currentRot = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+    // Get Robot Rotation Value
+      robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit .RADIANS );
       
-    // Inputs
-      fieldCentric = gamepad1.bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
+    // Field Centric
       if (fieldCentric) {
-        powHead = gamepad1.left_stick_x * Math.sin(currentRot) + -gamepad1.left_stick_y * Math.cos(currentRot);
-        powSide = gamepad1.left_stick_x * Math.cos(currentRot) + -gamepad1.left_stick_y * Math.sin(currentRot);
-      } else {
-        powHead = -gamepad1.left_stick_y;
-        powSide = gamepad1.left_stick_x;
+        powHead = powSide * Math.sin(robotYawRadians) + powHead * Math.cos(robotYawRadians);
+        powSide = powSide * Math.cos(robotYawRadians) + powHead * Math.sin(robotYawRadians);
       }
-      powTurn = (
-        (Limelight.getTargetLock() != LIMELIGHT.TargetLock.OFF)? (Limelight.getPowTurn()):
-        (gamepad1.right_stick_x)
-      );
-      
-    //Processing
-      Fn_MoveProcessing();
-      
-  }
-  
-  private void Fn_MoveProcessing() {
-    //Movement Processing Code
-      
+    
     // Drive & Strafe & Rotate
       FLMP = powHead + powSide + powTurn;
       FRMP = powHead - powSide - powTurn;
@@ -170,7 +166,7 @@ public class opmode_TeleOp extends LinearOpMode {
       
   }
   
-  private void Fn_Telemetry() {
+  private void doTelemetry() {
     // Telemetry Data
       
     // Movement
@@ -178,20 +174,20 @@ public class opmode_TeleOp extends LinearOpMode {
       telemetry.addData("Head Power",powHead);
       telemetry.addData("Side Power",powSide);
       telemetry.addData("Turn Power",powTurn);
-      telemetry.addData("Target currentRot",targetRot);
-      telemetry.addData("Current currentRot", currentRot);
+      telemetry.addData("Target Robot Yaw",targetRot / (2*Math.PI));
+      telemetry.addData("Current Robot Yaw", robotYawRadians / (2*Math.PI));
       telemetry.addLine();
       
-    // Classes
+    // Do for Classes
       Limelight.doTelemetry(telemetry, fieldCentric);
       IOtake.doTelemetry(telemetry);
       
-    // End Code
+    // Update
       telemetry.update();
       
   }
   
-  private void Fn_LoopEnd() {
+  private void LoopEnd() {
     //Loop End Code
       /* Zero Values */
         FLMP =
@@ -205,7 +201,7 @@ public class opmode_TeleOp extends LinearOpMode {
       IOtake.setIntakeMotorPower(0.);
   }
   
-  private void Fn_OnStop() {
+  private void OnStop() {
     //Run On STOP
     
     //Limelight
