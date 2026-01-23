@@ -28,12 +28,12 @@ import dev.nextftc.core.commands.groups.SequentialGroup;
 public class Sorter implements Subsystem {
     public static final Sorter INSTANCE = new Sorter();
     private Sorter(){
-        LKSL = new NormColorSensor(ActiveOpMode.hardwareMap(),"String");
-        LKSR = new NormColorSensor(ActiveOpMode.hardwareMap(),"String");
-        RKSL = new NormColorSensor(ActiveOpMode.hardwareMap(),"String");
-        RKSR = new NormColorSensor(ActiveOpMode.hardwareMap(),"String");
-        BKSL = new NormColorSensor(ActiveOpMode.hardwareMap(),"String");
-        BKSR = new NormColorSensor(ActiveOpMode.hardwareMap(),"String");
+        LKSL = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-2");
+        LKSR = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-3");
+        RKSL = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-5");
+        RKSR = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-6");
+        BKSL = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-1");
+        BKSR = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-4");
     }
     int[] colorPositions = {0,0,0,0,0,0};
     private static ServoEx LK = new ServoEx("l-kicker");
