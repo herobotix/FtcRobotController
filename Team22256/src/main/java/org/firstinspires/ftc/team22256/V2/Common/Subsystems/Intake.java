@@ -12,8 +12,8 @@ public class Intake implements Subsystem {
     private Intake(){ }
     private static MotorEx intake = new MotorEx("intake");
 
-    private static  double intakePower = 1;
-    private  static  double outtakePower = -1;
+    private static  double intakePower = -1;
+    private  static  double outtakePower = 1;
     private static final int stopPower = 0;
     private static boolean changesMade = false;
     public static enum Mode{
@@ -21,7 +21,8 @@ public class Intake implements Subsystem {
         OUTAKING,
         PAUSED;
     }
-    static Mode mode = Mode.INTAKING;
+
+    public static Mode mode;
     public static void setIntakePower(double intakePower1) {
         intakePower = intakePower1;
     }
@@ -51,11 +52,15 @@ public class Intake implements Subsystem {
     }
     public static Command changeIntakeMode(Mode mode1) {
         return new InstantCommand(() -> {
+            changesMade = false;
           mode = mode1;
         });
     }
 
-
+    @Override
+    public void initialize(){
+        mode  = Mode.PAUSED;
+    }
 
     @Override
     public void periodic(){

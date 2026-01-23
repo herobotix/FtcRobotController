@@ -46,11 +46,6 @@ public enum COLOR_DETECTED{
             NormalizedRGBA colors5 = sensor5.getNormalizedColors();
             NormalizedRGBA colors6 = sensor6.getNormalizedColors();
 
-
-
-
-
-
             telemetry.addData("clr 1:",colors1.blue);
             telemetry.addData("clr 2:",colors2.blue);
             telemetry.addData("clr 3:",colors3.blue);
