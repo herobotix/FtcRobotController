@@ -74,6 +74,8 @@ public class Turret implements Subsystem {
                     state = State.VISION;
                 }
                 break;
+            case PREDICTION:
+                //TODO use pinpoint to predict heading of april tag
         }
     }
 
