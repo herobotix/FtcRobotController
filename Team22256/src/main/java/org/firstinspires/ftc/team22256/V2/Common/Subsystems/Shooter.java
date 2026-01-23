@@ -29,10 +29,12 @@ public class Shooter implements Subsystem {
     public static boolean upToSpeed() {
         return getVelocity() >= target - tolerance;
     }
-    public static Command setFarPower(double power){
+    public static Command setFarPower(){
+        target = farPower;
         return new InstantCommand(() -> shooterMotor.setPower(farPower));
     }
-    public static Command setShortPower(double power){
+    public static Command setShortPower(){
+        target = shortPower;
         return new InstantCommand(() -> shooterMotor.setPower(shortPower));
     }
 
