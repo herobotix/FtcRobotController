@@ -1,37 +1,32 @@
 package org.firstinspires.ftc.team22256.V2.Common.Subsystems;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.MotorEx;
-import dev.nextftc.hardware.powerable.SetPower;
 
 
 public class Intake implements Subsystem {
     public static final Intake INSTANCE = new Intake();
     private Intake(){ }
-    private MotorEx intake = new MotorEx("intake");
+    private static MotorEx intake = new MotorEx("intake");
 
-    private  double intakePower = 1;
-    private  double outtakePower = -1;
-    private final int stopPower = 0;
-
-    public void setIntakePower(double intakePower) {
-        this.intakePower = intakePower;
+    private static  double intakePower = 1;
+    private  static  double outtakePower = -1;
+    private static final int stopPower = 0;
+    private static boolean changesMade = false;
+    public static enum Mode{
+        INTAKING,
+        OUTAKING,
+        PAUSED;
     }
-    public void setOuttakePower(double outtakePower){
-        this.outtakePower = outtakePower;
+    static Mode mode = Mode.INTAKING;
+    public static void setIntakePower(double intakePower1) {
+        intakePower = intakePower1;
+    }
+    public void setOuttakePower(double outtakePower1){
+        outtakePower = outtakePower1;
     }
 
     public Command intaking = new LambdaCommand()
@@ -54,9 +49,37 @@ public class Intake implements Subsystem {
     public double getOuttakePower() {
         return outtakePower;
     }
+    public static Command changeIntakeMode(Mode mode1) {
+        return new InstantCommand(() -> {
+          mode = mode1;
+        });
+    }
 
 
 
+    @Override
+    public void periodic(){
+        switch (mode){
+            case INTAKING:
+                if(!changesMade){
+                    intaking.schedule();
+                    changesMade = true;
+                }
+                break;
+            case OUTAKING:
+                if(!changesMade){
+                    outtaking.schedule();
+                    changesMade = true;
+                }
+                break;
+            case PAUSED:
+                if(!changesMade){
+                    stop.schedule();
+                    changesMade = true;
+                }
+                break;
+        }
+    }
 
 
     }
