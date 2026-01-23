@@ -54,7 +54,7 @@ public class opmode_TeleOp extends LinearOpMode {
         Limelight.Run(gamepad1, telemetry);
         Fn_Inputs();
         Fn_Move();
-        IOtake.IOtk(gamepad2);
+        IOtake.Run(gamepad2);
         doTelemetry();
         LoopEnd();
         

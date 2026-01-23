@@ -59,7 +59,7 @@ public class IOTAKE {
         
     }
     
-    public void IOtk(Gamepad gamepad) {
+    public void Run(Gamepad gamepad) {
       //Intake/Outtake Code
       
       //Intake
