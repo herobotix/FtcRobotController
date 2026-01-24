@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 public class NormColorSensor {
     NormalizedColorSensor colorSensor;
+    NormalizedRGBA colors;
     public enum COLOR_DETECTED{
         PURPLE, //1
         GREEN, //2
@@ -15,6 +16,7 @@ public class NormColorSensor {
     public NormColorSensor(HardwareMap hardwareMap,String name){
         colorSensor = hardwareMap.get(NormalizedColorSensor.class,name);
     }
+    /*
     public int getDetectedColor(){
         NormalizedRGBA colors= colorSensor.getNormalizedColors();
         float normRed = colors.red / colors.alpha;
@@ -27,9 +29,21 @@ public class NormColorSensor {
         } else{
             return 0;//none
         }
-
+    }
+    */
+    public void updateColors(){
+        colors = colorSensor.getNormalizedColors();
+    }
+    public float getRed(){
+        return colors.red;
     }
 
+    public float getBlue(){
+        return colors.blue;
+    }
+    public float getGreen(){
+        return colors.green;
+    }
 }
 
 
