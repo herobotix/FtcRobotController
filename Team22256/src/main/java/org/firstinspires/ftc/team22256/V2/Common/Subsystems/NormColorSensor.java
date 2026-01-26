@@ -7,43 +7,43 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 public class NormColorSensor {
     NormalizedColorSensor colorSensor;
     NormalizedRGBA colors;
-    public enum COLOR_DETECTED{
+    public static enum COLOR{
         PURPLE, //1
         GREEN, //2
-        NONE; //0
+        EMPTY; //0
     }
 
     public NormColorSensor(HardwareMap hardwareMap,String name){
         colorSensor = hardwareMap.get(NormalizedColorSensor.class,name);
-    }
-    /*
-    public int getDetectedColor(){
-        NormalizedRGBA colors= colorSensor.getNormalizedColors();
-        float normRed = colors.red / colors.alpha;
-        float normGreen = colors.green / colors.alpha;
-        float normBlue = colors.blue / colors.alpha;
-        if(normRed < 0 && normGreen < 0 && normBlue < 0 ){
-            return 1; //purple
-        } else if(normRed < 0 && normGreen < 0 && normBlue < 0 ){
-            return 2; //green
-        } else{
-            return 0;//none
-        }
-    }
-    */
-    public void updateColors(){
-        colors = colorSensor.getNormalizedColors();
+        colorSensor.setGain(4);
     }
     public float getRed(){
         return colors.red;
     }
-
-    public float getBlue(){
-        return colors.blue;
-    }
     public float getGreen(){
         return colors.green;
     }
+    public float getBlue(){
+        return colors.blue;
+    }
+    public void updateColors(){
+        colors = colorSensor.getNormalizedColors();
+    }
+
+    public COLOR getDetectedColor(){
+        NormalizedRGBA colors= colorSensor.getNormalizedColors();
+        float normRed = colors.red;
+        float normGreen = colors.green;
+        float normBlue = colors.blue;
+        if(normBlue > normGreen && normRed > (0.5 * normGreen) && normRed > 0.01){
+            return COLOR.PURPLE; //purple
+        } else if(normGreen > 0.03 && normGreen > (normRed + 0.01) && normGreen > (normBlue + 0.003)){
+            return COLOR.GREEN; //green
+        } else{
+            return COLOR.EMPTY;//none
+        }
+    }
+
 }
 
 
