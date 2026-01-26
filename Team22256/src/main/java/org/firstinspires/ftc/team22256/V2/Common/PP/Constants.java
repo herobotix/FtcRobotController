@@ -24,8 +24,8 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
-            //.xVelocity(60.678050123800446);
+            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .xVelocity(60.678050123800446);
 //I am pibble, wash my bellay!
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(-6.75)
