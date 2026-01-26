@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team22256.V2.OpMode.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Intake;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Limelight;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Shooter;
@@ -7,18 +9,23 @@ import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Sorter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Turret;
 
 import dev.nextftc.bindings.BindingManager;
+import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.Component;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.MotorEx;
 
+@TeleOp
 public class BlueTeleOp extends NextFTCOpMode {
     public BlueTeleOp() {
         addComponents(
+                BindingsComponent.INSTANCE,
                 new SubsystemComponent(Intake.INSTANCE, Shooter.INSTANCE, Sorter.INSTANCE, Turret.INSTANCE, Limelight.INSTANCE)
+
 
         );
     }
@@ -55,10 +62,7 @@ public class BlueTeleOp extends NextFTCOpMode {
                         .whenBecomesTrue(Intake.changeIntakeMode(Intake.Mode.OUTAKING));
 
 
-        Gamepads.gamepad2().leftBumper()
-                .whenBecomesTrue(Shooter.shoot3Short());
-        Gamepads.gamepad2().rightBumper()
-                .whenBecomesTrue(Shooter.shoot3Far());
+
 
         Gamepads.gamepad2().dpadLeft()
                 .whenBecomesTrue(Sorter.LK_Up)
