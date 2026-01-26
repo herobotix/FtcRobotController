@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team22256.V2.Common;
 
 import com.pedropathing.geometry.Pose;
 
+import org.firstinspires.ftc.team22256.V2.Common.Subsystems.NormColorSensor;
+
 public class Global {
 
     public static Pose pose = new Pose();
@@ -10,5 +12,5 @@ public class Global {
         BLUE
     }
     public static Alliance alliance = Alliance.RED;
-    public static int MotifID = 0;
+    public static NormColorSensor.COLOR[] motif = new NormColorSensor.COLOR[3];
 }
