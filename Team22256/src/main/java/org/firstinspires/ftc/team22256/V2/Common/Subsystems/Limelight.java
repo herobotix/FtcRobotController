@@ -11,9 +11,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 public class Limelight implements Subsystem {
 
     public  final static Limelight INSTANCE = new Limelight();
-
     private static Limelight3A limelight;
     private Limelight(){}
+    static LLResult llResult;
 
     public Command intializeLimelight(){
         return new LambdaCommand()
@@ -34,8 +34,7 @@ public class Limelight implements Subsystem {
                 .requires(this);
     }
     public static double getTx(){
-        LLResult llResult = limelight.getLatestResult();
-        return (llResult != null && llResult.isValid() ? llResult.getTx() : Double.NaN);
+        return (llResult.isValid() ? llResult.getTx() : Double.NaN);
     }
 
     @Override
@@ -43,6 +42,12 @@ public class Limelight implements Subsystem {
         if (limelight != null) limelight.start();
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
+
+    }
+
+    @Override
+    public void periodic(){
+         llResult = limelight.getLatestResult();
     }
 
 }
