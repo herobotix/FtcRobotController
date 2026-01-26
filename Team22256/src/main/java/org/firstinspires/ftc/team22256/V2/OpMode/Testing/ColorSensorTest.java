@@ -31,6 +31,8 @@ public enum COLOR_DETECTED{
         sensor5 = hardwareMap.get(NormalizedColorSensor.class,"clr-5");
         sensor6 = hardwareMap.get(NormalizedColorSensor.class,"clr-6");
 
+        sensor1.setGain(4);
+        sensor4.setGain(4);
 
 
 
@@ -46,9 +48,16 @@ public enum COLOR_DETECTED{
             NormalizedRGBA colors5 = sensor5.getNormalizedColors();
             NormalizedRGBA colors6 = sensor6.getNormalizedColors();
 
-            telemetry.addData("r:",colors1.red);
-            telemetry.addData("g:",colors1.green);
-            telemetry.addData("b:",colors1.blue);
+            telemetry.addData("r1:",colors1.red);
+            telemetry.addData("g1:",colors1.green);
+            telemetry.addData("b1:",colors1.blue);
+            telemetry.addData("r4",colors4.red);
+            telemetry.addData("g4",colors4.green);
+            telemetry.addData("b4",colors4.blue);
+            telemetry.addData("rA",(colors4.red + colors1.red)/2);
+            telemetry.addData("gA",(colors4.green + colors1.green)/2);
+            telemetry.addData("bA",(colors4.blue + colors1.blue)/2);
+
             telemetry.update();
 
         }
