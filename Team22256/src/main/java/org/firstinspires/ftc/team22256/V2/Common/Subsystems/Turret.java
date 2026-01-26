@@ -12,71 +12,101 @@ import com.arcrobotics.ftclib.controller.PIDController;
 public class Turret implements Subsystem {
     public static final Turret INSTANCE = new Turret();
     private Turret(){
-
-
     }
-    private MotorEx turret = new MotorEx("Turret");
-    private double currentPosition = 0;
+    private static MotorEx turret = new MotorEx("turret");
+    private static double currentPosition = 0;
+
     private double target = 0;
-    double turretOutput;
+    private double turretOutput;
     double LLresult;
     double error = 0;
     PIDController controller0 = new PIDController(kP,kI,kD);
-    public enum State{
+    public static enum State{
         VISION,
         PREDICTION,
         IDLE
     }
-    private State state = State.IDLE;
-    private static final double  TICKS_PER_REV = 1;
+    private static State state = State.VISION;
+    private static final double  TICKS_PER_REV = 418;
+    private static final double TICKS_PER_DEGREE = TICKS_PER_REV / 360;
 
-    public static final double kP = 0;
+    public static final double kP = 0.01;
     public static final double kI = 0;
     public static final double kD = 0;
     private ControlSystem turretController;
 
     public static double a2T(double degrees){
-        return degrees / TICKS_PER_REV;
+        return degrees * TICKS_PER_DEGREE;
     }
     public boolean isAiming() {
         return state == State.VISION;
     }
-    public void stopTurret() {
+    public static void stopTurret() {
         state = State.IDLE;
         turret.setPower(0.0);
     }
 
 
-    public double getTurretPosition() {
+    public static double getTurretPosition() {
         return currentPosition;
     }
+    public static boolean isAimed(){
+        if(Limelight.getTx() <3.5){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-
+    public static boolean aim(){
+        return true;
+    }
 
 
     @Override
     public void periodic() {
-        LLresult = Limelight.getTx();
-        currentPosition = turret.getCurrentPosition();
-        switch (state){
-            case VISION:
-                if(!Double.isNaN(LLresult)) {
-                    target = (a2T(LLresult)) + getTurretPosition();
-                    error = a2T(LLresult);
-                     turretOutput = controller0.calculate(currentPosition, target);
-                } else {
-                    turretOutput = 0;
-                    state = State.IDLE;
-                }
-                break;
-            case IDLE:
-                if(!Double.isNaN(LLresult)){
-                    state = State.VISION;
-                }
-                break;
-            case PREDICTION:
-                //TODO use pinpoint to predict heading of april tag
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         }
     }
 
-}
+
