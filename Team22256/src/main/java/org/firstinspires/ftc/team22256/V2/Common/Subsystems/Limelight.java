@@ -1,19 +1,27 @@
 package org.firstinspires.ftc.team22256.V2.Common.Subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+
+import java.util.List;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 
+import java.util.List;
+
 public class Limelight implements Subsystem {
 
     public  final static Limelight INSTANCE = new Limelight();
     private static Limelight3A limelight;
     private Limelight(){}
-    static LLResult llResult;
+    private static boolean targetFound = false;
+    static double tx = 0.0;
+    public static int APRIL_TAG_BLUE_ID = 20;
+    public static int APRIL_TAG_RED_ID = 24;
 
     public Command intializeLimelight(){
         return new LambdaCommand()
@@ -34,7 +42,11 @@ public class Limelight implements Subsystem {
                 .requires(this);
     }
     public static double getTx(){
-        return (llResult.isValid() ? llResult.getTx() : Double.NaN);
+        return tx;
+    }
+
+    public static boolean targetFound(){
+        return targetFound;
     }
 
     @Override
@@ -47,7 +59,26 @@ public class Limelight implements Subsystem {
 
     @Override
     public void periodic(){
-         llResult = limelight.getLatestResult();
+    /*
+        targetFound = false;
+        tx =0.0;
+
+        LLResult llResult = limelight.getLatestResult();
+        if(llResult != null && llResult.isValid()){
+            List<LLResultTypes.FiducialResult> fidcuial = llResult.getFiducialResults();
+            if(!fidcuial.isEmpty()){
+
+                for(LLResultTypes.FiducialResult fidcial : fidcuial){
+                    int aprilTagId = fidcial.getFiducialId();
+
+                    if(aprilTagId == APRIL_TAG_BLUE_ID){
+                        targetFound = true;
+                        tx = fidcial.getFiducialId();
+                    }
+                }
+            }
+        }
+        */
     }
 
 }
