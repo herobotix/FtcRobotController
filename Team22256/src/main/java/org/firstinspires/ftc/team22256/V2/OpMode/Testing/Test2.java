@@ -28,7 +28,7 @@ public class Test2 extends NextFTCOpMode {
     public final MotorEx frontRight = new MotorEx("frontRight");
     public final MotorEx backRight = new MotorEx("backRight")
             .reversed();//reverse
-    private DriverControlledCommand driverControlled;
+
 
     public Test2(){
         addComponents(
@@ -37,27 +37,21 @@ public class Test2 extends NextFTCOpMode {
         );
     }
 
+
+
     @Override
     public void onStartButtonPressed() {
 
-        driverControlled = new MecanumDriverControlled(
-                frontLeft,
-                frontRight,
-                backLeft,
-                backRight,
-                Gamepads.gamepad1().leftStickY().negate(),
-                Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().rightStickX()
-        );
-        driverControlled.schedule();
-
-
+        Gamepads.gamepad1().a()
+                .whenBecomesTrue(Turret.setGoal(25));
+        Gamepads.gamepad1().b()
+                .whenBecomesTrue(Turret.setGoal(-25));
 
     }
     @Override
     public void onUpdate(){
-        telemetry.addData("pos",Turret.getTurretPosition());
-        telemetry.addData("tx", Limelight.getTx());
+        telemetry.addData("pos",Turret.turret.getRawTicks());
+        telemetry.addData("goal",Turret.turretController.getGoal());
         telemetry.update();
     }
 }
