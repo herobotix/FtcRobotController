@@ -19,7 +19,7 @@ public class IOTAKE {
       MID,
       MAX
     }
-    public static double OFF = 0.00, MIN = 0.67, MID = 0.76, MAX = 0.93;
+    public static double OFF = 0.00, MIN = 0.65, MID = 0.71, MAX = 0.795;
     
     boolean flywheelDirection = true;
     private FlywheelState flywheelState = FlywheelState .OFF ;

@@ -25,8 +25,8 @@ public class LIMELIGHT {
   // Target Lock Definitions
     public enum TargetLock {
       OFF(-1),
-      RED(20),
-      BLUE(24);
+      RED(24),
+      BLUE(20);
       
       private final int value;
       TargetLock(int value){
