@@ -33,7 +33,7 @@ public class Test2 extends NextFTCOpMode {
     public Test2(){
         addComponents(
                 BindingsComponent.INSTANCE,
-                new SubsystemComponent(Turret.INSTANCE)
+                new SubsystemComponent(Turret.INSTANCE,Limelight.INSTANCE)
         );
     }
 
@@ -43,15 +43,23 @@ public class Test2 extends NextFTCOpMode {
     public void onStartButtonPressed() {
 
         Gamepads.gamepad1().a()
-                .whenBecomesTrue(Turret.setGoal(25));
+                .whenBecomesTrue(Turret.setGoal(45));
         Gamepads.gamepad1().b()
-                .whenBecomesTrue(Turret.setGoal(-25));
+                .whenBecomesTrue(Turret.setGoal(-45));
 
     }
     @Override
     public void onUpdate(){
         telemetry.addData("pos",Turret.turret.getRawTicks());
-        telemetry.addData("goal",Turret.turretController.getGoal());
+        telemetry.addData("goal",Turret.controller0.getSetPoint());
+        telemetry.addData("tx",Limelight.getTx());
+        telemetry.addData("Target found", Limelight.targetFound());
+        telemetry.addData("Heart beat", Limelight.getHeartBeat());
+        telemetry.addData("detection counter", Limelight.getDetectionCount());
         telemetry.update();
+    }
+    @Override
+    public void onStop(){
+        Limelight.stopLimelight();
     }
 }

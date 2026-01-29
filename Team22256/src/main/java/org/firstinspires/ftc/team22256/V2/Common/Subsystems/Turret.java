@@ -54,7 +54,7 @@ public class Turret implements Subsystem {
 
     public static Command setGoal(double ticks){
         return new InstantCommand(() -> {
-            controller0.setSetPoint(ticks);
+            controller0.setSetPoint(currentPosition + ticks);
         });
     }
     public static double getTurretPosition() {
@@ -66,22 +66,21 @@ public class Turret implements Subsystem {
     @Override
     public void periodic() {
 
-        currentPosition = turret.getCurrentPosition();
-        turretOutput = controller0.calculate(currentPosition);
 
-
-        /*
         if(state == State.VISION){
 
             if(Limelight.targetFound()){
                 double tx = Limelight.getTx();
                 double ticks = a2T(tx);
-                turretController.setGoal(new KineticState(currentPosition,turret.getVelocity()));
-                turret.setPower(turretController.calculate());
+                currentPosition = turret.getCurrentPosition();
+                target = currentPosition - ticks;
+                turretOutput = controller0.calculate(currentPosition,target);
+                turret.setPower(turretOutput);
+
 
                }
             }
-        */
+
         }
     }
 

@@ -22,18 +22,16 @@ public class Limelight implements Subsystem {
     static double tx = 0.0;
     public static int APRIL_TAG_BLUE_ID = 20;
     public static int APRIL_TAG_RED_ID = 24;
-
+    public static int heartBeat = 0;
+    public static int detectionCount = 0;
     public Command intializeLimelight(){
         return new LambdaCommand()
                 .setStart(() -> limelight.start())
                 .setIsDone(() -> true)
                 .requires(this);
     }
-    public Command stopLimelight(){
-        return new LambdaCommand()
-                .setStart(() -> limelight.stop())
-                .setIsDone(() -> true)
-                .requires(this);
+    public static void stopLimelight(){
+        limelight.stop();
     }
     public Command setPipeline(int pipeline){
         return new LambdaCommand()
@@ -51,21 +49,29 @@ public class Limelight implements Subsystem {
 
     @Override
     public void initialize(){
-        if (limelight != null) limelight.start();
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
+        if (limelight != null) limelight.start();
         limelight.pipelineSwitch(0);
 
+    }
+    public static int getHeartBeat(){
+        return heartBeat;
+    }
+    public static int getDetectionCount(){
+        return detectionCount;
     }
 
     @Override
     public void periodic(){
-    /*
+
+        heartBeat++;
         targetFound = false;
         tx =0.0;
 
         LLResult llResult = limelight.getLatestResult();
         if(llResult != null && llResult.isValid()){
             List<LLResultTypes.FiducialResult> fidcuial = llResult.getFiducialResults();
+            detectionCount = fidcuial.size();
             if(!fidcuial.isEmpty()){
 
                 for(LLResultTypes.FiducialResult fidcial : fidcuial){
@@ -73,12 +79,15 @@ public class Limelight implements Subsystem {
 
                     if(aprilTagId == APRIL_TAG_BLUE_ID){
                         targetFound = true;
-                        tx = fidcial.getFiducialId();
+                        tx = fidcial.getTargetXDegrees();
                     }
                 }
             }
+        } else {
+            detectionCount = 0;
+
         }
-        */
+
     }
 
 }
