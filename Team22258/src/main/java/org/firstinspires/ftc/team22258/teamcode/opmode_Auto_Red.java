@@ -19,7 +19,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Red) [1.2.7]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Red) [1.2.8]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Red extends LinearOpMode {
   
@@ -489,7 +489,7 @@ public class opmode_Auto_Red extends LinearOpMode {
   
   private void setOtkServoPos(ServoState sState) {
     LServo.setPosition(
-      (sState==ServoState.OPEN)?1:0
+      (sState==ServoState.OPEN)?0:1
     );
     RServo.setPosition(
       (sState==ServoState.OPEN)?1:0
