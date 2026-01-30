@@ -13,13 +13,14 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Red) [1.2.8]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Red) [1.2.9]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Red extends LinearOpMode {
   
@@ -356,7 +357,7 @@ public class opmode_Auto_Red extends LinearOpMode {
       
     // Set Behaviors
       ItkMotor.setDirection(DcMotor.Direction.FORWARD);
-      OtkMotor.setDirection(DcMotor.Direction.REVERSE);
+      OtkMotor.setDirection(DcMotor.Direction.FORWARD);
       ItkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       setOtkServoPos(ServoState.OPEN);

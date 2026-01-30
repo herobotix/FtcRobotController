@@ -19,7 +19,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.8]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.9]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   
@@ -356,7 +356,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
       
     // Set Behaviors
       ItkMotor.setDirection(DcMotor.Direction.FORWARD);
-      OtkMotor.setDirection(DcMotor.Direction.REVERSE);
+      OtkMotor.setDirection(DcMotor.Direction.FORWARD);
       ItkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       setOtkServoPos(ServoState.OPEN);
