@@ -19,7 +19,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Red) [1.2.6]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Red) [1.2.7]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Red extends LinearOpMode {
   
@@ -355,7 +355,7 @@ public class opmode_Auto_Red extends LinearOpMode {
       RServo = hardwareMap.get(Servo.class, "RServo");
       
     // Set Behaviors
-      ItkMotor.setDirection(DcMotor.Direction.REVERSE);
+      ItkMotor.setDirection(DcMotor.Direction.FORWARD);
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       ItkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

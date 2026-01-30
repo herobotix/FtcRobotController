@@ -12,13 +12,14 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.6]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.7]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   
@@ -354,7 +355,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
       RServo = hardwareMap.get(Servo.class, "RServo");
       
     // Set Behaviors
-      ItkMotor.setDirection(DcMotor.Direction.REVERSE);
+      ItkMotor.setDirection(DcMotor.Direction.FORWARD);
       OtkMotor.setDirection(DcMotor.Direction.REVERSE);
       ItkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
       OtkMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
