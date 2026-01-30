@@ -19,7 +19,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.9]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.10]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   
@@ -330,9 +330,9 @@ public class opmode_Auto_Blue extends LinearOpMode {
     
     // init paths
       follower = Constants.createFollower(hardwareMap);
-      follower.setStartingPose(new Pose(flipXvalue(isBlueAlliance,56.500), 8.500, Math.toRadians(180)));
+      follower.setStartingPose(new Pose(flipXvalue(!isBlueAlliance,56.500), 8.500, Math.toRadians(180)));
       
-      paths = new Paths(follower, isBlueAlliance); // Build paths
+      paths = new Paths(follower, !isBlueAlliance); // Build paths
       pathState = PathState.SETUP;
     
     // Telemetry
