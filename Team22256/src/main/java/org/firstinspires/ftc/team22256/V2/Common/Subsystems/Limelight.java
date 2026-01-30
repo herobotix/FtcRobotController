@@ -4,6 +4,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+import org.firstinspires.ftc.team22256.V2.Common.Global;
+
 import java.util.List;
 
 import dev.nextftc.core.commands.Command;
@@ -77,10 +79,19 @@ public class Limelight implements Subsystem {
                 for(LLResultTypes.FiducialResult fidcial : fidcuial){
                     int aprilTagId = fidcial.getFiducialId();
 
-                    if(aprilTagId == APRIL_TAG_BLUE_ID){
-                        targetFound = true;
-                        tx = fidcial.getTargetXDegrees();
+                    if(Global.alliance == Global.Alliance.RED){
+                        if(aprilTagId == APRIL_TAG_RED_ID){
+                            targetFound = true;
+                            tx = fidcial.getTargetXDegrees();
+                        }
+                    } else if (Global.alliance == Global.Alliance.BLUE) {
+                        if(aprilTagId == APRIL_TAG_BLUE_ID){
+                            targetFound = true;
+                            tx = fidcial.getTargetXDegrees();
+                        }
                     }
+
+
                 }
             }
         } else {
