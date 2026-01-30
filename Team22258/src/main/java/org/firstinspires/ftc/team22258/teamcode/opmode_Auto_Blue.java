@@ -19,7 +19,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.10]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.11]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   
@@ -76,7 +76,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
         )
         .setLinearHeadingInterpolation(
           Math.toRadians(180),
-          Math.toRadians(-125.5)
+          Math.toRadians(-70)
         )
         .build();
       
@@ -95,7 +95,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-125.5),
+          Math.toRadians(-70),
           Math.toRadians(180)
         )
         .build();
@@ -137,7 +137,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
         )
         .setLinearHeadingInterpolation(
           Math.toRadians(180),
-          Math.toRadians(-125.5)
+          Math.toRadians(-70)
         )
         .build();
       
@@ -154,7 +154,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-125.5),
+          Math.toRadians(-70),
           Math.toRadians(180)
         )
         .build();
@@ -196,7 +196,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
         )
         .setLinearHeadingInterpolation(
           Math.toRadians(180),
-          Math.toRadians(-125.5)
+          Math.toRadians(-70)
         )
         .build();
       
@@ -213,7 +213,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-125.5),
+          Math.toRadians(-70),
           Math.toRadians(180)
         )
         .build();
@@ -245,7 +245,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
         )
         .setLinearHeadingInterpolation(
           Math.toRadians(180),
-          Math.toRadians(-125.5)
+          Math.toRadians(-70)
         )
         .build();
       
@@ -262,7 +262,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-125.5),
+          Math.toRadians(-70),
           Math.toRadians(90)
         )
         .build();
