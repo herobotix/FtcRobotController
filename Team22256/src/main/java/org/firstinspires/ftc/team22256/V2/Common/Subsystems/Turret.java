@@ -8,8 +8,9 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.MotorEx;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.bylazar.configurables.annotations.Configurable;
 
-
+@Configurable
 public class Turret implements Subsystem {
 
     public static ControlSystem turretController;
@@ -17,17 +18,22 @@ public class Turret implements Subsystem {
     private Turret(){
         controller0 = new PIDController(kP,kI,kD);
     }
-    public static MotorEx turret = new MotorEx("turret");
+    public static MotorEx turret = new MotorEx("turret")
+            .zeroed()
+            .brakeMode();
     private static double currentPosition = 0;
+    private static double startingPosition = 0;
+    double rightLimit;
+    double leftLimit;
 
     private double target = 0;
     double turretOutput = 0;
 
     double LLresult;
     double error = 0;
-    public static final double kP = 0.01;
-    public static final double kI = 0;
-    public static final double kD = 0;
+    public static  double kP = 0.011;
+    public static  double kI = 0;
+    public static  double kD = 0.001;
     public static PIDController controller0 = new PIDController(kP,kI,kD);
     public static enum State{
         VISION,
@@ -61,7 +67,12 @@ public class Turret implements Subsystem {
         return currentPosition;
     }
 
-
+    @Override
+    public void initialize(){
+        startingPosition = turret.getCurrentPosition();
+        rightLimit = startingPosition -80;
+        leftLimit = startingPosition + 98;
+    }
 
     @Override
     public void periodic() {
@@ -74,11 +85,18 @@ public class Turret implements Subsystem {
                 double ticks = a2T(tx);
                 currentPosition = turret.getCurrentPosition();
                 target = currentPosition - ticks;
-                turretOutput = controller0.calculate(currentPosition,target);
-                turret.setPower(turretOutput);
-
+                if(target <= rightLimit){
+                    turret.setPower(0);
+                }
+                else if( target >= leftLimit){
+                    turret.setPower(0);
+                } else {
+                    turretOutput = controller0.calculate(currentPosition, target);
+                    turret.setPower(turretOutput);
+                }
 
                }
+
             }
 
         }
