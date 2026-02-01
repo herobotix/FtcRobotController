@@ -10,9 +10,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.11]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.12]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   
@@ -39,6 +40,7 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private LIMELIGHT Limelight;
   private IOTAKE IOtake;
+  private Servo indicatorLight;
   
   @Override
   public void runOpMode() {
@@ -72,7 +74,8 @@ public class opmode_TeleOp extends LinearOpMode {
       BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
-      
+      indicatorLight = hardwareMap.get(Servo.class, "indicatorLight");
+
     // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
         RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -120,7 +123,17 @@ public class opmode_TeleOp extends LinearOpMode {
         (Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):
         (gamepad1.right_stick_x)
       );
-      
+
+      // GoBilda RGB indicator light, PWM values from GoBilda product page
+      if(indicatorLight != null) {
+          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
+              indicatorLight.setPosition(0.0);
+          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
+              indicatorLight.setPosition(0.611);
+          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
+              indicatorLight.setPosition(0.277);
+          }
+      }
   }
   
   private void Fn_Move() {
