@@ -61,6 +61,7 @@ public class Intake implements Subsystem {
     public void initialize(){
         mode  = Mode.PAUSED;
     }
+    //make sure to make intaking on start in op mode
 
     @Override
     public void periodic(){

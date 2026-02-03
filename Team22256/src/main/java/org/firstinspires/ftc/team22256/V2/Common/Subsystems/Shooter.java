@@ -65,6 +65,7 @@ public class Shooter implements Subsystem {
     public void periodic() {
         shooterLeft.setPower(-controlSystem.calculate(shooterRight.getState()));
         shooterRight.setPower(controlSystem.calculate(shooterRight.getState()));
+        target = shooterRight.getVelocity();
     }
 
 }

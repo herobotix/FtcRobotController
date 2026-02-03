@@ -11,6 +11,7 @@ public class Global {
         RED,
         BLUE
     }
-    public static Alliance alliance = Alliance.RED;
+    public static Alliance alliance = null;
     public static NormColorSensor.COLOR[] motif = new NormColorSensor.COLOR[3];
+    public static int motifIndex;
 }
