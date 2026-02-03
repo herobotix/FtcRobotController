@@ -36,20 +36,19 @@ public class Sorter implements Subsystem {
     }
 
 
+
     private static ServoEx LK = new ServoEx("l-kicker");
     private static ServoEx RK = new ServoEx("r-kicker");
     private static ServoEx BK = new ServoEx("b-kicker");
-    //private NormColorSensor LKSL;//left kicker sensor left
-    //private NormColorSensor LKSR;//left kicker sensor right
-    //private NormColorSensor RKSL;//right kicker sensor left
-    //private NormColorSensor RKSR;//right kicker sensor right
-    //private NormColorSensor BKSL;//back kicker sensor left
-    //private NormColorSensor BKSR;//back kicker sensor right
+
+
+
     private static final NormColorSensor[][] sensors = new NormColorSensor[3][2]; //3 ball slots;average the value from the 2 color sensor per spot
     private static final ServoEx[] kickers = new ServoEx[3];// 1 kicker per ball slot
-    private static NormColorSensor.COLOR[] storedColors = new NormColorSensor.COLOR[3];//1 color per ball slot
-    public static final List<Integer> kickQueue = new ArrayList<>();
-    private int queueIndex = 0;
+    public static NormColorSensor.COLOR[] storedColors = new NormColorSensor.COLOR[3];//1 color per ball slot
+    public static boolean[] scheduled = {false,false,false};
+
+
     private static final double LKDown = 0.025;
     private static final double LKUp = 0.4;
     private static final double RKDown = 0.95;
@@ -84,49 +83,16 @@ public class Sorter implements Subsystem {
             return NormColorSensor.COLOR.EMPTY;//none
         }
     }
+    //0 = left, 1 = right, 2 = back
     public static void updateAllSpots(){
         for(int i = 0; i < 3;i++){
             storedColors[i] = updateSpotColor(i);
         }
     }
 
-    private static boolean motifMatches() {
-        for (int i = 0; i < 3; i++) {
-            if (storedColors[i] != motif[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static void buildKickQueue() {
-        kickQueue.clear();
-
-        if (motifMatches()) {
-            // Motif order: slot 0 → 1 → 2
-            for (int i = 0; i < 3; i++) {
-                kickQueue.add(i);
-            }
-        } else {
-            // First shoot all PURPLES
-            for (int i = 0; i < 3; i++) {
-                if (storedColors[i] == NormColorSensor.COLOR.PURPLE) {
-                    kickQueue.add(i);
-                }
-            }
-
-            // Then shoot all GREENS
-            for (int i = 0; i < 3; i++) {
-                if (storedColors[i] == NormColorSensor.COLOR.GREEN) {
-                    kickQueue.add(i);
-                }
-            }
-        }
-    }
-
-    //0 = left, 1 = right, 2 = back
     @Override
     public void initialize(){
+
         sensors[0][0] = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-2");
         sensors[0][1] = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-3");
         sensors[1][0] = new NormColorSensor(ActiveOpMode.hardwareMap(),"clr-5");
@@ -137,7 +103,7 @@ public class Sorter implements Subsystem {
 
     @Override
     public void periodic() {
-        sensors[0][0].updateColors();
+        sensors[0][0].updateColors();//updates values from sensors
         sensors[0][1].updateColors();
         sensors[1][0].updateColors();
         sensors[1][1].updateColors();
