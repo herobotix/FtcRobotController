@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.team22256.V2.Common.Commands;
 
+import org.firstinspires.ftc.team22256.V2.Common.Global;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Intake;
+import org.firstinspires.ftc.team22256.V2.Common.Subsystems.NormColorSensor;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Shooter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Sorter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Turret;
@@ -27,31 +29,74 @@ public class ShootMotif extends Command {
 
     @Override
     public void start(){
+        //0 = left, 1 = right, 2 = back
+
         Sorter.updateAllSpots();
-        Sorter.buildKickQueue();
-        for(int i = 0;i < 3;i++){
-            if(Sorter.kickQueue.get(i) == 0){
-                new SequentialGroup(
-                        waitTillAtPRM,
-                        Sorter.LK_UpDown(),
-                        new Delay(0.1)
-                ).schedule();
-            if(Sorter.kickQueue.get(i) == 1){
-                new SequentialGroup(
-                        waitTillAtPRM,
-                        Sorter.RK_UpDown(),
-                        new Delay(0.1)
-                ).schedule();
+
+        for(int i = 0; i < 4; i++){      //i is for motif index
+            for(int j = 0; j < 4; j++){  // j is for ball slot on robot
+                if(Sorter.storedColors[j] == Global.motif[i]){  // check if one of the slots has that color
+                    if(j == 0 && !Sorter.scheduled[0]){
+                        new SequentialGroup(
+                                waitTillAtPRM,
+                                Sorter.LK_UpDown()
+                        ).schedule();
+                        Sorter.scheduled[0] = true;
+                        break;
+                    }
+                    if(j == 1 && !Sorter.scheduled[1]){
+                        new SequentialGroup(
+                                waitTillAtPRM,
+                                Sorter.RK_UpDown()
+                        ).schedule();
+                        Sorter.scheduled[1] = true;
+                        break;
+                    }
+                    if(j == 2 && !Sorter.scheduled[2]){
+                        new SequentialGroup(
+                                waitTillAtPRM,
+                                Sorter.BK_UpDown()
+                        ).schedule();
+                        Sorter.scheduled[2] = true;
+                        break;
+                    }
                 }
-            if(Sorter.kickQueue.get(i) == 2){
-                new SequentialGroup(
-                        waitTillAtPRM,
-                        Sorter.RK_UpDown(),
-                        new Delay(0.1)
-                ).schedule();
+
+            }
+        }
+
+
+        for(int j = 0; j < 4; j++){ //this loop is for catching any exceptions
+            if(!Sorter.scheduled[j] && Sorter.storedColors[j] != NormColorSensor.COLOR.EMPTY){
+                if(j == 0){
+                    new SequentialGroup(
+                            waitTillAtPRM,
+                            Sorter.LK_UpDown()
+                    ).schedule();
+                    Sorter.scheduled[0] = true;
+                    break;
+                }
+                if(j == 1){
+                    new SequentialGroup(
+                            waitTillAtPRM,
+                            Sorter.RK_UpDown()
+                    ).schedule();
+                    Sorter.scheduled[1] = true;
+                    break;
+                }
+                if(j == 2){
+                    new SequentialGroup(
+                            waitTillAtPRM,
+                            Sorter.BK_UpDown()
+                    ).schedule();
+                    Sorter.scheduled[2] = true;
+                    break;
                 }
             }
         }
+
+
+
 
     }
 
@@ -62,6 +107,9 @@ public class ShootMotif extends Command {
 
     @Override
     public void stop(boolean interrupted){
+        for(int i = 0; i < 4; i++){
+            Sorter.scheduled[i] = false;
+        }
         Intake.changeIntakeMode(Intake.Mode.INTAKING);
     }
 }
