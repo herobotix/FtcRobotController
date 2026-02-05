@@ -59,12 +59,16 @@ public class Shooter implements Subsystem {
             })
             .setIsDone(() -> true);
 
-
+    @Override
+    public void initialize(){
+        controlSystem.setGoal(new KineticState(0,0));
+    }
 
     @Override
     public void periodic() {
         shooterLeft.setPower(-controlSystem.calculate(shooterRight.getState()));
         shooterRight.setPower(controlSystem.calculate(shooterRight.getState()));
+
         target = shooterRight.getVelocity();
     }
 
