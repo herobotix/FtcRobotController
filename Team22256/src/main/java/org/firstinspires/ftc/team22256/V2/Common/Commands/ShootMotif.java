@@ -33,8 +33,8 @@ public class ShootMotif extends Command {
 
         Sorter.updateAllSpots();
 
-        for(int i = 0; i < 4; i++){      //i is for motif index
-            for(int j = 0; j < 4; j++){  // j is for ball slot on robot
+        for(int i = 0; i < 3; i++){      //i is for motif index
+            for(int j = 0; j < 3; j++){  // j is for ball slot on robot
                 if(Sorter.storedColors[j] == Global.motif[i]){  // check if one of the slots has that color
                     if(j == 0 && !Sorter.scheduled[0]){
                         new SequentialGroup(
@@ -66,7 +66,7 @@ public class ShootMotif extends Command {
         }
 
 
-        for(int j = 0; j < 4; j++){ //this loop is for catching any exceptions
+        for(int j = 0; j < 3; j++){ //this loop is for catching any exceptions
             if(!Sorter.scheduled[j] && Sorter.storedColors[j] != NormColorSensor.COLOR.EMPTY){
                 if(j == 0){
                     new SequentialGroup(
@@ -107,7 +107,7 @@ public class ShootMotif extends Command {
 
     @Override
     public void stop(boolean interrupted){
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 3; i++){
             Sorter.scheduled[i] = false;
         }
         Intake.changeIntakeMode(Intake.Mode.INTAKING);
