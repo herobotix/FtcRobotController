@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team22256.V2.Common.Commands.ShootMotif;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Intake;
+import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Limelight;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Shooter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Sorter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Turret;
@@ -34,7 +35,7 @@ public class Test extends NextFTCOpMode {
     public Test(){
         addComponents(
                 BindingsComponent.INSTANCE,
-                new SubsystemComponent(Intake.INSTANCE, Sorter.INSTANCE, Shooter.INSTANCE, Turret.INSTANCE)
+                new SubsystemComponent(Intake.INSTANCE, Sorter.INSTANCE, Shooter.INSTANCE, Turret.INSTANCE, Limelight.INSTANCE)
         );
     }
 
@@ -58,15 +59,8 @@ public class Test extends NextFTCOpMode {
                 .whenBecomesTrue(Intake.changeIntakeMode(Intake.Mode.INTAKING))
                 .whenBecomesFalse(Intake.changeIntakeMode(Intake.Mode.PAUSED)
         );
-/*
-        Gamepads.gamepad1().b()
 
-                .whenBecomesTrue(Sorter.RK_Up)
-                .whenBecomesFalse(Sorter.RK_Down
-                );
-*/
         Gamepads.gamepad1().b()
-
                 .whenBecomesTrue(new SequentialGroup(
                         Sorter.RK_UpDown(),
                         new Delay(0.2),
@@ -77,16 +71,7 @@ public class Test extends NextFTCOpMode {
 
 
                 );
-        Gamepads.gamepad1().x()
 
-                .whenBecomesTrue(Sorter.LK_Up)
-                .whenBecomesFalse(Sorter.LK_Down
-                );
-
-        Gamepads.gamepad1().y()
-                .whenBecomesTrue(Sorter.BK_Up)
-                .whenBecomesFalse(Sorter.BK_Down
-                );
         Gamepads.gamepad1().dpadRight().whenBecomesTrue(Shooter.farTriangle);
         Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Shooter.closeTriangle);
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(Intake.changeIntakeMode(Intake.Mode.OUTAKING));
