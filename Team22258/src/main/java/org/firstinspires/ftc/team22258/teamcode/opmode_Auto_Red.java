@@ -19,7 +19,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Red) [1.2.11]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Red) [1.2.12]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Red extends LinearOpMode {
   
@@ -395,6 +395,7 @@ public class opmode_Auto_Red extends LinearOpMode {
       setPathState(PathState.OUTTAKE0);
     } break;
     case OUTTAKE0:  if (!follower.isBusy()) {
+      ItkMotor.setPower(1);
       OtkMotor.setPower(0.67);
       follower.followPath(paths.OUTTAKE0,true);
       setPathState(PathState.FIRE0);
