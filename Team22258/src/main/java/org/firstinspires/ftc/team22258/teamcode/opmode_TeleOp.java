@@ -10,10 +10,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.13]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.14]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   
@@ -212,7 +211,7 @@ public class opmode_TeleOp extends LinearOpMode {
         (0)
       ;
       Limelight.setPowTurn(0);
-      IOtake.setFlywheelPower(0.);
+      IOtake.setTargetFlywheelVelocity(0.);
       IOtake.setIntakeMotorPower(0.);
   }
   
