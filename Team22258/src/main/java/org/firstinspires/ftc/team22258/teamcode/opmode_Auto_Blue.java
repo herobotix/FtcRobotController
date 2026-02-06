@@ -12,18 +12,17 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.12]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.13]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   
-  boolean isBlueAlliance = true;
+  boolean isRedAlliance = false;
   
   public static class Paths {
     
@@ -56,7 +55,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setConstantHeadingInterpolation(
-          Math.toRadians(180)
+          Math.toRadians(flipXdegrees(flipped,180))
         )
         .build();
       
@@ -75,8 +74,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(180),
-          Math.toRadians(-70)
+          Math.toRadians(flipXdegrees(flipped,180)),
+          Math.toRadians(flipXdegrees(flipped,-70))
         )
         .build();
       
@@ -95,8 +94,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-70),
-          Math.toRadians(180)
+          Math.toRadians(flipXdegrees(flipped,-70)),
+          Math.toRadians(flipXdegrees(flipped,180))
         )
         .build();
       
@@ -136,8 +135,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(180),
-          Math.toRadians(-70)
+          Math.toRadians(flipXdegrees(flipped,180)),
+          Math.toRadians(flipXdegrees(flipped,-70))
         )
         .build();
       
@@ -154,8 +153,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-70),
-          Math.toRadians(180)
+          Math.toRadians(flipXdegrees(flipped,-70)),
+          Math.toRadians(flipXdegrees(flipped,180))
         )
         .build();
       
@@ -195,8 +194,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(180),
-          Math.toRadians(-70)
+          Math.toRadians(flipXdegrees(flipped,180)),
+          Math.toRadians(flipXdegrees(flipped,-70))
         )
         .build();
       
@@ -213,8 +212,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-70),
-          Math.toRadians(180)
+          Math.toRadians(flipXdegrees(flipped,-70)),
+          Math.toRadians(flipXdegrees(flipped,180))
         )
         .build();
       
@@ -244,8 +243,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(180),
-          Math.toRadians(-70)
+          Math.toRadians(flipXdegrees(flipped,180)),
+          Math.toRadians(flipXdegrees(flipped,-70))
         )
         .build();
       
@@ -262,8 +261,8 @@ public class opmode_Auto_Blue extends LinearOpMode {
           )
         )
         .setLinearHeadingInterpolation(
-          Math.toRadians(-70),
-          Math.toRadians(90)
+          Math.toRadians(flipXdegrees(flipped,-70)),
+          Math.toRadians(flipXdegrees(flipped,90))
         )
         .build();
     }
@@ -330,9 +329,13 @@ public class opmode_Auto_Blue extends LinearOpMode {
     
     // init paths
       follower = Constants.createFollower(hardwareMap);
-      follower.setStartingPose(new Pose(flipXvalue(!isBlueAlliance,56.500), 8.500, Math.toRadians(180)));
+      follower.setStartingPose(new Pose(
+        flipXvalue(isRedAlliance,56.500),
+        8.500,
+        Math.toRadians(flipXdegrees(isRedAlliance,180))
+      ));
       
-      paths = new Paths(follower, !isBlueAlliance); // Build paths
+      paths = new Paths(follower, isRedAlliance); // Build paths
       pathState = PathState.SETUP;
     
     // Telemetry
@@ -499,5 +502,9 @@ public class opmode_Auto_Blue extends LinearOpMode {
   
   private static double flipXvalue(boolean flipped, double x) {
     return flipped? (72 - x) : x;
+  }
+  
+  private static double flipXdegrees(boolean flipped, double x) {
+    return flipped? (180 - x) : x;
   }
 }
