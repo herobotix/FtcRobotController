@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.14]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.15]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   
@@ -39,7 +40,7 @@ public class opmode_TeleOp extends LinearOpMode {
   
   private LIMELIGHT Limelight;
   private IOTAKE IOtake;
-  //private Servo indicatorLight;
+  private Servo indicatorLight;
   
   @Override
   public void runOpMode() {
@@ -61,7 +62,6 @@ public class opmode_TeleOp extends LinearOpMode {
         
       }
       OnStop();
-      
   }
   
   private void OnInit() {
@@ -73,7 +73,7 @@ public class opmode_TeleOp extends LinearOpMode {
       BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
       BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
       rIMU = hardwareMap.get(IMU.class, "rIMU");
-      //indicatorLight = hardwareMap.get(Servo.class, "indicatorLight");
+      indicatorLight = hardwareMap.get(Servo.class, "indicatorLight");
 
     // Set Robot Orientation (IMU)
       IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -123,7 +123,7 @@ public class opmode_TeleOp extends LinearOpMode {
         (gamepad1.right_stick_x)
       );
 
-      /*
+
       // GoBilda RGB indicator light, PWM values from GoBilda product page
         if(indicatorLight != null) {
             if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
@@ -131,10 +131,9 @@ public class opmode_TeleOp extends LinearOpMode {
             } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
                 indicatorLight.setPosition(0.611);
             } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
-                indicatorLight.setPosition(0.277);
+                indicatorLight.setPosition(0.29);
             }
         }
-      */
   }
   
   private void Fn_Move() {
