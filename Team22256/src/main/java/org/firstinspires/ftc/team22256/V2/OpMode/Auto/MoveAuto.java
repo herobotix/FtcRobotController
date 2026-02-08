@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.team22256.Auto;
+package org.firstinspires.ftc.team22256.V2.OpMode.Auto;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -12,30 +12,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Turret;
-import org.firstinspires.ftc.team22256.common.Methods;
 
 
 @Autonomous
 
-public class Auto extends LinearOpMode {
+public class MoveAuto extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
 
     private DcMotor backLeft,backRight,frontLeft,frontRight;
-    private DcMotorEx shooterLeft, shooterRight;
-    private DcMotor intake;
-    private DcMotor turret;
 
-    private Servo kicker;
-    private boolean toggle = false;
-    Methods robot = new Methods(hardwareMap);
 
-    public enum state{
-        DRIVE,
-        SHOOT
-    }
-    state State = state.DRIVE;
 
 
 
@@ -48,21 +36,26 @@ public class Auto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        runtime.reset();
         waitForStart();
-        Turret.state = Turret.State.IDLE;
+
         while (opModeIsActive()) {
-            Turret.state = Turret.State.VISION;
-            while(runtime.seconds() < 1.1){
+        runtime.reset();
+
+            while(runtime.seconds() < 0.5){
                 backLeft.setPower(1);
-                backRight.setPower(1);
-                frontLeft.setPower(1);
+                backRight.setPower(-1);
                 frontRight.setPower(1);
+                frontLeft.setPower(-1);
             }
 
-
             telemetry.update();
+            break;
         }
     }
 }

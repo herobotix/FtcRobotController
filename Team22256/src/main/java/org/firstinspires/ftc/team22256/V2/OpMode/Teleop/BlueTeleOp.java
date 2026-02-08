@@ -54,7 +54,7 @@ public class BlueTeleOp extends NextFTCOpMode {
                 Gamepads.gamepad1().leftStickX(),
                 Gamepads.gamepad1().rightStickX()
         );
-
+/*
         Gamepads.gamepad2().a()
                 .whenBecomesTrue(Intake.changeIntakeMode(Intake.Mode.INTAKING))
                 .whenBecomesFalse(Intake.changeIntakeMode(Intake.Mode.PAUSED));
@@ -62,6 +62,8 @@ public class BlueTeleOp extends NextFTCOpMode {
                         .whenBecomesTrue(Intake.changeIntakeMode(Intake.Mode.OUTAKING));
 
 
+
+ */
 
 
         Gamepads.gamepad2().dpadLeft()

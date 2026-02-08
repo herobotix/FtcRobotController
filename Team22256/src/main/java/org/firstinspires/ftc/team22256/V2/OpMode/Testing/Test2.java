@@ -42,10 +42,7 @@ public class Test2 extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
 
-        Gamepads.gamepad1().a()
-                .whenBecomesTrue(Turret.setGoal(45));
-        Gamepads.gamepad1().b()
-                .whenBecomesTrue(Turret.setGoal(-45));
+
 
     }
     @Override

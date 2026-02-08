@@ -50,7 +50,7 @@ public class Sorter implements Subsystem {
 
 
     private static final double LKDown = 0.025;
-    private static final double LKUp = 0.4;
+    private static final double LKUp = 0.45;
     private static final double RKDown = 0.95;
     private static final double RKUp = 0.55;
     private static final double BKDown = 0.66;
@@ -62,13 +62,13 @@ public class Sorter implements Subsystem {
     public static Command BK_Up = new InstantCommand(() -> BK.setPosition(BKUp));
     public static Command BK_Down = new InstantCommand(() -> BK.setPosition(BKDown));
     public static Command LK_UpDown(){
-        return new SequentialGroup(LK_Up,new Delay(0.2), LK_Down);
+        return new SequentialGroup(LK_Up,new Delay(0.3), LK_Down);
     }
     public static Command RK_UpDown(){
-        return new SequentialGroup(RK_Up,new Delay(0.2), RK_Down);
+        return new SequentialGroup(RK_Up,new Delay(0.3), RK_Down);
     }
     public static Command BK_UpDown(){
-        return new SequentialGroup(BK_Up,new Delay(0.2), BK_Down);
+        return new SequentialGroup(BK_Up,new Delay(0.3), BK_Down);
     }
 
     public static NormColorSensor.COLOR updateSpotColor(int spot){
@@ -103,11 +103,11 @@ public class Sorter implements Subsystem {
 
     @Override
     public void periodic() {
-        sensors[0][0].updateColors();//updates values from sensors
-        sensors[0][1].updateColors();
-        sensors[1][0].updateColors();
-        sensors[1][1].updateColors();
-        sensors[2][0].updateColors();
-        sensors[2][1].updateColors();
+        //sensors[0][0].updateColors();//updates values from sensors
+        //sensors[0][1].updateColors();
+        //sensors[1][0].updateColors();
+        //sensors[1][1].updateColors();
+        //sensors[2][0].updateColors();
+        //sensors[2][1].updateColors();
     }
 }

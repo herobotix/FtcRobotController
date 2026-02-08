@@ -17,13 +17,15 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.powerable.SetPower;
 
 
+
 public class Shooter implements Subsystem {
     static ControlSystem controlSystem;
     public static final Shooter INSTANCE = new Shooter();
     private Shooter(){
          controlSystem = ControlSystem.builder()
-                .velPid(0.0005,0,0)
-                 .basicFF(0.005)
+                .velPid(0.000001,0,0)
+                 .basicFF(0.002251
+                 )
                 .build();
          controlSystem.setGoal(new KineticState(0,0));
     }
@@ -32,10 +34,11 @@ public class Shooter implements Subsystem {
     public static final MotorEx shooterRight = new MotorEx("shooterRight");
 
     public static double target = 0;
+    public static double tolerance = 40;
 
     public static double distance;
 
-    public static double tolerance = 40;
+
     public static double getLeftVelocity() {
         return shooterLeft.getVelocity();
     }
@@ -44,12 +47,12 @@ public class Shooter implements Subsystem {
     }
 
     public static boolean upToSpeed() {
-        return (Math.abs(getLeftVelocity())+Math.abs(getRightVelocity()))/2 >= target - tolerance;
+        return getRightVelocity() >= target - tolerance;
     }
     public static Command farTriangle = new LambdaCommand()
             .setStart(() -> {
                 controlSystem.setGoal(new KineticState(0,
-                        265));
+                        270));
             });
     //short:200
 
@@ -69,7 +72,8 @@ public class Shooter implements Subsystem {
         shooterLeft.setPower(-controlSystem.calculate(shooterRight.getState()));
         shooterRight.setPower(controlSystem.calculate(shooterRight.getState()));
 
-        target = shooterRight.getVelocity();
+        target = controlSystem.getGoal().getVelocity() * 5.939707;
+
     }
 
 }

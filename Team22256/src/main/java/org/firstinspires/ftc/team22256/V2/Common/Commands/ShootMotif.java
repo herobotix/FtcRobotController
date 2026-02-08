@@ -110,6 +110,6 @@ public class ShootMotif extends Command {
         for(int i = 0; i < 3; i++){
             Sorter.scheduled[i] = false;
         }
-        Intake.changeIntakeMode(Intake.Mode.INTAKING);
+        //Intake.changeIntakeMode(Intake.Mode.INTAKING);
     }
 }

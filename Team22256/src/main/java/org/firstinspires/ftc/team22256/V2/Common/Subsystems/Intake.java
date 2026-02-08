@@ -22,7 +22,7 @@ public class Intake implements Subsystem {
         PAUSED;
     }
 
-    public static Mode mode;
+
     public static void setIntakePower(double intakePower1) {
         intakePower = intakePower1;
     }
@@ -30,19 +30,16 @@ public class Intake implements Subsystem {
         outtakePower = outtakePower1;
     }
 
-    public Command intaking = new LambdaCommand()
+    public static Command intaking = new LambdaCommand()
             .setStart(() -> intake.setPower(intakePower))
-            .setIsDone(() -> true)
-            .requires(this);
-    public Command outtaking = new LambdaCommand()
+            .setIsDone(() -> true);
+    public static Command outtaking = new LambdaCommand()
             .setStart(() -> intake.setPower(outtakePower))
-            .setIsDone(() -> true)
-            .requires(this);
+            .setIsDone(() -> true);
 
-    public Command stop = new LambdaCommand()
+    public static Command stop = new LambdaCommand()
             .setStart(() -> intake.setPower(stopPower))
-            .setIsDone(() -> true)
-            .requires(this);
+            .setIsDone(() -> true);
     public double getIntakePower() {
         return intakePower;
     }
@@ -50,42 +47,15 @@ public class Intake implements Subsystem {
     public double getOuttakePower() {
         return outtakePower;
     }
-    public static Command changeIntakeMode(Mode mode1) {
-        return new InstantCommand(() -> {
-            changesMade = false;
-          mode = mode1;
-        });
-    }
+
 
     @Override
     public void initialize(){
-        mode  = Mode.PAUSED;
+        stop.schedule();
     }
     //make sure to make intaking on start in op mode
 
-    @Override
-    public void periodic(){
-        switch (mode){
-            case INTAKING:
-                if(!changesMade){
-                    intaking.schedule();
-                    changesMade = true;
-                }
-                break;
-            case OUTAKING:
-                if(!changesMade){
-                    outtaking.schedule();
-                    changesMade = true;
-                }
-                break;
-            case PAUSED:
-                if(!changesMade){
-                    stop.schedule();
-                    changesMade = true;
-                }
-                break;
-        }
-    }
+
 
 
     }
