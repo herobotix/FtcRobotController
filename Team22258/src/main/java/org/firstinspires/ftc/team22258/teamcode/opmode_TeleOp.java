@@ -13,7 +13,7 @@ import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.15]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.16]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   

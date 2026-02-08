@@ -33,8 +33,7 @@ public class IOTAKE {
     private DcMotorEx OtkMotor;
     double targetFlywheelVelocity;
   
-    public static double flywheelP = 1.15, flywheelI = 0.05, flywheelD = 0.0, flywheelF = 11.8;
-    public static PIDFCoefficients testPIDF = new PIDFCoefficients(1.15, 0.05, 0.0, 11.8);
+    public static double flywheelP = 0, flywheelI = 0, flywheelD = 0, flywheelF = 14;
     
   // Launch Gate Definitions
     private Servo LServo;
@@ -71,7 +70,10 @@ public class IOTAKE {
         PIDFCoefficients flywheelPIDF = new PIDFCoefficients(flywheelP, flywheelI, flywheelD, flywheelF);
         OtkMotor.setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
         OtkMotor.setMode( DcMotor.RunMode .RUN_USING_ENCODER );
-        
+
+        // Reset Encoders
+        OtkMotor.setMode(DcMotor.RunMode .STOP_AND_RESET_ENCODER );
+        OtkMotor.setVelocity(0);
     }
     
     public void Run(Gamepad gamepad) {
@@ -109,18 +111,9 @@ public class IOTAKE {
           case MAX: targetFlywheelVelocity = MAX_RPM; break;
         }
         targetFlywheelVelocity = targetFlywheelVelocity * -(flywheelDirection?1:-1);
-        
-      // Reset Encoders
-        OtkMotor.setMode(DcMotor.RunMode .STOP_AND_RESET_ENCODER );
-        
-      // Reset Run Mode
-        OtkMotor.setMode(DcMotor.RunMode .RUN_USING_ENCODER );
-        PIDFCoefficients flywheelPIDF = new PIDFCoefficients(flywheelP, flywheelI, flywheelD, flywheelF);
-        OtkMotor.setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER , flywheelPIDF);
-      
-      // Set Velocity
+
+        // Set Velocity
         OtkMotor.setVelocity( targetFlywheelVelocity * TicksPerRevolution / secondsPerMinute );
-        
     }
     
     public void doTelemetry(Telemetry telemetry) {
