@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team22256.V2.Common.Subsystems;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team22256.V2.Common.Global;
@@ -13,67 +14,59 @@ import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.powerable.SetPower;
 
 
-
+@Configurable
 public class Shooter implements Subsystem {
-    static ControlSystem controlSystem;
+
     public static final Shooter INSTANCE = new Shooter();
     private Shooter(){
-         controlSystem = ControlSystem.builder()
-                .velPid(0.000001,0,0)
-                 .basicFF(0.002251
-                 )
-                .build();
-         controlSystem.setGoal(new KineticState(0,0));
+
+
     }
 
-    public static final MotorEx shooterLeft = new MotorEx("shooterLeft");
-    public static final MotorEx shooterRight = new MotorEx("shooterRight");
+    private static MotorEx sl = new MotorEx("shooterLeft").reversed().floatMode();
+    private static MotorEx sr = new MotorEx("shooterRight").floatMode();
+    public static MotorGroup shooterGroup = new MotorGroup(sr, sl);
 
     public static double target = 0;
     public static double tolerance = 40;
 
     public static double distance;
+    public static double kP = 0.003;
+    public static double kS = 0.04;
+    public static double kV = 0.000316;
+    public static double flywheelTarget = 0;
+    public static  double currentVelocity = 0;
 
 
-    public static double getLeftVelocity() {
-        return shooterLeft.getVelocity();
-    }
-    public static double getRightVelocity() {
-        return shooterRight.getVelocity();
+
+
+    public static double getShooterVelocity() {
+        return shooterGroup.getVelocity();
+
     }
 
     public static boolean upToSpeed() {
-        return getRightVelocity() >= target - tolerance;
+        return getShooterVelocity() >= target - tolerance;
     }
-    public static Command farTriangle = new LambdaCommand()
-            .setStart(() -> {
-                controlSystem.setGoal(new KineticState(0,
-                        270));
-            });
-    //short:200
 
-    public static Command closeTriangle = new LambdaCommand()
-            .setStart(() -> {
-                controlSystem.setGoal(new KineticState(0,215));
-            })
-            .setIsDone(() -> true);
+
 
     @Override
     public void initialize(){
-        controlSystem.setGoal(new KineticState(0,0));
+
     }
 
     @Override
     public void periodic() {
-        shooterLeft.setPower(-controlSystem.calculate(shooterRight.getState()));
-        shooterRight.setPower(controlSystem.calculate(shooterRight.getState()));
+        currentVelocity = getShooterVelocity();
 
-        target = controlSystem.getGoal().getVelocity() * 5.939707;
-
+        double power = ((kP*(flywheelTarget-currentVelocity))+(kV*flywheelTarget)+(kS*Math.signum(flywheelTarget)));
+        shooterGroup.setPower(power);
     }
 
 }
