@@ -37,7 +37,7 @@ public class Test extends NextFTCOpMode {
             .reversed();//reverse
     private DriverControlledCommand driverControlled;
 
-    Command waitTillAtRPM = new WaitUntil(Shooter::upToSpeed);
+    Command waitTillAtRPM = new WaitUntil(Shooter.INSTANCE::upToSpeed);
 
     public Test(){
         addComponents(
@@ -47,7 +47,7 @@ public class Test extends NextFTCOpMode {
     }
     @Override
     public void onInit(){
-        Turret.state= Turret.State.IDLE;
+        Turret.INSTANCE.setState(Turret.State.IDLE);
     }
 
     @Override
@@ -63,43 +63,42 @@ public class Test extends NextFTCOpMode {
         );
         driverControlled.schedule();
 
-        Turret.state = Turret.State.VISION;
+        Turret.INSTANCE.setState(Turret.State.VISION);
 
         Gamepads.gamepad1().a()
                 .toggleOnBecomesTrue()
-                .whenBecomesTrue(Intake.intaking)
-                .whenBecomesFalse(Intake.stop
-        );
+                .whenBecomesTrue(Intake.INSTANCE.intaking)
+                .whenBecomesFalse(Intake.INSTANCE.stop);
 
         Gamepads.gamepad1().b()
                 .whenBecomesTrue(new SequentialGroup(
-                        Sorter.RK_UpDown(),
+                        Sorter.INSTANCE.RK_UpDown(),
                         waitTillAtRPM,
-                        Sorter.LK_UpDown(),
+                        Sorter.INSTANCE.LK_UpDown(),
                         waitTillAtRPM,
-                        Sorter.BK_UpDown()
+                        Sorter.INSTANCE.BK_UpDown()
                         )
 
 
                 );
 
-        Gamepads.gamepad1().dpadRight().whenBecomesTrue(Shooter.farTriangle);
-        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Shooter.closeTriangle);
-        Gamepads.gamepad1().dpadUp().whenBecomesTrue(Intake.outtaking);
+        Gamepads.gamepad1().dpadRight().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
+        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
+        Gamepads.gamepad1().dpadUp().whenBecomesTrue(Intake.INSTANCE.outtaking);
 
     }
     @Override
     public void onUpdate(){
-        telemetry.addData("vel",Shooter.getLeftVelocity());
-        telemetry.addData("vel2", Shooter.getRightVelocity());
-        telemetry.addData("pos",Turret.turret.getRawTicks());
-        telemetry.addData("goal",Turret.controller0.getSetPoint());
-        telemetry.addData("tx",Limelight.getTx());
-        telemetry.addData("Target found", Limelight.targetFound());
-        telemetry.addData("Heart beat", Limelight.getHeartBeat());
-        telemetry.addData("detection counter", Limelight.getDetectionCount());
-        telemetry.addData("error", Shooter.target - Shooter.getRightVelocity());
-        telemetry.addData("target", Shooter.target);
+        telemetry.addData("vel",Shooter.INSTANCE.getLeftVelocity());
+        telemetry.addData("vel2", Shooter.INSTANCE.getRightVelocity());
+        telemetry.addData("pos",Turret.INSTANCE.getRawTicks());
+        telemetry.addData("goal",Turret.INSTANCE.getSetPoint());
+        telemetry.addData("tx",Limelight.INSTANCE.getTx());
+        telemetry.addData("Target found", Limelight.INSTANCE.targetFound());
+        telemetry.addData("Heart beat", Limelight.INSTANCE.getHeartBeat());
+        telemetry.addData("detection counter", Limelight.INSTANCE.getDetectionCount());
+        telemetry.addData("error", Shooter.INSTANCE.getTarget() - Shooter.INSTANCE.getRightVelocity());
+        telemetry.addData("target", Shooter.INSTANCE.getTarget());
 
 
         //telemetry.addData("goal", Shooter.target);

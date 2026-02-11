@@ -19,7 +19,6 @@ import dev.nextftc.hardware.powerable.SetPower;
 
 
 public class Shooter implements Subsystem {
-    static ControlSystem controlSystem;
     public static final Shooter INSTANCE = new Shooter();
     private Shooter(){
          controlSystem = ControlSystem.builder()
@@ -30,37 +29,41 @@ public class Shooter implements Subsystem {
          controlSystem.setGoal(new KineticState(0,0));
     }
 
-    public static final MotorEx shooterLeft = new MotorEx("shooterLeft");
-    public static final MotorEx shooterRight = new MotorEx("shooterRight");
+    private ControlSystem controlSystem;
+    private final MotorEx shooterLeft = new MotorEx("shooterLeft");
+    private final MotorEx shooterRight = new MotorEx("shooterRight");
 
-    public static double target = 0;
-    public static double tolerance = 40;
+    private double target = 0;
+    private double tolerance = 40;
 
-    public static double distance;
+    private double distance;
 
-
-    public static double getLeftVelocity() {
+    public double getLeftVelocity() {
         return shooterLeft.getVelocity();
     }
-    public static double getRightVelocity() {
+    public double getRightVelocity() {
         return shooterRight.getVelocity();
     }
 
-    public static boolean upToSpeed() {
+    public boolean upToSpeed() {
         return getRightVelocity() >= target - tolerance;
     }
-    public static Command farTriangle = new LambdaCommand()
+    public Command farTriangle = new LambdaCommand()
             .setStart(() -> {
                 controlSystem.setGoal(new KineticState(0,
                         270));
             });
     //short:200
 
-    public static Command closeTriangle = new LambdaCommand()
+    public Command closeTriangle = new LambdaCommand()
             .setStart(() -> {
                 controlSystem.setGoal(new KineticState(0,215));
             })
             .setIsDone(() -> true);
+
+    public double getTarget() {
+        return target;
+    }
 
     @Override
     public void initialize(){
@@ -73,7 +76,5 @@ public class Shooter implements Subsystem {
         shooterRight.setPower(controlSystem.calculate(shooterRight.getState()));
 
         target = controlSystem.getGoal().getVelocity() * 5.939707;
-
     }
-
 }

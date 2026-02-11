@@ -1,7 +1,6 @@
 
 package org.firstinspires.ftc.team22256.V2.OpMode.Testing;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -22,9 +21,7 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 
-
 @TeleOp
-
 public class ColorSensorTest extends NextFTCOpMode {
 
     {
@@ -41,25 +38,17 @@ public class ColorSensorTest extends NextFTCOpMode {
         Global.motif[1] = NormColorSensor.COLOR.PURPLE;
         Global.motif[2] = NormColorSensor.COLOR.GREEN;
 
-        Gamepads.gamepad1().b().whenBecomesTrue(Shooter.farTriangle);
-        Gamepads.gamepad1().x().whenBecomesTrue(Shooter.closeTriangle);
+        Gamepads.gamepad1().b().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
+        Gamepads.gamepad1().x().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
         Gamepads.gamepad1().a().whenBecomesTrue(new ShootMotif());
 
     }
 
-
     @Override
     public void onUpdate(){
-
-
-
-
-        telemetry.addData("spot 0 color", Sorter.updateSpotColor(0));
-        telemetry.addData("spot 1 color", Sorter.updateSpotColor(1));
-        telemetry.addData("spot 2 color", Sorter.updateSpotColor(2));
+        telemetry.addData("spot 0 color", Sorter.INSTANCE.updateSpotColor(0));
+        telemetry.addData("spot 1 color", Sorter.INSTANCE.updateSpotColor(1));
+        telemetry.addData("spot 2 color", Sorter.INSTANCE.updateSpotColor(2));
         telemetry.update();
-
     }
-
-
 }

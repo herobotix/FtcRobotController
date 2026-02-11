@@ -17,22 +17,24 @@ import java.util.List;
 
 public class Limelight implements Subsystem {
 
-    public  final static Limelight INSTANCE = new Limelight();
-    private static Limelight3A limelight;
+    public final static Limelight INSTANCE = new Limelight();
     private Limelight(){}
-    private static boolean targetFound = false;
-    static double tx = 0.0;
-    public static int APRIL_TAG_BLUE_ID = 20;
-    public static int APRIL_TAG_RED_ID = 24;
-    public static int heartBeat = 0;
-    public static int detectionCount = 0;
+
+    private Limelight3A limelight;
+    private boolean targetFound = false;
+    private double tx = 0.0;
+    public int APRIL_TAG_BLUE_ID = 20;
+    public int APRIL_TAG_RED_ID = 24;
+    public int heartBeat = 0;
+    public int detectionCount = 0;
+
     public Command intializeLimelight(){
         return new LambdaCommand()
                 .setStart(() -> limelight.start())
                 .setIsDone(() -> true)
                 .requires(this);
     }
-    public static void stopLimelight(){
+    public void stopLimelight(){
         limelight.stop();
     }
     public Command setPipeline(int pipeline){
@@ -41,11 +43,11 @@ public class Limelight implements Subsystem {
                 .setIsDone(() -> true)
                 .requires(this);
     }
-    public static double getTx(){
+    public double getTx(){
         return tx;
     }
 
-    public static boolean targetFound(){
+    public boolean targetFound(){
         return targetFound;
     }
 
@@ -56,10 +58,10 @@ public class Limelight implements Subsystem {
         limelight.pipelineSwitch(0);
 
     }
-    public static int getHeartBeat(){
+    public int getHeartBeat(){
         return heartBeat;
     }
-    public static int getDetectionCount(){
+    public int getDetectionCount(){
         return detectionCount;
     }
 
@@ -90,15 +92,10 @@ public class Limelight implements Subsystem {
                             tx = fidcial.getTargetXDegrees();
                         }
                     }
-
-
                 }
             }
         } else {
             detectionCount = 0;
-
         }
-
     }
-
 }

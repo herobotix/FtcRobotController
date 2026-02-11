@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 public class NormColorSensor {
     NormalizedColorSensor colorSensor;
     NormalizedRGBA colors;
-    public static enum COLOR{
+    public enum COLOR{
         PURPLE, //1
         GREEN, //2
         EMPTY; //0
@@ -43,7 +43,6 @@ public class NormColorSensor {
             return COLOR.EMPTY;//none
         }
     }
-
 }
 
 

@@ -41,22 +41,21 @@ public class Test2 extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-
-
-
     }
+
     @Override
     public void onUpdate(){
-        telemetry.addData("pos",Turret.turret.getRawTicks());
-        telemetry.addData("goal",Turret.controller0.getSetPoint());
-        telemetry.addData("tx",Limelight.getTx());
-        telemetry.addData("Target found", Limelight.targetFound());
-        telemetry.addData("Heart beat", Limelight.getHeartBeat());
-        telemetry.addData("detection counter", Limelight.getDetectionCount());
+        telemetry.addData("pos",Turret.INSTANCE.getRawTicks());
+        telemetry.addData("goal",Turret.INSTANCE.getSetPoint());
+        telemetry.addData("tx",Limelight.INSTANCE.getTx());
+        telemetry.addData("Target found", Limelight.INSTANCE.targetFound());
+        telemetry.addData("Heart beat", Limelight.INSTANCE.getHeartBeat());
+        telemetry.addData("detection counter", Limelight.INSTANCE.getDetectionCount());
         telemetry.update();
     }
+
     @Override
     public void onStop(){
-        Limelight.stopLimelight();
+        Limelight.INSTANCE.stopLimelight();
     }
 }

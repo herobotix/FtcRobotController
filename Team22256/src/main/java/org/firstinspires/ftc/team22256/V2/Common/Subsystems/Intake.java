@@ -10,34 +10,33 @@ import dev.nextftc.hardware.impl.MotorEx;
 public class Intake implements Subsystem {
     public static final Intake INSTANCE = new Intake();
     private Intake(){ }
-    private static MotorEx intake = new MotorEx("intake");
+    private MotorEx intake = new MotorEx("intake");
 
-    private static  double intakePower = -1;
-    private  static  double outtakePower = 1;
-    private static final int stopPower = 0;
-    private static boolean changesMade = false;
-    public static enum Mode{
+    private double intakePower = -1;
+    private double outtakePower = 1;
+    private final int stopPower = 0;
+    private boolean changesMade = false;
+    public enum Mode{
         INTAKING,
         OUTAKING,
         PAUSED;
     }
 
-
-    public static void setIntakePower(double intakePower1) {
+    public void setIntakePower(double intakePower1) {
         intakePower = intakePower1;
     }
     public void setOuttakePower(double outtakePower1){
         outtakePower = outtakePower1;
     }
 
-    public static Command intaking = new LambdaCommand()
+    public Command intaking = new LambdaCommand()
             .setStart(() -> intake.setPower(intakePower))
             .setIsDone(() -> true);
-    public static Command outtaking = new LambdaCommand()
+    public Command outtaking = new LambdaCommand()
             .setStart(() -> intake.setPower(outtakePower))
             .setIsDone(() -> true);
 
-    public static Command stop = new LambdaCommand()
+    public Command stop = new LambdaCommand()
             .setStart(() -> intake.setPower(stopPower))
             .setIsDone(() -> true);
     public double getIntakePower() {
@@ -48,17 +47,13 @@ public class Intake implements Subsystem {
         return outtakePower;
     }
 
-
     @Override
     public void initialize(){
         stop.schedule();
     }
     //make sure to make intaking on start in op mode
 
-
-
-
-    }
+}
 
 
 

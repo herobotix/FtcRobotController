@@ -37,18 +37,15 @@ public class BlueAuto extends NextFTCOpMode {
 
     MotorGroup driveTrain = new MotorGroup(frontRight,frontLeft,backRight,backLeft);
 
-
-    Command waitTillAtRPM = new WaitUntil(Shooter::upToSpeed);
-    Command waitTillAimed = new WaitUntil(Turret::isAiming);
+    Command waitTillAtRPM = new WaitUntil(Shooter.INSTANCE::upToSpeed);
+    Command waitTillAimed = new WaitUntil(Turret.INSTANCE::isAiming);
     Command fullShoot = new SequentialGroup(
-            Sorter.RK_UpDown(),
+            Sorter.INSTANCE.RK_UpDown(),
             waitTillAtRPM,
-            Sorter.LK_UpDown(),
+            Sorter.INSTANCE.LK_UpDown(),
             waitTillAtRPM,
-            Sorter.BK_UpDown()
+            Sorter.INSTANCE.BK_UpDown()
     );
-
-
 
     public BlueAuto(){
         addComponents(
@@ -60,24 +57,24 @@ public class BlueAuto extends NextFTCOpMode {
     private Command autoRoutine(){
         return new SequentialGroup(
                 waitTillAimed,
-                Shooter.farTriangle,
+                Shooter.INSTANCE.farTriangle,
                 waitTillAtRPM,
                 fullShoot
         );
     }
+
     @Override
-    public void onInit(){
-        Turret.state = Turret.State.IDLE;
+    public void onInit() {
+        Turret.INSTANCE.setState(Turret.State.IDLE);
     }
+
     @Override
     public void onStartButtonPressed() {
-
         autoRoutine().schedule();
-
     }
-    @Override
-    public void onUpdate(){
 
+    @Override
+    public void onUpdate() {
         telemetry.update();
     }
 }
