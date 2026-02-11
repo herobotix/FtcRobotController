@@ -33,7 +33,7 @@ public class Shooter implements Subsystem {
     public static MotorGroup shooterGroup = new MotorGroup(sr, sl);
 
     public static double target = 0;
-    public static double tolerance = 40;
+    public static double tolerance = 21;
 
     public static double distance;
     public static double kP = 0.003;
