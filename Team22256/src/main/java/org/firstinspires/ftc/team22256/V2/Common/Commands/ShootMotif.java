@@ -16,10 +16,10 @@ public class ShootMotif extends Command {
 
     Command waitTillAtPRM;
     Command isAimed;
-    public ShootMotif(){
-        requires(Sorter.INSTANCE);
-        waitTillAtPRM = new WaitUntil(Shooter::upToSpeed);
 
+    public ShootMotif() {
+        requires(Sorter.INSTANCE);
+        waitTillAtPRM = new WaitUntil(Shooter.INSTANCE::upToSpeed);
     }
 
     @Override
@@ -31,33 +31,33 @@ public class ShootMotif extends Command {
     public void start(){
         //0 = left, 1 = right, 2 = back
 
-        Sorter.updateAllSpots();
+        Sorter.INSTANCE.updateAllSpots();
 
         for(int i = 0; i < 3; i++){      //i is for motif index
-            for(int j = 0; j < 3; j++){  // j is for ball slot on robot
-                if(Sorter.storedColors[j] == Global.motif[i]){  // check if one of the slots has that color
-                    if(j == 0 && !Sorter.scheduled[0]){
+            for(int j = 0; j < 3; j++) {  // j is for ball slot on robot
+                if(Sorter.INSTANCE.storedColors[j] == Global.motif[i]){  // check if one of the slots has that color
+                    if(j == 0 && !Sorter.INSTANCE.scheduled[0]){
                         new SequentialGroup(
                                 waitTillAtPRM,
-                                Sorter.LK_UpDown()
+                                Sorter.INSTANCE.LK_UpDown()
                         ).schedule();
-                        Sorter.scheduled[0] = true;
+                        Sorter.INSTANCE.scheduled[0] = true;
                         break;
                     }
-                    if(j == 1 && !Sorter.scheduled[1]){
+                    if(j == 1 && !Sorter.INSTANCE.scheduled[1]){
                         new SequentialGroup(
                                 waitTillAtPRM,
-                                Sorter.RK_UpDown()
+                                Sorter.INSTANCE.RK_UpDown()
                         ).schedule();
-                        Sorter.scheduled[1] = true;
+                        Sorter.INSTANCE.scheduled[1] = true;
                         break;
                     }
-                    if(j == 2 && !Sorter.scheduled[2]){
+                    if(j == 2 && !Sorter.INSTANCE.scheduled[2]){
                         new SequentialGroup(
                                 waitTillAtPRM,
-                                Sorter.BK_UpDown()
+                                Sorter.INSTANCE.BK_UpDown()
                         ).schedule();
-                        Sorter.scheduled[2] = true;
+                        Sorter.INSTANCE.scheduled[2] = true;
                         break;
                     }
                 }
@@ -65,51 +65,50 @@ public class ShootMotif extends Command {
             }
         }
 
+        for(int j = 0; j < 3; j++) { //this loop is for catching any exceptions
+            if(!Sorter.INSTANCE.scheduled[j] &&
+                Sorter.INSTANCE.storedColors[j] != NormColorSensor.COLOR.EMPTY) {
 
-        for(int j = 0; j < 3; j++){ //this loop is for catching any exceptions
-            if(!Sorter.scheduled[j] && Sorter.storedColors[j] != NormColorSensor.COLOR.EMPTY){
-                if(j == 0){
+                if(j == 0) {
                     new SequentialGroup(
                             waitTillAtPRM,
-                            Sorter.LK_UpDown()
+                            Sorter.INSTANCE.LK_UpDown()
                     ).schedule();
-                    Sorter.scheduled[0] = true;
+                    Sorter.INSTANCE.scheduled[0] = true;
                     break;
                 }
-                if(j == 1){
+
+                if(j == 1) {
                     new SequentialGroup(
                             waitTillAtPRM,
-                            Sorter.RK_UpDown()
+                            Sorter.INSTANCE.RK_UpDown()
                     ).schedule();
-                    Sorter.scheduled[1] = true;
+                    Sorter.INSTANCE.scheduled[1] = true;
                     break;
                 }
-                if(j == 2){
+
+                if(j == 2) {
                     new SequentialGroup(
                             waitTillAtPRM,
-                            Sorter.BK_UpDown()
+                            Sorter.INSTANCE.BK_UpDown()
                     ).schedule();
-                    Sorter.scheduled[2] = true;
+                    Sorter.INSTANCE.scheduled[2] = true;
                     break;
                 }
             }
         }
+    }
 
-
-
+    @Override
+    public void update() {
 
     }
 
     @Override
-    public void update(){
-
-    }
-
-    @Override
-    public void stop(boolean interrupted){
+    public void stop(boolean interrupted) {
         for(int i = 0; i < 3; i++){
-            Sorter.scheduled[i] = false;
+            Sorter.INSTANCE.scheduled[i] = false;
         }
-        //Intake.changeIntakeMode(Intake.Mode.INTAKING);
+        //Intake.INSTANCE.changeIntakeMode(Intake.Mode.INTAKING);
     }
 }

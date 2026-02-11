@@ -13,63 +13,74 @@ import com.qualcomm.robotcore.util.Range;
 @Configurable
 public class Turret implements Subsystem {
 
-    public static ControlSystem turretController;
     public static final Turret INSTANCE = new Turret();
+    private Turret() { }
 
-    private Turret() {
-
-    }
-    public static MotorEx turret = new MotorEx("turret")
+    // internal variables to teh turret
+    private ControlSystem turretController;
+    private MotorEx turret = new MotorEx("turret")
             .zeroed()
             .brakeMode();
-    public static double kP = 0.01;
-    public static double kI = 0.000;
-    public static double kD = 0.0005;
-    public double target = 0;
-    public static double lastError = 0;
-    public double angleTolerance = 0.5;
-    public double MAX_POWER = 0.25;
-    public double turretOutput = 0;
-    public ElapsedTime timer = new ElapsedTime();
-    private static double currentPosition = 0;
-    private static double startingPosition = 0;
-    double rightLimit;
-    double leftLimit;
-    double lastKnownPosition;
-    double error;
 
-    public static PIDController controller0 = new PIDController(kP, kI, kD);
+    private double kP = 0.01;
+    private double kI = 0.000;
+    private double kD = 0.0005;
 
-    public static enum State {
+    private double target = 0;
+    private double lastError = 0;
+    private double angleTolerance = 0.5;
+
+    private double MAX_POWER = 0.25;
+    private double turretOutput = 0;
+    private ElapsedTime timer = new ElapsedTime();
+
+    private double currentPosition = 0;
+    private double startingPosition = 0;
+
+    private double rightLimit;
+    private double leftLimit;
+    private double lastKnownPosition;
+    private double error;
+
+    private PIDController controller0 = new PIDController(kP, kI, kD);
+
+    public enum State {
         VISION,
         PREDICTION,
         IDLE
     }
 
-    public static State state = State.VISION;
-    private static final double TICKS_PER_REV = 404;
-    private static final double TICKS_PER_DEGREE = TICKS_PER_REV / 360;
+    private State state = State.VISION;
+    private final double TICKS_PER_REV = 404;
+    private final double TICKS_PER_DEGREE = TICKS_PER_REV / 360;
 
-
-
-    public static double a2T(double degrees) {
+    private double a2T(double degrees) {
         return degrees * TICKS_PER_DEGREE;
     }
 
-    public static boolean isAiming() {
+    public boolean isAiming() {
         return state == State.VISION;
     }
 
-    public static void stopTurret() {
+    public void setState(State newState) {
+        state = newState;
+    }
+
+    public void stopTurret() {
         state = State.IDLE;
         turret.setPower(0.0);
     }
 
+    public double getRawTicks() {
+        return turret.getRawTicks();
+    }
 
+    public double getSetPoint() {
+        return controller0.getSetPoint();
+    }
 
     @Override
     public void initialize() {
-
         startingPosition = turret.getCurrentPosition();
         currentPosition = startingPosition;
         lastKnownPosition = startingPosition;
@@ -87,25 +98,18 @@ public class Turret implements Subsystem {
     public void periodic() {
 
         currentPosition = turret.getCurrentPosition();
-
         if (state == State.VISION) {
 
-
-
-
-
-
-
-            if (Limelight.targetFound()) {
+            if (Limelight.INSTANCE.targetFound()) {
                 lastKnownPosition = currentPosition;
-                double tx = Limelight.getTx();
-                 error = a2T(tx) * 2;
+                double tx = Limelight.INSTANCE.getTx();
+                error = a2T(tx) * 2;
                 target = currentPosition - error;
+
                 if (target <= rightLimit) {
                     target = rightLimit + 5;
                 } else if (target >= leftLimit) {
                     target = leftLimit + 5;
-
                 }
                 turretOutput = controller0.calculate(currentPosition, target);
 
@@ -120,9 +124,6 @@ public class Turret implements Subsystem {
         } else {
             turret.setPower(0);
         }
-
-
-
     }
 }
 

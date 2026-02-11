@@ -67,14 +67,14 @@ public class BlueTeleOp extends NextFTCOpMode {
 
 
         Gamepads.gamepad2().dpadLeft()
-                .whenBecomesTrue(Sorter.LK_Up)
-                .whenBecomesFalse(Sorter.LK_Down);
+                .whenBecomesTrue(Sorter.INSTANCE.LK_Up)
+                .whenBecomesFalse(Sorter.INSTANCE.LK_Down);
         Gamepads.gamepad2().dpadRight()
-                .whenBecomesTrue(Sorter.RK_Up)
-                .whenBecomesFalse(Sorter.RK_Down);
+                .whenBecomesTrue(Sorter.INSTANCE.RK_Up)
+                .whenBecomesFalse(Sorter.INSTANCE.RK_Down);
         Gamepads.gamepad2().dpadDown()
-                .whenBecomesTrue(Sorter.BK_Up)
-                .whenBecomesFalse(Sorter.BK_Down);
+                .whenBecomesTrue(Sorter.INSTANCE.BK_Up)
+                .whenBecomesFalse(Sorter.INSTANCE.BK_Down);
 
     }
 
