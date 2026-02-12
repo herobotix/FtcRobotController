@@ -120,9 +120,9 @@ public class opmode_Auto_TEST extends LinearOpMode {
     
     // Map Hardware
       ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
-      OtkMotor = hardwareMap.get(DcMotor.class, "OtkMotor");
-      LServo = hardwareMap.get(Servo.class, "LServo");
-      RServo = hardwareMap.get(Servo.class, "RServo");
+      OtkMotor = hardwareMap.get(DcMotor.class, "rFlywheelMotor");
+      LServo = hardwareMap.get(Servo.class, "lServo");
+      RServo = hardwareMap.get(Servo.class, "rServo");
       
     // Set Behaviors
       ItkMotor.setDirection(DcMotor.Direction.REVERSE);
