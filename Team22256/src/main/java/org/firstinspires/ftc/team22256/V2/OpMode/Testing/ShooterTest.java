@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team22256.V2.OpMode.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team22256.V2.Common.Commands.ShootMotif;
@@ -28,13 +29,17 @@ import dev.nextftc.hardware.powerable.SetPower;
 @TeleOp
 
 public class ShooterTest extends NextFTCOpMode {
-    Command waitTillAtRPM = new WaitUntil(Shooter::upToSpeed);
+    Command waitTillAtRPM = new WaitUntil(Shooter.INSTANCE::upToSpeed);
+
     public ShooterTest(){
         addComponents(
                 BindingsComponent.INSTANCE,
                 new SubsystemComponent(Shooter.INSTANCE,Sorter.INSTANCE)
         );
     }
+
+
+    public PanelsTelemetry graph = PanelsTelemetry.INSTANCE;
     @Override
     public void onInit(){
 
@@ -47,9 +52,9 @@ public class ShooterTest extends NextFTCOpMode {
         Gamepads.gamepad1().a().whenBecomesTrue(
                 new SequentialGroup(
                         waitTillAtRPM,
-                        Sorter.RK_UpDown(),
+                        Sorter.INSTANCE.RK_UpDown(),
                         waitTillAtRPM,
-                        Sorter.BK_UpDown())
+                        Sorter.INSTANCE.BK_UpDown())
 
         );
 
@@ -62,8 +67,12 @@ public class ShooterTest extends NextFTCOpMode {
     public void onUpdate(){
 
 
-        telemetry.addData("velocity",Shooter.getShooterVelocity());
-        telemetry.addData("reference",Shooter.flywheelTarget);
+        telemetry.addData("velocity",Shooter.INSTANCE.getShooterVelocity());
+        telemetry.addData("reference",Shooter.INSTANCE.getFlywheelTarget());
+        graph.getFtcTelemetry().addData("velocity",Shooter.INSTANCE.getShooterVelocity());
+        graph.getFtcTelemetry().addData("target",Shooter.INSTANCE.getFlywheelTarget());
         telemetry.update();
+        graph.getFtcTelemetry().update();
+
     }
 }
