@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team22258.teamcode.classes;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -78,7 +79,7 @@ public class IOTAKE {
         rServo = hardwareMap.get(Servo.class, "rServo");
         
       // Set Motor Behaviors
-        ItkMotor.setDirection( DcMotor.Direction .REVERSE );
+        ItkMotor.setDirection( DcMotor.Direction .FORWARD );
         lFlywheelMotor.setDirection( DcMotor.Direction .FORWARD );
         lFlywheelMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
         rFlywheelMotor.setDirection( DcMotor.Direction .REVERSE );
@@ -99,7 +100,7 @@ public class IOTAKE {
       //Intake/Outtake Code
       
       // Intake
-        runIntake(gamepad.left_trigger - gamepad.right_trigger);
+        runIntake(gamepad.right_trigger - gamepad.left_trigger);
         
       // Outtake Gate
         if (gamepad.rightBumperWasPressed()) {
@@ -181,10 +182,10 @@ public class IOTAKE {
     }
     public void runOtkGate(OuttakeServoState outtakeServoState) {
       lServo.setPosition(
-        (outtakeServoState == OuttakeServoState.OPEN )?1:0
+        (outtakeServoState == OuttakeServoState.OPEN )?0:1
       );
       rServo.setPosition(
-        (outtakeServoState == OuttakeServoState.OPEN )?0:1
+        (outtakeServoState == OuttakeServoState.OPEN )?1:0
       );
     }
     

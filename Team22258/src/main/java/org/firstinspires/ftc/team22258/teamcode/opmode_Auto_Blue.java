@@ -16,7 +16,7 @@ import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.15]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.16]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   //Autonomous Opmode on Blue
@@ -377,17 +377,14 @@ public class opmode_Auto_Blue extends LinearOpMode {
   // Secondary Functions
     public void autonomousPathUpdate() { switch (pathState) {
       case SETUP:     if (isTimerSecsOver(0)) {
+        IOtake.runIntake(1);
         IOtake.runFlywheel(
-          IOTAKE.FlywheelState .OFF
+          IOTAKE.FlywheelState .MAX
         );
         follower.followPath(paths .SETUP, true);
         setPathState(PathState .OUTTAKE0 );
       } break;
       case OUTTAKE0:  if (!follower.isBusy()) {
-        IOtake.runIntake(1);
-        IOtake.runFlywheel(
-          IOTAKE.FlywheelState .MAX
-        );
         follower.followPath(paths .OUTTAKE0,true);
         setPathState(PathState .FIRE0 );
       } break;
@@ -397,24 +394,18 @@ public class opmode_Auto_Blue extends LinearOpMode {
         );
         setPathState(PathState .ALIGN1 );
       } break;
-      case ALIGN1:    if (isTimerSecsOver(2)) {
+      case ALIGN1:    if (isTimerSecsOver(3)) {
         IOtake.runOtkGate(
           IOTAKE.OuttakeServoState .CLOSED
-        );
-        IOtake.runFlywheel(
-          IOTAKE.FlywheelState .OFF
         );
         follower.followPath(paths .ALIGN1,true);
         setPathState(PathState .INTAKE1 );
       } break;
       case INTAKE1:   if (!follower.isBusy()) {
-        follower.followPath(paths .INTAKE1 );
+        follower.followPath(paths .INTAKE1, true);
         setPathState(PathState .OUTTAKE1 );
       } break;
       case OUTTAKE1:  if (!follower.isBusy()) {
-        IOtake.runFlywheel(
-          IOTAKE.FlywheelState .MAX
-        );
         follower.followPath(paths .OUTTAKE1,true);
         setPathState(PathState .FIRE1 );
       } break;
@@ -424,24 +415,18 @@ public class opmode_Auto_Blue extends LinearOpMode {
         );
         setPathState(PathState .ALIGN2 );
       } break;
-      case ALIGN2:    if (isTimerSecsOver(2)) {
+      case ALIGN2:    if (isTimerSecsOver(3)) {
         IOtake.runOtkGate(
           IOTAKE.OuttakeServoState .CLOSED
-        );
-        IOtake.runFlywheel(
-          IOTAKE.FlywheelState .OFF
         );
         follower.followPath(paths .ALIGN2,true);
         setPathState(PathState .INTAKE2 );
       } break;
       case INTAKE2:   if (!follower.isBusy()) {
-        follower.followPath(paths .INTAKE2 );
+        follower.followPath(paths .INTAKE2, true);
         setPathState(PathState .OUTTAKE2 );
       } break;
       case OUTTAKE2:  if (!follower.isBusy()) {
-        IOtake.runFlywheel(
-          IOTAKE.FlywheelState .MID
-        );
         follower.followPath(paths .OUTTAKE2, true);
         setPathState(PathState .FIRE2 );
       } break;
@@ -451,24 +436,18 @@ public class opmode_Auto_Blue extends LinearOpMode {
         );
         setPathState(PathState .ALIGN3 );
       } break;
-      case ALIGN3:    if (isTimerSecsOver(2)) {
+      case ALIGN3:    if (isTimerSecsOver(3)) {
         IOtake.runOtkGate(
           IOTAKE.OuttakeServoState .CLOSED
-        );
-        IOtake.runFlywheel(
-          IOTAKE.FlywheelState .OFF
         );
         follower.followPath(paths .ALIGN3,true);
         setPathState(PathState .INTAKE3 );
       } break;
       case INTAKE3:   if (!follower.isBusy()) {
-        follower.followPath(paths .INTAKE3 );
+        follower.followPath(paths .INTAKE3, true);
         setPathState(PathState .OUTTAKE3 );
       } break;
       case OUTTAKE3:  if (!follower.isBusy()) {
-        IOtake.runFlywheel(
-          IOTAKE.FlywheelState .MID
-        );
         follower.followPath(paths .OUTTAKE3, true);
         setPathState(PathState .FIRE3 );
       } break;
@@ -478,7 +457,7 @@ public class opmode_Auto_Blue extends LinearOpMode {
         );
         setPathState(PathState .ALIGN4 );
       } break;
-      case ALIGN4:    if (isTimerSecsOver(2)) {
+      case ALIGN4:    if (isTimerSecsOver(3)) {
         IOtake.runIntake(0);
         IOtake.runOtkGate(
           IOTAKE.OuttakeServoState .CLOSED
