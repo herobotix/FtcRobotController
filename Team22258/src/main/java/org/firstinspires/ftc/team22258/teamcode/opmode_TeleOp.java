@@ -13,102 +13,124 @@ import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.16]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.17]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
+  //Driver-Controlled Opmode
   
-  double robotYawRadians;
-  double targetRot;
-  private IMU rIMU;
-  
-  private DcMotor FLMotor;
-  double FLMP;
-  
-  private DcMotor FRMotor;
-  double FRMP;
-  
-  private DcMotor BLMotor;
-  double BLMP;
-  
-  private DcMotor BRMotor;
-  double BRMP;
-  
-  boolean fieldCentric = true;
-  double MPN;
-  
-  double powHead, powSide, powTurn;
-  
-  private LIMELIGHT Limelight;
-  private IOTAKE IOtake;
-  private Servo indicatorLight;
-  
-  @Override
-  public void runOpMode() {
-    //Begin
+  // Drivetrain Definitions
+    private DcMotor
+      FLMotor,
+      FRMotor,
+      BLMotor,
+      BRMotor;
+    double
+      FLMP,
+      FRMP,
+      BLMP,
+      BRMP;
     
-    //Init & Wait
-      OnInit();
-      waitForStart();
-      OnStart();
+  // Driving Definitions
+    boolean fieldCentric
+      = true;
+    double
+          MPN,
+      powHead,
+      powSide,
+      powTurn;
+    
+  // Position Definitions
+    double robotYawRadians;
+    double targetRot;
+    private IMU rIMU;
+    
+  // Indicator Light Definition
+    private Servo indicatorLight;
+    
+  // Class Definitions
+    private LIMELIGHT Limelight;
+    private IOTAKE IOtake;
+    
+  // Run Function
+    @Override
+    public void runOpMode()     {
+      //Begin
       
-    //Run Opmode
-      while (opModeIsActive()) {
+      // Init & Wait
+        OnInit();
+        waitForStart();
+        OnStart();
+        
+      // Run Opmode
+        while (opModeIsActive()) { OnLoop(); }
+        OnStop();
+        
+    }
+    
+  // Main Functions
+    private void OnLoop()       {
+      //Looped Code
         Limelight.Run(gamepad1, telemetry);
         Fn_Inputs();
         Fn_Move();
         IOtake.Run(gamepad2);
         doTelemetry();
         LoopEnd();
+  }
+    private void OnInit()       {
+      // Initialization Code
+      
+      // Map Hardware
+        FLMotor        = hardwareMap.get( DcMotor .class, "FLMotor"       );
+        FRMotor        = hardwareMap.get( DcMotor .class, "FRMotor"       );
+        BLMotor        = hardwareMap.get( DcMotor .class, "BLMotor"       );
+        BRMotor        = hardwareMap.get( DcMotor .class, "BRMotor"       );
+        rIMU           = hardwareMap.get( IMU     .class, "rIMU"          );
+        indicatorLight = hardwareMap.get( Servo   .class, "indicatorLight");
+  
+      // Set Robot Orientation (IMU)
+        IMU.Parameters parameters =
+          new IMU.Parameters(new RevHubOrientationOnRobot(
+            RevHubOrientationOnRobot.LogoFacingDirection .UP,
+            RevHubOrientationOnRobot.UsbFacingDirection  .BACKWARD
+          )
+        );
+        rIMU.initialize(parameters);
         
-      }
-      OnStop();
-  }
-  
-  private void OnInit() {
-    // Initialization Code
-    
-    // Map Hardware
-      FLMotor = hardwareMap.get(DcMotor.class, "FLMotor");
-      FRMotor = hardwareMap.get(DcMotor.class, "FRMotor");
-      BLMotor = hardwareMap.get(DcMotor.class, "BLMotor");
-      BRMotor = hardwareMap.get(DcMotor.class, "BRMotor");
-      rIMU = hardwareMap.get(IMU.class, "rIMU");
-      indicatorLight = hardwareMap.get(Servo.class, "indicatorLight");
-
-    // Set Robot Orientation (IMU)
-      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)
-      );
-      rIMU.initialize(parameters);
+      // Set Robot Rotation Value
+        robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw( AngleUnit .RADIANS );
+        targetRot = robotYawRadians;
+        
+      // Set Motor Behaviors
+        FLMotor.setDirection( DcMotor.Direction .REVERSE );
+        FRMotor.setDirection( DcMotor.Direction .FORWARD );
+        BLMotor.setDirection( DcMotor.Direction .FORWARD );
+        BRMotor.setDirection( DcMotor.Direction .FORWARD );
+        
+      // Classes
+        Limelight = new  LIMELIGHT()  ;
+        Limelight .Init( hardwareMap );
+        IOtake    = new  IOTAKE()     ;
+        IOtake    .Init( hardwareMap );
+        
+    }
+    private void OnStart()      {
+      //Run On START
       
-    // Set Robot Rotation Value
-      robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-      targetRot = robotYawRadians;
+      //Limelight
+        Limelight.Start();
+        
+    }
+    private void OnStop()       {
+      //Run On STOP
       
-    // Set Motor Behaviors
-      FLMotor.setDirection(DcMotor.Direction.REVERSE);
-      FRMotor.setDirection(DcMotor.Direction.FORWARD);
-      BLMotor.setDirection(DcMotor.Direction.FORWARD);
-      BRMotor.setDirection(DcMotor.Direction.FORWARD);
-    
-    // Classes
-      Limelight = new LIMELIGHT();
-      Limelight.Init(hardwareMap);
-      IOtake = new IOTAKE();
-      IOtake.Init(hardwareMap);
-    
-  }
-  
-  private void OnStart() {
-    //Run On START
-    
-    //Limelight
-      Limelight.Start();
+      //Limelight
+      Limelight.Stop();
       
   }
   
-  private void Fn_Inputs() {
+  // In-Loop Functions
+    private void Fn_Inputs()    {
     // Inputs Code
     
     // Reset Robot Rotation Value
@@ -122,104 +144,93 @@ public class opmode_TeleOp extends LinearOpMode {
         (Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):
         (gamepad1.right_stick_x)
       );
-
-
-      // GoBilda RGB indicator light, PWM values from GoBilda product page
-        if(indicatorLight != null) {
-            if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
-                indicatorLight.setPosition(0.0);
-            } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
-                indicatorLight.setPosition(0.611);
-            } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
-                indicatorLight.setPosition(0.29);
-            }
+      
+    // GoBilda RGB indicator light, PWM values from GoBilda product page
+      if(indicatorLight != null) {
+          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
+              indicatorLight.setPosition(0.0);
+          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
+              indicatorLight.setPosition(0.611);
+          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
+              indicatorLight.setPosition(0.29);
+          }
+      }
+      
+  }
+    private void Fn_Move()      {
+      //Movement Code
+      
+      // Get Robot Rotation Value
+        robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit .RADIANS );
+        
+      // Field Centric
+        if (fieldCentric) {
+          powHead = powSide * Math.sin(robotYawRadians) + powHead * Math.cos(robotYawRadians);
+          powSide = powSide * Math.cos(robotYawRadians) + powHead * Math.sin(robotYawRadians);
         }
-  }
-  
-  private void Fn_Move() {
-    //Movement Code
-    
-    // Get Robot Rotation Value
-      robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit .RADIANS );
       
-    // Field Centric
-      if (fieldCentric) {
-        powHead = powSide * Math.sin(robotYawRadians) + powHead * Math.cos(robotYawRadians);
-        powSide = powSide * Math.cos(robotYawRadians) + powHead * Math.sin(robotYawRadians);
-      }
-    
-    // Drive & Strafe & Rotate
-      FLMP = powHead + powSide + powTurn;
-      FRMP = powHead - powSide - powTurn;
-      BLMP = powHead - powSide + powTurn;
-      BRMP = powHead + powSide - powTurn;
-      
-    // Power Control
-      MPN = (
-        Math.max(
+      // Drive & Strafe & Rotate
+        FLMP = powHead + powSide + powTurn;
+        FRMP = powHead - powSide - powTurn;
+        BLMP = powHead - powSide + powTurn;
+        BRMP = powHead + powSide - powTurn;
+        
+      // Power Control
+        MPN = (
           Math.max(
-            Math.max( Math.abs(FLMP), Math.abs(FRMP) ),
-            Math.max( Math.abs(BLMP), Math.abs(BRMP) )
-          ),
-          (1)
-        )
-      );
-      if (MPN > 1){
-        BRMP /= MPN;
-        BLMP /= MPN;
-        FRMP /= MPN;
-        FLMP /= MPN;
-      }
+            Math.max(
+              Math.max( Math.abs(FLMP), Math.abs(FRMP) ),
+              Math.max( Math.abs(BLMP), Math.abs(BRMP) )
+            ),
+            (1)
+          )
+        );
+        if (MPN > 1){
+          BRMP /= MPN;
+          BLMP /= MPN;
+          FRMP /= MPN;
+          FLMP /= MPN;
+        }
+        
+      // Trigger Motors
+        FLMotor.setPower(FLMP);
+        FRMotor.setPower(FRMP);
+        BLMotor.setPower(BLMP);
+        BRMotor.setPower(BRMP);
+        
+    }
+    private void doTelemetry()  {
+      // Telemetry Data
       
-    // Trigger Motors
-      FLMotor.setPower(FLMP);
-      FRMotor.setPower(FRMP);
-      BLMotor.setPower(BLMP);
-      BRMotor.setPower(BRMP);
+      // Movement
+        telemetry.addLine("Movement ─");
+        telemetry.addData("Head Power",powHead);
+        telemetry.addData("Side Power",powSide);
+        telemetry.addData("Turn Power",powTurn);
+        telemetry.addData("Target Robot Yaw",targetRot / (2*Math.PI));
+        telemetry.addData("Current Robot Yaw", robotYawRadians / (2*Math.PI));
+        telemetry.addLine();
+        
+      // Do for Classes
+        Limelight.doTelemetry(telemetry, fieldCentric);
+        IOtake.doTelemetry(telemetry);
+        
+      // Update
+        telemetry.update();
+        
+    }
+    private void LoopEnd()      {
+      //Loop End Code
       
-  }
-  
-  private void doTelemetry() {
-    // Telemetry Data
-      
-    // Movement
-      telemetry.addLine("Movement ─");
-      telemetry.addData("Head Power",powHead);
-      telemetry.addData("Side Power",powSide);
-      telemetry.addData("Turn Power",powTurn);
-      telemetry.addData("Target Robot Yaw",targetRot / (2*Math.PI));
-      telemetry.addData("Current Robot Yaw", robotYawRadians / (2*Math.PI));
-      telemetry.addLine();
-      
-    // Do for Classes
-      Limelight.doTelemetry(telemetry, fieldCentric);
-      IOtake.doTelemetry(telemetry);
-      
-    // Update
-      telemetry.update();
-      
-  }
-  
-  private void LoopEnd() {
-    //Loop End Code
-      /* Zero Values */
-        FLMP =
-        FRMP =
-        BLMP =
-        BRMP =
-        (0)
-      ;
-      Limelight.setPowTurn(0);
-      IOtake.setTargetFlywheelVelocity(0.);
-      IOtake.setIntakeMotorPower(0.);
-  }
-  
-  private void OnStop() {
-    //Run On STOP
+      // Zero Values
+        FLMP = (0);
+        FRMP = (0);
+        BLMP = (0);
+        BRMP = (0);
+        Limelight.setPowTurn(0);
+        IOtake.setTargetFlywheelVelocity(0.);
+        IOtake.setIntakeMotorPower(0.);
+        
+    }
     
-    //Limelight
-    Limelight.Stop();
-    
-  }
-  
 }
