@@ -47,7 +47,7 @@ public class Test extends NextFTCOpMode {
     }
     @Override
     public void onInit(){
-        Turret.INSTANCE.setState(Turret.State.IDLE);
+    //    Turret.INSTANCE.setState(Turret.State.IDLE);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Test extends NextFTCOpMode {
         );
         driverControlled.schedule();
 
-        Turret.INSTANCE.setState(Turret.State.VISION);
+        //Turret.INSTANCE.setState(Turret.State.VISION);
 
         Gamepads.gamepad1().a()
                 .toggleOnBecomesTrue()
@@ -72,33 +72,34 @@ public class Test extends NextFTCOpMode {
 
         Gamepads.gamepad1().b()
                 .whenBecomesTrue(new SequentialGroup(
-                        Sorter.INSTANCE.RK_UpDown(),
-                        waitTillAtRPM,
+                        Sorter.INSTANCE.BK_UpDown(),
+                        new Delay(0.3),
                         Sorter.INSTANCE.LK_UpDown(),
-                        waitTillAtRPM,
-                        Sorter.INSTANCE.BK_UpDown()
+                        new Delay(0.3),
+                        Sorter.INSTANCE.RK_UpDown()
                         )
 
+                        //TODO change to back left right
 
                 );
 
-        Gamepads.gamepad1().dpadRight().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
-        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
+        //Gamepads.gamepad1().dpadRight().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
+        //Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(Intake.INSTANCE.outtaking);
 
     }
     @Override
     public void onUpdate(){
-        telemetry.addData("vel",Shooter.INSTANCE.getLeftVelocity());
-        telemetry.addData("vel2", Shooter.INSTANCE.getRightVelocity());
-        telemetry.addData("pos",Turret.INSTANCE.getRawTicks());
-        telemetry.addData("goal",Turret.INSTANCE.getSetPoint());
+        //telemetry.addData("vel",Shooter.INSTANCE.getLeftVelocity());
+        //telemetry.addData("vel2", Shooter.INSTANCE.getRightVelocity());
+     //   telemetry.addData("pos",Turret.INSTANCE.getRawTicks());
+        //   telemetry.addData("goal",Turret.INSTANCE.getSetPoint());
         telemetry.addData("tx",Limelight.INSTANCE.getTx());
         telemetry.addData("Target found", Limelight.INSTANCE.targetFound());
         telemetry.addData("Heart beat", Limelight.INSTANCE.getHeartBeat());
         telemetry.addData("detection counter", Limelight.INSTANCE.getDetectionCount());
-        telemetry.addData("error", Shooter.INSTANCE.getTarget() - Shooter.INSTANCE.getRightVelocity());
-        telemetry.addData("target", Shooter.INSTANCE.getTarget());
+        //telemetry.addData("error", Shooter.INSTANCE.getTarget() - Shooter.INSTANCE.getRightVelocity());
+        //telemetry.addData("target", Shooter.INSTANCE.getTarget());
 
 
         //telemetry.addData("goal", Shooter.target);
