@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
-/**Version 1.2.17*/
+/**Version 1.2.18*/
 @Configurable
 public class AUTO {
   //Autonomous Code
@@ -274,24 +274,48 @@ public class AUTO {
           .build();
       }
     }
-    private enum PathState                                        {
+    private enum PathType                                         {
       SETUP,
-      OUTTAKE0,
-      FIRE0,
-      ALIGN1,
-      INTAKE1,
-      OUTTAKE1,
-      FIRE1,
-      ALIGN2,
-      INTAKE2,
-      OUTTAKE2,
-      FIRE2,
-      ALIGN3,
-      INTAKE3,
-      OUTTAKE3,
-      FIRE3,
-      ALIGN4,
+      ALIGN,
+      INTAKE,
+      OUTTAKE,
+      FIRE,
       END
+    }
+    private enum PathState                                        {
+      SETUP   (PathType .SETUP   , 0),
+      OUTTAKE0(PathType .OUTTAKE , 0),
+      FIRE0   (PathType .FIRE    , 0),
+      ALIGN1  (PathType .ALIGN   , 1),
+      INTAKE1 (PathType .INTAKE  , 1),
+      OUTTAKE1(PathType .OUTTAKE , 1),
+      FIRE1   (PathType .FIRE    , 1),
+      ALIGN2  (PathType .ALIGN   , 2),
+      INTAKE2 (PathType .INTAKE  , 2),
+      OUTTAKE2(PathType .OUTTAKE , 2),
+      FIRE2   (PathType .FIRE    , 2),
+      ALIGN3  (PathType .ALIGN   , 3),
+      INTAKE3 (PathType .INTAKE  , 3),
+      OUTTAKE3(PathType .OUTTAKE , 3),
+      FIRE3   (PathType .FIRE    , 3),
+      ALIGN4  (PathType .ALIGN   , 4),
+      END     (PathType .END     , 0);
+      
+      private final int Value;
+      private final PathType type;
+      public int getValue()               {
+        return Value;
+        
+      }
+      public PathType getType()           {
+        return type;
+        
+      }
+      PathState(PathType type, int Value) {
+        this.Value = Value;
+        this.type  = type;
+      }
+      
     }
     private AUTO.Paths paths;
     private PathState pathState;
@@ -354,87 +378,137 @@ public class AUTO {
     public  void autonomousPathUpdate()                           {
       switch (pathState) {
         case SETUP:     if (isTimerSecsOver(0)) {
-          IOtake.runIntake(1);
-          IOtake.runFlywheel(
-            IOTAKE.FlywheelState .MAX
-          );
           follower.followPath(paths .SETUP, true);
-          setPathState(PathState.OUTTAKE0 );
+          doSetup();
         } break;
         case OUTTAKE0:  if (!follower.isBusy()) {
           follower.followPath(paths .OUTTAKE0,true);
-          setPathState(PathState.FIRE0 );
+          doFirePrep(0 );
         } break;
         case FIRE0:     if (!follower.isBusy()) {
-          IOtake.runOtkGate(
-            IOTAKE.OuttakeServoState .OPEN
-          );
-          setPathState(PathState.ALIGN1 );
+          doFiring(1 );
         } break;
         case ALIGN1:    if (isTimerSecsOver(3)) {
-          IOtake.runOtkGate(
-            IOTAKE.OuttakeServoState .CLOSED
-          );
           follower.followPath(paths .ALIGN1,true);
-          setPathState(PathState.INTAKE1 );
+          doAlign(1 );
         } break;
         case INTAKE1:   if (!follower.isBusy()) {
           follower.followPath(paths .INTAKE1, true);
-          setPathState(PathState.OUTTAKE1 );
+          doIntake(1 );
         } break;
         case OUTTAKE1:  if (!follower.isBusy()) {
           follower.followPath(paths .OUTTAKE1,true);
-          setPathState(PathState.FIRE1 );
+          doFirePrep(1 );
         } break;
         case FIRE1:     if (!follower.isBusy()) {
-          IOtake.runOtkGate(
-            IOTAKE.OuttakeServoState .OPEN
-          );
-          setPathState(PathState.ALIGN2 );
+          doFiring(2 );
         } break;
         case ALIGN2:    if (isTimerSecsOver(3)) {
-          IOtake.runOtkGate(
-            IOTAKE.OuttakeServoState .CLOSED
-          );
           follower.followPath(paths .ALIGN2,true);
-          setPathState(PathState.INTAKE2 );
+          doAlign(2 );
         } break;
         case INTAKE2:   if (!follower.isBusy()) {
           follower.followPath(paths .INTAKE2, true);
-          setPathState(PathState.OUTTAKE2 );
+          doIntake(2 );
         } break;
         case OUTTAKE2:  if (!follower.isBusy()) {
           follower.followPath(paths .OUTTAKE2, true);
-          setPathState(PathState.FIRE2 );
+          doFirePrep(2 );
         } break;
         case FIRE2:     if (!follower.isBusy()) {
-          IOtake.runOtkGate(
-            IOTAKE.OuttakeServoState .OPEN
-          );
-          setPathState(PathState.ALIGN3 );
+          doFiring(3 );
         } break;
         case ALIGN3:    if (isTimerSecsOver(3)) {
-          IOtake.runOtkGate(
-            IOTAKE.OuttakeServoState .CLOSED
-          );
           follower.followPath(paths .ALIGN3,true);
-          setPathState(PathState.INTAKE3 );
+          doAlign(3 );
         } break;
         case INTAKE3:   if (!follower.isBusy()) {
           follower.followPath(paths .INTAKE3, true);
-          setPathState(PathState.OUTTAKE3 );
+          doIntake(3 );
         } break;
         case OUTTAKE3:  if (!follower.isBusy()) {
           follower.followPath(paths .OUTTAKE3, true);
-          setPathState(PathState.FIRE3 );
+          doFirePrep(3 );
         } break;
         case FIRE3:     if (!follower.isBusy()) {
-          IOtake.runOtkGate(
-            IOTAKE.OuttakeServoState .OPEN
-          );
-          setPathState(PathState.ALIGN4 );
+          doFiring(4 );
         } break;
         case ALIGN4:    if (isTimerSecsOver(3)) {
+          follower.followPath(paths .ALIGN4, true);
+          doEnd();
+        } break;
+      }
+    }
+    private boolean isTimerSecsOver(int Time)                     {
+      return pathTimer.getElapsedTimeSeconds() > Time;
+      
+    }
+    private PathState getPathState(PathType type, int Value)      {
+      switch (type) {
+        case ALIGN:   switch (Value)    {
+          case 1: return PathState .ALIGN1 ;
+          case 2: return PathState .ALIGN2 ;
+          case 3: return PathState .ALIGN3 ;
+          case 4: return PathState .ALIGN4 ;
+        }
+        case INTAKE:  switch (Value)    {
+          case 1: return PathState .INTAKE1 ;
+          case 2: return PathState .INTAKE2 ;
+          case 3: return PathState .INTAKE3 ;
+        }
+        case OUTTAKE: switch (Value)    {
+          case 0: return PathState .OUTTAKE0 ;
+          case 1: return PathState .OUTTAKE1 ;
+          case 2: return PathState .OUTTAKE2 ;
+          case 3: return PathState .OUTTAKE3 ;
+        }
+        case FIRE:    switch (Value)    {
+          case 0: return PathState .FIRE0 ;
+          case 1: return PathState .FIRE1 ;
+          case 2: return PathState .FIRE2 ;
+          case 3: return PathState .FIRE3 ;
+        }
+        case SETUP:   return PathState  .SETUP ;
+        default:      return PathState  .END   ;
+      }
+    }
+    private void doSetup()                                        {
+      // Setup Code
+        setPathState(PathState.OUTTAKE0 );
+    }
+    private void doAlign(int IntakeNum)                           {
+      // Align Code
+        IOtake.runIntake(0);
+        IOtake.runFlywheel(IOTAKE.FlywheelState .OFF );
+        IOtake.runOtkGate(IOTAKE.OuttakeServoState .CLOSED );
+        setPathState(
+          getPathState(PathType.INTAKE, IntakeNum)
+        );
+    }
+    private void doIntake(int OuttakeNum)                         {
+      // Intake Code
+        IOtake.runIntake(1);
+        setPathState(
+          getPathState(PathType.OUTTAKE, OuttakeNum)
+        );
+    }
+    private void doFirePrep(int FireNum)                          {
+      // Prep For Firing
+        IOtake.runIntake(1);
+        IOtake.runFlywheel( IOTAKE.FlywheelState .MAX );
+        setPathState(
+          getPathState(PathType.FIRE, FireNum)
+        );
+    }
+    private void doFiring(int AlignNum)                           {
+      // Prep For Firing
+        IOtake.runOtkGate(IOTAKE.OuttakeServoState .OPEN );
+        setPathState(
+          getPathState(PathType.ALIGN, AlignNum)
+        );
+    }
+    private void doEnd()                                          {
+      // Prep For Firing
         IOtake.runIntake(0);
         IOtake.runOtkGate(
           IOTAKE.OuttakeServoState .CLOSED
@@ -442,15 +516,9 @@ public class AUTO {
         IOtake.runFlywheel(
           IOTAKE.FlywheelState .OFF
         );
-        follower.followPath(paths .ALIGN4, true);
-        setPathState(PathState.END );
-      } break;
-      }
+        setPathState(PathState .END );
     }
-    private boolean isTimerSecsOver(int Time)                     {
-      return pathTimer.getElapsedTimeSeconds() > Time;
-      
-    }
+    
     
   // Variable Functions
     private void setPathState(PathState pState)                   {
