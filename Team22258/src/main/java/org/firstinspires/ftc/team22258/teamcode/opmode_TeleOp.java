@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team22258.teamcode;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,7 +14,7 @@ import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.19]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.20]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
@@ -49,6 +51,9 @@ public class opmode_TeleOp extends LinearOpMode {
   // Class Definitions
     private LIMELIGHT Limelight;
     private IOTAKE IOtake;
+  
+  // Telemetry Definition
+    private TelemetryManager panelsTelemetry;
     
   // Run Function
     @Override
@@ -79,6 +84,12 @@ public class opmode_TeleOp extends LinearOpMode {
     private void OnInit()       {
       // Initialization Code
       
+      // Telemetry
+        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+        
+        panelsTelemetry.debug("Status", "Initialized");
+        panelsTelemetry.update(telemetry);
+        
       // Map Hardware
         FLMotor        = hardwareMap.get( DcMotor .class, "FLMotor"       );
         FRMotor        = hardwareMap.get( DcMotor .class, "FRMotor"       );
@@ -201,20 +212,20 @@ public class opmode_TeleOp extends LinearOpMode {
       // Telemetry Data
       
       // Movement
-        telemetry.addLine("Movement ─");
-        telemetry.addData("Head Power",powHead);
-        telemetry.addData("Side Power",powSide);
-        telemetry.addData("Turn Power",powTurn);
-        telemetry.addData("Target Robot Yaw",targetRot / (2*Math.PI));
-        telemetry.addData("Current Robot Yaw", robotYawRadians / (2*Math.PI));
-        telemetry.addLine();
+        panelsTelemetry.addLine("Movement ─");
+        panelsTelemetry.debug("Head Power", powHead );
+        panelsTelemetry.debug("Side Power", powSide );
+        panelsTelemetry.debug("Turn Power", powTurn );
+        panelsTelemetry.debug("Target Robot Yaw",   targetRot       / (2*Math.PI) );
+        panelsTelemetry.debug("Current Robot Yaw",  robotYawRadians / (2*Math.PI) );
+        panelsTelemetry.addLine("");
         
       // Do for Classes
-        Limelight.doTelemetry(telemetry, fieldCentric);
-        IOtake.doTelemetry(telemetry);
+        Limelight .doTelemetry( panelsTelemetry, fieldCentric );
+        IOtake    .doTelemetry( panelsTelemetry               );
         
       // Update
-        telemetry.update();
+        panelsTelemetry.update( telemetry );
         
     }
     private void LoopEnd()      {

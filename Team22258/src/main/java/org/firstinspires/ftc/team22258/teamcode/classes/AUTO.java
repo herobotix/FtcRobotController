@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
-/**Version 1.2.19*/
+/**Version 1.2.20*/
 @Configurable
 public class AUTO {
   //Autonomous Code
@@ -379,6 +379,7 @@ public class AUTO {
         panelsTelemetry.debug("Heading", follower.getPose() .getHeading() );
         panelsTelemetry.debug("Fire #", fireNum);
         panelsTelemetry.debug("Timer", pathTimer .getElapsedTimeSeconds() );
+        IOtake.doTelemetry(panelsTelemetry);
         panelsTelemetry.update(telemetry);
     }
     
