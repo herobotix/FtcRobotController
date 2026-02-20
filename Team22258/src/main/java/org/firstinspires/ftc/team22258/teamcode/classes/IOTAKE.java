@@ -28,7 +28,7 @@ public class IOTAKE {
       MIN_RPM = 3450,
       MID_RPM = 3750,
       MAX_RPM = 4400,
-      BIG_RPM = 4450;
+      BIG_RPM = 4400;
     
     boolean flywheelDirection = true;
     private FlywheelState flywheelState = FlywheelState .OFF ;
