@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**Version 1.2.20*/
+/**Version 1.2.21*/
 @Configurable
 public class IOTAKE {
   // Intake/Outtake Class
