@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
-/**Version 1.2.18*/
+/**Version 1.2.19*/
 @Configurable
 public class AUTO {
   //Autonomous Code
@@ -31,6 +31,7 @@ public class AUTO {
     private IOTAKE IOtake;
     
   // Path Definitions
+    public static double FireAngleDegrees = -63;
     public  static class Paths                                    {
       
       public PathChain SETUP;
@@ -82,7 +83,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance,-70))
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
           )
           .build();
         
@@ -101,7 +102,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance,-70)),
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
             Math.toRadians(flipXDegrees(isRedAlliance,180))
           )
           .build();
@@ -143,7 +144,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance,-70))
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
           )
           .build();
         
@@ -160,7 +161,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance,-70)),
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
             Math.toRadians(flipXDegrees(isRedAlliance,180))
           )
           .build();
@@ -202,7 +203,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance,-70))
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
           )
           .build();
         
@@ -219,7 +220,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance,-70)),
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
             Math.toRadians(flipXDegrees(isRedAlliance,180))
           )
           .build();
@@ -251,7 +252,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance,-70))
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
           )
           .build();
         
@@ -268,7 +269,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance,-70)),
+            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
             Math.toRadians(flipXDegrees(isRedAlliance,90))
           )
           .build();
@@ -320,6 +321,10 @@ public class AUTO {
     private AUTO.Paths paths;
     private PathState pathState;
     private Timer pathTimer;
+    private byte fireNum = 0;
+    public static double
+      fireTime  = .4,
+      PauseTime = .4;
     
   // Follower Definition
     public  Follower follower;
@@ -365,20 +370,23 @@ public class AUTO {
       doTelemetry(telemetry);
     }
     public  void doTelemetry(Telemetry telemetry)                 {
+      //Telemetry Code
       
       // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        panelsTelemetry.debug("X", follower.getPose() .getX() );
+        panelsTelemetry.debug("Y", follower.getPose() .getY() );
+        panelsTelemetry.debug("Heading", follower.getPose() .getHeading() );
+        panelsTelemetry.debug("Fire #", fireNum);
+        panelsTelemetry.debug("Timer", pathTimer .getElapsedTimeSeconds() );
         panelsTelemetry.update(telemetry);
     }
     
   // Secondary Functions
     public  void autonomousPathUpdate()                           {
       switch (pathState) {
-        case SETUP:     if (isTimerSecsOver(0)) {
-          follower.followPath(paths .SETUP, true);
+        case SETUP:                             {
+          follower.followPath(paths.SETUP, true);
           doSetup();
         } break;
         case OUTTAKE0:  if (!follower.isBusy()) {
@@ -388,7 +396,7 @@ public class AUTO {
         case FIRE0:     if (!follower.isBusy()) {
           doFiring(1 );
         } break;
-        case ALIGN1:    if (isTimerSecsOver(3)) {
+        case ALIGN1:                            {
           follower.followPath(paths .ALIGN1,true);
           doAlign(1 );
         } break;
@@ -403,7 +411,7 @@ public class AUTO {
         case FIRE1:     if (!follower.isBusy()) {
           doFiring(2 );
         } break;
-        case ALIGN2:    if (isTimerSecsOver(3)) {
+        case ALIGN2:                            {
           follower.followPath(paths .ALIGN2,true);
           doAlign(2 );
         } break;
@@ -418,7 +426,7 @@ public class AUTO {
         case FIRE2:     if (!follower.isBusy()) {
           doFiring(3 );
         } break;
-        case ALIGN3:    if (isTimerSecsOver(3)) {
+        case ALIGN3:                            {
           follower.followPath(paths .ALIGN3,true);
           doAlign(3 );
         } break;
@@ -433,15 +441,11 @@ public class AUTO {
         case FIRE3:     if (!follower.isBusy()) {
           doFiring(4 );
         } break;
-        case ALIGN4:    if (isTimerSecsOver(3)) {
+        case ALIGN4:                            {
           follower.followPath(paths .ALIGN4, true);
           doEnd();
         } break;
       }
-    }
-    private boolean isTimerSecsOver(int Time)                     {
-      return pathTimer.getElapsedTimeSeconds() > Time;
-      
     }
     private PathState getPathState(PathType type, int Value)      {
       switch (type) {
@@ -494,18 +498,45 @@ public class AUTO {
     }
     private void doFirePrep(int FireNum)                          {
       // Prep For Firing
-        IOtake.runIntake(1);
-        IOtake.runFlywheel( IOTAKE.FlywheelState .MAX );
+        IOtake.runFlywheel( IOTAKE.FlywheelState .BIG );
         setPathState(
           getPathState(PathType.FIRE, FireNum)
         );
     }
     private void doFiring(int AlignNum)                           {
-      // Prep For Firing
-        IOtake.runOtkGate(IOTAKE.OuttakeServoState .OPEN );
-        setPathState(
-          getPathState(PathType.ALIGN, AlignNum)
-        );
+      //Prep For Firing
+      
+      if (pathTimer.getElapsedTimeSeconds() > .4 ) {
+        if (
+          ( fireNum == 0 ) ||
+          ( fireNum == 2 ) ||
+          ( fireNum == 4 )
+        ) {
+          IOtake.runOtkGate(IOTAKE.OuttakeServoState.OPEN);
+          IOtake.runIntake(1);
+          fireNum++;
+        }
+        if (
+          ( pathTimer.getElapsedTimeSeconds() > .8 ) &&
+          (
+            ( fireNum == 1 ) ||
+            ( fireNum == 3 ) ||
+            ( fireNum == 5 )
+          )
+        ) {
+          pathTimer.resetTimer();
+          IOtake.runOtkGate(IOTAKE.OuttakeServoState .CLOSED );
+          IOtake.runIntake(0);
+          fireNum++;
+          if (fireNum == 6) {
+            setPathState(
+              getPathState(PathType.ALIGN, AlignNum)
+            );
+            fireNum = 0;
+          }
+        }
+      }
+      
     }
     private void doEnd()                                          {
       // Prep For Firing

@@ -20,13 +20,15 @@ public class IOTAKE {
       OFF,
       MIN,
       MID,
-      MAX
+      MAX,
+      BIG
     }
     public static double
       OFF_RPM =    0,
       MIN_RPM = 3450,
       MID_RPM = 3750,
-      MAX_RPM = 4400;
+      MAX_RPM = 4400,
+      BIG_RPM = 4450;
     
     boolean flywheelDirection = true;
     private FlywheelState flywheelState = FlywheelState .OFF ;
@@ -65,7 +67,8 @@ public class IOTAKE {
     
   // Intake Definitions
     private DcMotor ItkMotor;
-    double ItkMP;
+    double ItkMP
+      = 0;
     
   // Primary Functions
     public void Init(HardwareMap hardwareMap)                   {
@@ -162,6 +165,7 @@ public class IOTAKE {
           case MIN: targetFlywheelVelocity = MIN_RPM; break;
           case MID: targetFlywheelVelocity = MID_RPM; break;
           case MAX: targetFlywheelVelocity = MAX_RPM; break;
+          case BIG: targetFlywheelVelocity = BIG_RPM; break;
         }
         targetFlywheelVelocity = targetFlywheelVelocity * -(flywheelDirection?1:-1);
         

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.team22258.teamcode.classes.AUTO;
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.18]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.19]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   //Autonomous Opmode on Blue
@@ -24,7 +24,12 @@ public class opmode_Auto_Blue extends LinearOpMode {
         waitForStart();
         
       // Run Opmode
-        while (opModeIsActive()) { auto.doLoop(); }
+        while (opModeIsActive()) {
+          auto.doLoop();
+          if (gamepad1.a) {
+            while (opModeIsActive()) {}
+          }
+        }
         
     }
     
