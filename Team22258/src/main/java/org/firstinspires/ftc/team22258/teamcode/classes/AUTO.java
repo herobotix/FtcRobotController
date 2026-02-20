@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
-/**Version 1.2.20*/
+/**Version 1.2.21*/
 @Configurable
 public class AUTO {
   //Autonomous Code
@@ -31,8 +31,9 @@ public class AUTO {
     private IOTAKE IOtake;
     
   // Path Definitions
-    public static double FireAngleDegrees = -63;
-    public  static class Paths                                    {
+    public static double FireAngleDegreesBlue = 297;
+    public static double FireAngleDegreesRed  = 243;
+    public static class Paths                                     {
       
       public PathChain SETUP;
       public PathChain OUTTAKE0;
@@ -83,7 +84,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue))
           )
           .build();
         
@@ -102,7 +103,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue)),
             Math.toRadians(flipXDegrees(isRedAlliance,180))
           )
           .build();
@@ -144,7 +145,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue))
           )
           .build();
         
@@ -161,7 +162,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue)),
             Math.toRadians(flipXDegrees(isRedAlliance,180))
           )
           .build();
@@ -203,7 +204,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue))
           )
           .build();
         
@@ -220,7 +221,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue)),
             Math.toRadians(flipXDegrees(isRedAlliance,180))
           )
           .build();
@@ -252,7 +253,7 @@ public class AUTO {
           )
           .setLinearHeadingInterpolation(
             Math.toRadians(flipXDegrees(isRedAlliance,180)),
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees))
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue))
           )
           .build();
         
@@ -269,7 +270,7 @@ public class AUTO {
             )
           )
           .setLinearHeadingInterpolation(
-            Math.toRadians(flipXDegrees(isRedAlliance, FireAngleDegrees)),
+            Math.toRadians(isRedAlliance?(FireAngleDegreesRed):(FireAngleDegreesBlue)),
             Math.toRadians(flipXDegrees(isRedAlliance,90))
           )
           .build();
