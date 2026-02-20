@@ -12,7 +12,7 @@ import org.firstinspires.ftc.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.18]")
+@TeleOp(name = "Opmode (TeleOp) [1.2.19]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
@@ -154,7 +154,6 @@ public class opmode_TeleOp extends LinearOpMode {
               indicatorLight.setPosition(0.29);
           }
       }
-      
   }
     private void Fn_Move()      {
       //Movement Code

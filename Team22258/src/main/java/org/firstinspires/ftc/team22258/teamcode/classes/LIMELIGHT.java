@@ -39,9 +39,11 @@ public class LIMELIGHT {
       
     }
     private TargetLock targetLock = TargetLock .OFF ;
-    
+
+    public static double targetBearingDegrees = 0.0;
+
   // Turn Power Definitions
-    double powTurn;
+    double powTurn = 0.0;
     public static double powTurnMod = 15;
     
   // Main Functions
@@ -76,7 +78,9 @@ public class LIMELIGHT {
       limelight.updateRobotOrientation( robotYawDegrees );
       
       telemetry.addLine("Limelight ─");
-      
+
+      Boolean found = false;
+
       LLResult results = limelight.getLatestResult();
       if (results != null && results.isValid() ) {
         
@@ -90,7 +94,22 @@ public class LIMELIGHT {
             telemetry.addData("ID:", aprilTagID);
             
             if (aprilTagID == targetLock.getValue() ) {
-              powTurn = powTurnMod * fiducial.getTargetXDegrees() / 360;
+              targetBearingDegrees = fiducial.getTargetXDegrees();
+
+              // We want to align slight left/right of fiducial to ensure we
+              // hit the highest corner edge of the backstop.
+              if (aprilTagID == TargetLock.BLUE.getValue())
+              {
+                targetBearingDegrees -= 3.5;
+              }
+              if (aprilTagID == TargetLock.RED.getValue())
+              {
+                targetBearingDegrees += 1.0;
+              }
+
+              powTurn = powTurnMod * targetBearingDegrees / 360;
+              found = true;
+              telemetry.addData("Target Bearing Degrees: ", targetBearingDegrees);
               telemetry.addData("Target Rotation", powTurn);
             }
             
@@ -103,7 +122,13 @@ public class LIMELIGHT {
         telemetry.addLine("No AprilTags Detected");
         telemetry.addLine();
       }
-      
+
+      if (!found)
+      {
+        powTurn = 0.0;
+        targetBearingDegrees = 5000.0;
+        telemetry.addData("Target Bearing Degrees: ", targetBearingDegrees);
+      }
     }
     
     public void doTelemetry(Telemetry telemetry, boolean fieldCentric) {
