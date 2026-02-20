@@ -26,9 +26,9 @@ public class IOTAKE {
     public static double
       OFF_RPM =    0,
       MIN_RPM = 3450,
-      MID_RPM = 3750,
-      MAX_RPM = 4400,
-      BIG_RPM = 4400;
+      MID_RPM = 3900,
+      MAX_RPM = 4470,
+      BIG_RPM = 4470;
     
     boolean flywheelDirection = true;
     private FlywheelState flywheelState = FlywheelState .OFF ;
@@ -48,12 +48,15 @@ public class IOTAKE {
     private DcMotorEx lFlywheelMotor;
     private DcMotorEx rFlywheelMotor;
     double targetFlywheelVelocity;
-    
+
+    // VMAX tps left 2620
+    // VMAX tps right 2620
+    // Feedforward = 32767 / 2620 = 12.5
     public static double
-      flywheelP =  0,
+      flywheelP =  20,
       flywheelI =  0,
       flywheelD =  0,
-      flywheelF = 14;
+      flywheelF = 12.5;
     
   // Launch Gate Definitions
     private Servo lServo;
