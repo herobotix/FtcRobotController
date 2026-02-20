@@ -40,7 +40,6 @@ public class IOTAKE {
     /** Ticks Per Second / Revolutions Per Minute **/
     public double TPSPerRPM() {
       return TicksPerRevolutionOfFlywheel / secondsPerMinute;
-      
     }
     
     private DcMotorEx lFlywheelMotor;
@@ -101,16 +100,53 @@ public class IOTAKE {
       
       // Intake
         runIntake(gamepad.right_trigger - gamepad.left_trigger);
-        
+
+        if (gamepad.left_trigger >= 0.05)
+        {
+            runIntake(- gamepad.left_trigger);
+        }
+        else
+        {
+            if (gamepad.right_trigger >= 0.05)
+            {
+                runIntake(gamepad.right_trigger);
+            }
+            else
+            {
+                if (gamepad.right_bumper && Math.abs(targetFlywheelVelocity) > 0.0)
+                {
+                    outtakeServoState = OuttakeServoState.OPEN;
+                    runOtkGate(outtakeServoState);
+
+                    //TODO: check if motor is up to speed and intake balls
+                    if ((Math.abs(getFlywheelRPM() - Math.abs(targetFlywheelVelocity)) < 100) ||
+                            (getFlywheelRPM() > Math.abs(targetFlywheelVelocity)))
+                    {
+                        runIntake(1.0);
+                    }
+                    else
+                    {
+                        runIntake(0.0);
+                    }
+                }
+                else
+                {
+                    runIntake(0.0);
+                    outtakeServoState = OuttakeServoState.CLOSED;
+                    runOtkGate(outtakeServoState);
+                }
+            }
+        }
+
       // Outtake Gate
-        if (gamepad.rightBumperWasPressed()) {
+        /*if (gamepad.rightBumperWasPressed()) {
           switch (outtakeServoState) {
             case OPEN: outtakeServoState = (OuttakeServoState.CLOSED ); break;
             case CLOSED: outtakeServoState = (OuttakeServoState.OPEN ); break;
           }
         }
         runOtkGate(outtakeServoState);
-        
+        */
       // Outtake Flywheel
         if (gamepad.x) { flywheelState = FlywheelState .OFF ;}
         if (gamepad.a) { flywheelState = FlywheelState .MIN ;}
@@ -142,7 +178,7 @@ public class IOTAKE {
                                               ( "OFF" ))
     );
     telemetry.addData("Current Outtake RPM",
-      rFlywheelMotor.getVelocity() / TPSPerRPM()
+            getFlywheelRPM()
     );
     
     telemetry.addLine();
@@ -187,6 +223,10 @@ public class IOTAKE {
       rServo.setPosition(
         (outtakeServoState == OuttakeServoState.OPEN )?1:0
       );
+    }
+
+    public double getFlywheelRPM() {
+        return Math.abs(rFlywheelMotor.getVelocity() / TPSPerRPM());
     }
     
 }
