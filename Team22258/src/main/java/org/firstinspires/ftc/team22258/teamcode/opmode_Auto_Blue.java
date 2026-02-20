@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.team22258.teamcode.classes.AUTO;
 
-@Autonomous(name = "Opmode (Auto, Blue) [1.2.19]", group = "Autonomous")
+@Autonomous(name = "Opmode (Auto, Blue) [1.2.20]", group = "Autonomous")
 @Configurable
 public class opmode_Auto_Blue extends LinearOpMode {
   //Autonomous Opmode on Blue

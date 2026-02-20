@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.team22258.teamcode.classes;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+/**Version 1.2.20*/
 @Configurable
 public class IOTAKE {
   // Intake/Outtake Class
@@ -123,34 +122,37 @@ public class IOTAKE {
         runFlywheel(flywheelState);
         
     }
-    public void doTelemetry(Telemetry telemetry)                {
-    // IO-take
-    telemetry.addLine("IOtk ─");
+    public void doTelemetry(TelemetryManager panelsTelemetry)  {
+      //Telemetry Code
+      
+      // IO-take
+        panelsTelemetry.addLine("IOtk ─");
+        
+      // Intake
+        panelsTelemetry.debug(
+          ( "Itk |" ),
+          ( ItkMP )
+        );
+        
+      // Outtake
+        panelsTelemetry.debug("Outtake Gate:", (
+          (outtakeServoState == OuttakeServoState.OPEN )? ("Open:"):
+                                                        ("Closed:"))
+        );
+        panelsTelemetry.debug("Target Outtake RPM: ",(
+          (flywheelState == FlywheelState .MIN )? ( "Min" ):
+          (flywheelState == FlywheelState .MID )? ( "Mid" ):
+          (flywheelState == FlywheelState .MAX )? ( "Max" ):
+                                                  ( "OFF" ))
+        );
+        panelsTelemetry.debug("Current Outtake RPM",
+          rFlywheelMotor.getVelocity() / TPSPerRPM()
+        );
     
-    // Intake
-    telemetry.addData(
-      ( "Itk |" ),
-      ( ItkMP )
-    );
+        panelsTelemetry.addLine("");
+        
+    }
     
-    // Outtake
-    telemetry.addData("Outtake Gate:", (
-      (outtakeServoState == OuttakeServoState.OPEN )? ("Open:"):
-                                                    ("Closed:"))
-    );
-    telemetry.addData("Target Outtake RPM: ",(
-      (flywheelState == FlywheelState .MIN )? ( "Min" ):
-      (flywheelState == FlywheelState .MID )? ( "Mid" ):
-      (flywheelState == FlywheelState .MAX )? ( "Max" ):
-                                              ( "OFF" ))
-    );
-    telemetry.addData("Current Outtake RPM",
-      rFlywheelMotor.getVelocity() / TPSPerRPM()
-    );
-    
-    telemetry.addLine();
-  }
-  
   // Secondary Functions
     public void runIntake(double power)                         {
       setIntakeMotorPower( power );

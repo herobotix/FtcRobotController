@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team22258.teamcode.classes;
 
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.List;
 
+/**Version 1.2.20*/
 @Configurable
 public class LIMELIGHT {
   // Limelight Class
@@ -79,7 +81,7 @@ public class LIMELIGHT {
       
       telemetry.addLine("Limelight ─");
 
-      Boolean found = false;
+      boolean found = false;
 
       LLResult results = limelight.getLatestResult();
       if (results != null && results.isValid() ) {
@@ -131,10 +133,10 @@ public class LIMELIGHT {
       }
     }
     
-    public void doTelemetry(Telemetry telemetry, boolean fieldCentric) {
+    public void doTelemetry(TelemetryManager panelsTelemetry, boolean fieldCentric) {
       
-      telemetry.addLine("Miscellaneous ─");
-      telemetry.addData(
+      panelsTelemetry.addLine("Miscellaneous ─");
+      panelsTelemetry.debug(
         (
           "Centricity"
         ),
@@ -149,7 +151,7 @@ public class LIMELIGHT {
           ) + "-Centric"
         )
       );
-      telemetry.addData(
+      panelsTelemetry.debug(
         (
           "Selected Target"
         ),
