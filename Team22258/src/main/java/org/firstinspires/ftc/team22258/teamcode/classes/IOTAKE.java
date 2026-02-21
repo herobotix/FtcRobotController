@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**Version 1.2.21*/
+/**Version 1.2.22*/
 @Configurable
 public class IOTAKE {
   // Intake/Outtake Class
@@ -26,7 +26,7 @@ public class IOTAKE {
       OFF_RPM =    0,
       MIN_RPM = 3450,
       MID_RPM = 3900,
-      MAX_RPM = 4470,
+      MAX_RPM = 4420,
       BIG_RPM = 4470;
     
     boolean flywheelDirection = true;

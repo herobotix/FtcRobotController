@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team22258.pedroPathing.Constants;
 
-/**Version 1.2.21*/
+/**Version 1.2.22*/
 @Configurable
 public class AUTO {
   //Autonomous Code
@@ -32,7 +32,7 @@ public class AUTO {
     
   // Path Definitions
     public static double FireAngleDegreesBlue = 297;
-    public static double FireAngleDegreesRed  = 243;
+    public static double FireAngleDegreesRed  = 240;
     public static class Paths                                     {
       
       public PathChain SETUP;
