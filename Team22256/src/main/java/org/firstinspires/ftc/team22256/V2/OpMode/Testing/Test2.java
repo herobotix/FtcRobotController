@@ -38,19 +38,32 @@ public class Test2 extends NextFTCOpMode {
     }
 
 
+    @Override
+    public void onInit(){
+        Turret.INSTANCE.setTurretState(Turret.State.IDLE);
+        Turret.INSTANCE.setStartingPosition(Turret.INSTANCE.getCurrentPosition());
+        Turret.INSTANCE.setUpTurret();
+    }
 
     @Override
     public void onStartButtonPressed() {
+
+        Gamepads.gamepad1().a().whenBecomesTrue(Turret.INSTANCE.setState(Turret.State.IDLE));
+        Gamepads.gamepad1().b().whenBecomesTrue(Turret.INSTANCE.setState(Turret.State.VISION));
+        Gamepads.gamepad1().x().whenBecomesTrue(Turret.INSTANCE.setState(Turret.State.HOME));
+
     }
 
     @Override
     public void onUpdate(){
-        telemetry.addData("pos",Turret.INSTANCE.getRawTicks());
-        telemetry.addData("goal",Turret.INSTANCE.getSetPoint());
+       // telemetry.addData("pos",Turret.INSTANCE.getRawTicks());
+       // telemetry.addData("goal",Turret.INSTANCE.getSetPoint());
         telemetry.addData("tx",Limelight.INSTANCE.getTx());
         telemetry.addData("Target found", Limelight.INSTANCE.targetFound());
         telemetry.addData("Heart beat", Limelight.INSTANCE.getHeartBeat());
         telemetry.addData("detection counter", Limelight.INSTANCE.getDetectionCount());
+        telemetry.addData("position", Turret.INSTANCE.getCurrentPosition());
+        telemetry.addData("turret state", Turret.INSTANCE.getTurretState());
         telemetry.update();
     }
 

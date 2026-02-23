@@ -11,12 +11,20 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Shooter;
+import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Sorter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Turret;
+
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.ftc.NextFTCOpMode;
 
 
 @Autonomous
 
-public class MoveAuto extends LinearOpMode {
+public class MoveAuto extends NextFTCOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -28,9 +36,20 @@ public class MoveAuto extends LinearOpMode {
 
 
 
+    public Command shoot = new SequentialGroup(
+            Sorter.INSTANCE.BK_UpDown(),
+                        new Delay(0.3),
+                        Sorter.INSTANCE.LK_UpDown(),
+                                new Delay(0.3),
+                        Sorter.INSTANCE.RK_UpDown()
+                                );
 
 
-
+public MoveAuto(){
+    addComponents(
+            new SubsystemComponent(Shooter.INSTANCE,Sorter.INSTANCE)
+    );
+}
 
 
     @Override
@@ -44,18 +63,23 @@ public class MoveAuto extends LinearOpMode {
         runtime.reset();
         waitForStart();
 
-        while (opModeIsActive()) {
-        runtime.reset();
+        if (opModeIsActive()) {
 
-            while(runtime.seconds() < 0.5){
-                backLeft.setPower(1);
-                backRight.setPower(-1);
-                frontRight.setPower(1);
-                frontLeft.setPower(-1);
+            Shooter.INSTANCE.closeTriangle.schedule();
+            runtime.reset();
+
+
+            while(runtime.seconds() < 0.3){
+                backLeft.setPower(-1);//forward
+                backRight.setPower(1);//forward
+                frontRight.setPower(-1);//forward
+                frontLeft.setPower(1);//forward
             }
+            //shoot.schedule();
 
             telemetry.update();
-            break;
+            stop();
+
         }
     }
 }

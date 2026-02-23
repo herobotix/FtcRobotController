@@ -51,9 +51,9 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
-        Turret.state = Turret.State.IDLE;
+        Turret.INSTANCE.setTurretState(Turret.State.IDLE);
         while (opModeIsActive()) {
-            Turret.state = Turret.State.VISION;
+            Turret.INSTANCE.setTurretState(Turret.State.VISION);
             while(runtime.seconds() < 1.1){
                 backLeft.setPower(1);
                 backRight.setPower(1);

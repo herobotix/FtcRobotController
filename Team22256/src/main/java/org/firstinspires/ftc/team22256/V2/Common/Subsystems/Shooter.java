@@ -60,11 +60,19 @@ public class Shooter implements Subsystem {
         return getShooterVelocity() >= flywheelTarget - tolerance;
     }
 
+    public Command farTriangle = new InstantCommand(() -> flywheelTarget = 1640);
+    public Command closeTriangle = new InstantCommand(() -> flywheelTarget = 1355);
+    public Command shootpreload = new InstantCommand(() -> flywheelTarget = 1670);
+    public Command setShooterVelocity(double velocity){
+        return new InstantCommand(() -> flywheelTarget = velocity);
+    }
+
 
 
     @Override
     public void initialize(){
 
+        setShooterVelocity(0).schedule();
     }
 
     @Override

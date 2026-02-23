@@ -1,80 +1,122 @@
+
 package org.firstinspires.ftc.team22256.V2.OpMode.Auto;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Intake;
-import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Limelight;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Shooter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Sorter;
 import org.firstinspires.ftc.team22256.V2.Common.Subsystems.Turret;
 
-import dev.nextftc.control.KineticState;
+import java.util.concurrent.ScheduledFuture;
+
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.CommandManager;
 import dev.nextftc.core.commands.delays.Delay;
-import dev.nextftc.core.commands.delays.WaitUntil;
 import dev.nextftc.core.commands.groups.SequentialGroup;
-import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.hardware.controllable.MotorGroup;
-import dev.nextftc.hardware.controllable.RunToPosition;
-import dev.nextftc.hardware.controllable.RunToState;
-import dev.nextftc.hardware.driving.DriverControlledCommand;
-import dev.nextftc.hardware.impl.MotorEx;
-import dev.nextftc.hardware.positionable.SetPosition;
-import dev.nextftc.hardware.positionable.SetPositions;
+
 
 @Autonomous
 
 public class BlueAuto extends NextFTCOpMode {
 
-    public final MotorEx frontLeft = new MotorEx("frontLeft")
-            .reversed();// reverse
-    public final MotorEx backLeft = new MotorEx("backLeft");
-    public final MotorEx frontRight = new MotorEx("frontRight");
-    public final MotorEx backRight = new MotorEx("backRight")
-            .reversed();//reverse
+    // Declare OpMode members for each of the 4 motors.
+    private ElapsedTime runtime = new ElapsedTime();
 
-    MotorGroup driveTrain = new MotorGroup(frontRight,frontLeft,backRight,backLeft);
+    private DcMotor backLeft,backRight,frontLeft,frontRight;
 
-    Command waitTillAtRPM = new WaitUntil(Shooter.INSTANCE::upToSpeed);
-    Command waitTillAimed = new WaitUntil(Turret.INSTANCE::isAiming);
-    Command fullShoot = new SequentialGroup(
-            Sorter.INSTANCE.RK_UpDown(),
-            waitTillAtRPM,
+
+
+    public boolean isScheduled = false;
+
+
+    public Command shoot = new SequentialGroup(
+            Sorter.INSTANCE.BK_UpDown(),
+            new Delay(0.3),
             Sorter.INSTANCE.LK_UpDown(),
-            waitTillAtRPM,
-            Sorter.INSTANCE.BK_UpDown()
+            new Delay(0.3),
+            Sorter.INSTANCE.RK_UpDown()
     );
+
 
     public BlueAuto(){
         addComponents(
-                BindingsComponent.INSTANCE,
-                new SubsystemComponent(Intake.INSTANCE, Sorter.INSTANCE, Shooter.INSTANCE, Turret.INSTANCE, Limelight.INSTANCE)
+                new SubsystemComponent(Shooter.INSTANCE,Sorter.INSTANCE,Turret.INSTANCE)
         );
     }
 
-    private Command autoRoutine(){
-        return new SequentialGroup(
-                waitTillAimed,
-                Shooter.INSTANCE.farTriangle,
-                waitTillAtRPM,
-                fullShoot
-        );
+
+
+    public Command auto = new SequentialGroup(
+            Shooter.INSTANCE.farTriangle,
+            new Delay(2),
+            shoot,
+            shoot
+    );
+
+
+
+    @Override
+    public void onInit(){
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+
+        Turret.INSTANCE.setTurretState(Turret.State.IDLE);
+
+        Shooter.INSTANCE.setShooterVelocity(0).schedule();
+
+    }
+    @Override
+    public void onStartButtonPressed(){
+
+        Turret.INSTANCE.setTurretState(Turret.State.VISION);
+
+        runtime.reset();
+
+        Shooter.INSTANCE.setShooterVelocity(0).schedule();
+
+
+
     }
 
     @Override
-    public void onInit() {
-        Turret.INSTANCE.setState(Turret.State.IDLE);
-    }
+    public void onUpdate(){
 
-    @Override
-    public void onStartButtonPressed() {
-        autoRoutine().schedule();
-    }
+        if(!isScheduled){
+            auto.schedule();
+            isScheduled = true;
+        }
 
-    @Override
-    public void onUpdate() {
+        while(runtime.seconds() > 6 && runtime.seconds() < 7.5 ){
+            backLeft.setPower(-0.5);//forward
+            backRight.setPower(-0.5);//forward
+            frontRight.setPower(-0.5);//forward
+            frontLeft.setPower(-0.5);//forward
+        }
+        backLeft.setPower(0);//forward
+        backRight.setPower(0);//forward
+        frontRight.setPower(0);//forward
+        frontLeft.setPower(0);//forward
+
+
+        telemetry.addData("timer",runtime.seconds());
         telemetry.update();
+
+
+
+
     }
+
 }

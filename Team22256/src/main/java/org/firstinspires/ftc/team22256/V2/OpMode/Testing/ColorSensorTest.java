@@ -38,8 +38,8 @@ public class ColorSensorTest extends NextFTCOpMode {
         Global.motif[1] = NormColorSensor.COLOR.PURPLE;
         Global.motif[2] = NormColorSensor.COLOR.GREEN;
 
-        Gamepads.gamepad1().b().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
-        Gamepads.gamepad1().x().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
+        // Gamepads.gamepad1().b().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
+        //Gamepads.gamepad1().x().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
         Gamepads.gamepad1().a().whenBecomesTrue(new ShootMotif());
 
     }

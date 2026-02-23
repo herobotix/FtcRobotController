@@ -47,11 +47,14 @@ public class Test extends NextFTCOpMode {
     }
     @Override
     public void onInit(){
-    //    Turret.INSTANCE.setState(Turret.State.IDLE);
+        Turret.INSTANCE.setTurretState(Turret.State.IDLE);
+        Turret.INSTANCE.setStartingPosition( Turret.INSTANCE.getCurrentPosition() );
+        Turret.INSTANCE.setUpTurret();
     }
 
     @Override
     public void onStartButtonPressed() {
+        Turret.INSTANCE.setTurretState(Turret.State.VISION);
         driverControlled = new MecanumDriverControlled(
                 frontLeft,
                 frontRight,
@@ -63,7 +66,7 @@ public class Test extends NextFTCOpMode {
         );
         driverControlled.schedule();
 
-        //Turret.INSTANCE.setState(Turret.State.VISION);
+
 
         Gamepads.gamepad1().a()
                 .toggleOnBecomesTrue()
@@ -79,13 +82,14 @@ public class Test extends NextFTCOpMode {
                         Sorter.INSTANCE.RK_UpDown()
                         )
 
-                        //TODO change to back left right
+
 
                 );
 
-        //Gamepads.gamepad1().dpadRight().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
-        //Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
+
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(Intake.INSTANCE.outtaking);
+        Gamepads.gamepad1().dpadRight().whenBecomesTrue(Shooter.INSTANCE.closeTriangle);
+        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Shooter.INSTANCE.farTriangle);
 
     }
     @Override
@@ -105,5 +109,11 @@ public class Test extends NextFTCOpMode {
         //telemetry.addData("goal", Shooter.target);
 
         telemetry.update();
+    }
+
+    @Override
+    public void onStop(){
+        Limelight.INSTANCE.stopLimelight();
+
     }
 }
