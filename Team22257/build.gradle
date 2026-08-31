@@ -20,7 +20,7 @@ android {
     namespace = 'org.firstinspires.ftc.team22257'
 
     packagingOptions {
-        jniLibs.useLegacyPackaging true
+        jniLibs.useLegacyPackaging = true
     }
     sourceSets {
         main {
