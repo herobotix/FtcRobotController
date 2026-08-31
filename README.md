@@ -15,28 +15,27 @@ Do these four things in order. Ask a mentor if any step fails — don't guess.
 
 ### a. Install Android Studio
 
-**You need Android Studio Narwhal Feature Drop (2025.1.2) or newer.** Older versions
-cannot open this project at all. If you already have Android Studio, check
-**Android Studio → About** (macOS) or **Help → About** (Windows) and upgrade if the
-version number is lower than 2025.1.2.
+Install **Android Studio Quail 3 (2026.1.3)** from <https://developer.android.com/studio>.
+
+Everyone in the club runs the **same** version. Mixed versions cause confusing problems
+that look like code bugs but aren't. If you already have Android Studio, check
+**Android Studio → About** (macOS) or **Help → About** (Windows).
+
+The hard floor is **2025.1.2**; anything older cannot open this project at all. We
+standardize on Quail 3 because it supports Android Gradle Plugin 7.1 through 9.3, which
+should carry us through the SDK update at kickoff without another Studio upgrade.
 
 > ⚠️ Android Studio Ladybug (2024.2) does **not** work, even though the FTC SDK's own
 > README says it does. That page is out of date — the SDK now ships Android Gradle
 > Plugin 8.13.2, which Ladybug cannot load. You will get an error about the Android
 > Gradle plugin version instead of a working project.
 
-Download from <https://developer.android.com/studio>. Take the current stable release.
+**Turn off automatic updates:** Settings → Appearance & Behavior → System Settings →
+Updates, and uncheck automatic updates for the IDE. Studio upgrades are a mentor
+decision, made between competitions — not something that should happen to your laptop
+the night before one.
 
-Everyone on the club should run the **same** version. Mixed versions cause confusing
-problems that look like code bugs but aren't. Check with a mentor before upgrading
-mid-season.
-
-### b. Java
-
-You do **not** need to install Java separately. Android Studio bundles its own JDK and
-uses it automatically. If you build from a terminal instead, you need **JDK 17**.
-
-### c. Get the code
+### b. Get the code
 
 In Android Studio: **File → New → Project from Version Control**, and use
 
@@ -46,6 +45,31 @@ https://github.com/herobotix/FtcRobotController.git
 
 Then switch to your team's branch (see the table in section 3). Do not start working
 on `master`.
+
+### c. Set the Gradle JDK to Java 17
+
+With the project open, do this before you try to build. **It is required, and you have
+to do it on your own laptop** — it is a local Android Studio setting that cannot be
+stored in the repository, so nobody can do it for you.
+
+1. Open **Settings → Build, Execution, Deployment → Build Tools → Gradle**
+2. Find the **Gradle JDK** dropdown
+3. Choose **Download JDK…**, then select **version 17**, vendor **Eclipse Temurin**,
+   and take the newest `17.0.x` offered
+4. Click **OK** and let the project re-sync
+
+Studio picks the right build for your computer automatically — Windows laptops get the
+x64 build, Apple Silicon Macs get aarch64. It is the same JDK either way.
+
+Why 17, specifically: Android Gradle Plugin 8.13 lists JDK 17 as both its minimum and
+its default, so it is the best-tested setup. It also insulates your build from Android
+Studio, which bundles its own newer JDK that changes whenever Studio updates.
+
+> **Note:** you may read online that the REV Control Hub "requires Java 17." That is not
+> correct, though the advice to use 17 is still good. The Control Hub is an Android
+> device and never runs a JDK at all — your code is compiled to Java 8 bytecode and then
+> converted to DEX to run on Android. The Gradle JDK only runs the build on your laptop.
+> See the mentor notes for the full explanation.
 
 ### d. Check it works
 
@@ -61,6 +85,31 @@ To check from a terminal instead:
 
 `BUILD SUCCESSFUL` means your setup is good.
 
+### Windows laptops — read this first
+
+Most of the club is on Windows, and nearly every "it works on the mentor's laptop"
+problem traces back to one of these.
+
+**Put the project somewhere short and local.** `C:\ftc\FtcRobotController` is ideal.
+Android builds create very deep folder paths, and a project buried under
+`Documents\...\OneDrive\...` will hit Windows path limits and produce errors that look
+like code problems.
+
+**Do not let the project or your home folder sync to OneDrive.** School-managed laptops
+often redirect `C:\Users\<you>` into OneDrive. If that happens, Gradle's cache
+(`C:\Users\<you>\.gradle`) and your downloaded JDK (`C:\Users\<you>\.jdks`) get
+synced too — which causes file-locking failures, mysterious build errors, and enormous
+upload traffic. If you see OneDrive icons on those folders, tell a mentor before going
+further.
+
+**Antivirus makes builds slow.** Real-time scanning of the Gradle cache can turn a
+20-second build into several minutes. If you have permission, exclude
+`C:\Users\<you>\.gradle` from scanning. On a school-managed machine you may not, which
+is worth knowing so you don't think something is broken.
+
+**Budget disk space.** Android Studio, the Android SDK, the Gradle cache and the build
+output together need roughly **15–20 GB**. A nearly-full drive fails in confusing ways.
+
 ### Versions this project uses
 
 You don't need to set any of these — they come with the project. They're listed so a
@@ -68,16 +117,18 @@ mentor can diagnose a broken setup.
 
 | Thing | Version | Where it's set |
 | --- | --- | --- |
-| Android Studio | **2025.1.2 or newer** (current stable recommended) | you install it |
-| JDK | **17** (Android Studio's bundled JDK is fine) | your machine |
+| Android Studio | **Quail 3, 2026.1.3** (floor: 2025.1.2) | you install it |
+| Gradle JDK | **Eclipse Temurin 17** (newest 17.0.x) | Settings → Gradle → Gradle JDK, per laptop |
 | Gradle | 9.1.0 | `gradle/wrapper/gradle-wrapper.properties` |
 | Android Gradle Plugin | 8.13.2 | `build.gradle` |
 | FTC SDK | 11.2.1 | `build.dependencies.gradle` |
 | compileSdk / minSdk / targetSdk | 34 / 24 / 28 | `build.common.gradle` |
 | Java language level | 8 | `build.common.gradle` |
 
-If Android Studio offers to "upgrade the Android Gradle Plugin," **say no** and tell a
-mentor. That's a whole-club decision.
+Android Studio will offer to upgrade the **Android Gradle Plugin**, and separately the
+**Gradle wrapper**. **Say no to both** and tell a mentor. Those versions come from the
+FTC SDK, not from us — accepting either pushes us off what FIRST ships and breaks anyone
+still on an older Studio. It's a whole-club decision.
 
 ---
 
@@ -267,6 +318,62 @@ clone, which is the failure mode this is here to prevent.
 > on the repo directly. Justin is an org member, not an owner, so this needs Adam or
 > an ownership change. Until then the rulesets fully constrain the students (who are
 > outside collaborators with write) but not org members.
+
+### Why the Gradle JDK is pinned to 17
+
+Students are told to set **Gradle JDK = Eclipse Temurin 17**. The reasoning is worth
+recording, because the explanation circulating online is wrong.
+
+**The claim:** "the REV Control Hub requires Java 17."
+
+**Not true.** The Control Hub is an Android device (this project sets
+`minSdkVersion 24`, Android 7.0; the Hub runs 7.1). It never runs a JDK. Source is
+compiled to Java 8 bytecode by `compileOptions ... VERSION_1_8` in
+`build.common.gradle`, then D8 converts it to DEX for Android's ART runtime. The Gradle
+JDK is purely the JVM that runs the build on the laptop, and it does not change what
+lands on the robot. Verified directly: a build run on Android Studio's bundled JBR 25
+emits class files with major version 52 — Java 8 — identical to a JDK 17 build. This
+project builds successfully on both 17 and 25.
+
+**The real reasons to pin 17:**
+
+1. AGP 8.13 lists JDK 17 as both minimum and default — the best-tested configuration.
+2. FTC is pinned to Java 8 language level. JDK 25 already warns that
+   `source value 8 is obsolete and will be removed in a future release`; when a JDK
+   actually removes it, a newer toolchain hard-fails while 17 never will.
+3. It decouples the build from Android Studio. By default the Gradle JDK resolves to
+   Studio's *bundled* JBR (Quail 3 ships JBR 25), so a Studio update silently changes
+   the JDK the build runs on. Pinning removes that whole class of surprise.
+
+The setting lives in `.idea/gradle.xml` and `.gradle/config.properties`, both
+gitignored — so it cannot be committed and every student must set it themselves. Check
+it when helping someone debug a build.
+
+### Known build warnings (not problems)
+
+`./gradlew --warning-mode all` reports Groovy space-assignment and multi-string
+dependency deprecations, all of which "will fail with an error in Gradle 10." We are on
+Gradle 9.1, so nothing is broken. The four occurrences in files this fork owns are
+fixed; the remaining three are in upstream's `build.common.gradle` (lines 49, 87, 114)
+and are deliberately left alone so that file stays identical to upstream. Leave them for
+FIRST to fix.
+
+On JDK 25 you will additionally see `source/target value 8 is obsolete`. It does not
+appear on JDK 17, which is one more reason for the pin above. Do not add
+`android.javaCompile.suppressSourceTargetDeprecationWarning` — it is another divergence
+from upstream to hide a cosmetic message.
+
+### Gradle and AGP versions belong to FIRST
+
+`gradle/wrapper/gradle-wrapper.properties` and the AGP version in `build.gradle` have
+been set by an FTC SDK release every single time they have changed — v6.0, v7.2, v10.1,
+v11.2. The club has never picked either one. When Android Studio offers to upgrade them,
+decline; the next SDK sync will bring whatever FIRST chose, and a local bump only creates
+a merge conflict that upstream wins anyway.
+
+Revisit only if a concrete problem appears — for example, if Studio starts bundling a
+JDK newer than the wrapper's Gradle supports. Gradle 9.1 runs on JDK 17–25; Gradle 9.4+
+extends that to 26. Pinning the Gradle JDK to 17 already avoids this.
 
 ### Deliberate differences from upstream
 
