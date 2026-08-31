@@ -182,6 +182,21 @@ If `master` gets a fix you need mid-season:
 git pull origin master           # brings master's changes onto your branch
 ```
 
+### If a push gets rejected
+
+The repository is protected, so some things simply won't go through. If you see
+`GH013: Repository rule violations found`, you tried to do one of these:
+
+| What you tried | Do this instead |
+| --- | --- |
+| Push to `master` | Push to your team's branch. Ask a mentor to update `master`. |
+| Create a new branch | Ask a mentor. Only mentors create branches. |
+| Delete a branch, or push an old branch name from last season | Nothing to do — this is expected. Clone fresh (see the note above). |
+| `git push --force` | Don't. Ask a mentor — your work can almost always be saved. |
+
+None of these mean you broke anything, and none of them lose your work. Your commits
+are still on your laptop until they're pushed.
+
 > **Returning from last season?** The old branch names (`beaniebots-main`, `cis-main`,
 > `spartech-main`, `herobot-main`) are gone — renamed to `archive/…`. The simplest fix
 > is to delete your old project folder and clone fresh, then check out this season's
@@ -224,6 +239,34 @@ git pull origin master           # brings master's changes onto your branch
 6. Cut new `<year>-<team>` branches from `master` and push them.
 
 7. Rename finished branches to `archive/<season>-<name>`.
+
+### Repository protection
+
+Four rulesets are active (Settings → Rules → Rulesets). Every one bypasses on the
+**Repository admin** role, so mentors are unaffected and students (write access) are
+blocked.
+
+| Ruleset | Applies to | Blocks |
+| --- | --- | --- |
+| Mentors only: master | `refs/heads/master` | update, delete, force-push |
+| Mentors only: create, delete or force-push branches | all branches | create, delete, force-push |
+| Archive branches are read-only | `refs/heads/archive/**` | update |
+| Mentors only: season tags | all tags | create, update, delete |
+
+Net effect: a student can push only to the four existing `2026-*` branches. In
+particular they cannot re-create last season's deleted branch names from a stale
+clone, which is the failure mode this is here to prevent.
+
+> ⚠️ **Outstanding:** the organization's **base repository permission is `Admin`**, so
+> every org member automatically gets repo admin and therefore bypasses all four
+> rulesets — and can edit or delete them. Setting a lower permission on an individual
+> collaborator does not help; GitHub takes the higher of base and direct grant.
+>
+> Fix: an **org owner** (Adam) goes to Organization Settings → Member privileges →
+> Base permissions and sets it to **Read**, then grants each person their real access
+> on the repo directly. Justin is an org member, not an owner, so this needs Adam or
+> an ownership change. Until then the rulesets fully constrain the students (who are
+> outside collaborators with write) but not org members.
 
 ### Deliberate differences from upstream
 
