@@ -1,3 +1,14 @@
+// Sloth hot reload. This buildscript block must be FIRST in the file -- Gradle requires it.
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = 'https://repo.dairy.foundation/releases' }
+    }
+    dependencies {
+        classpath 'dev.frozenmilk:Load:0.2.4'
+    }
+}
+
 apply plugin: 'com.android.application'
 
 //
@@ -16,6 +27,9 @@ apply plugin: 'com.android.application'
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 
+// Sloth's hot-reload plugin. Must come after the Android plugin.
+apply plugin: 'dev.frozenmilk.sinister.sloth.load'
+
 android {
     namespace = 'org.firstinspires.ftc.teamcode.team22257'
 
@@ -32,7 +46,14 @@ android {
     }
 }
 
+repositories {
+    maven { url = 'https://repo.dairy.foundation/releases' }   // Sloth
+}
+
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+
+    // Hot reload. Only reloads classes under org.firstinspires.ftc.teamcode.
+    implementation 'dev.frozenmilk.sinister:Sloth:0.2.4'
 }
