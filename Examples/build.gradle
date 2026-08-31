@@ -1,0 +1,58 @@
+//
+// build.gradle in Examples
+//
+// Mentor sandbox for teaching examples. This module also demonstrates Sloth,
+// a hot-reload library that pushes code changes to the robot in about a second
+// instead of the usual full install.
+//
+// NOTE: the buildscript block must be the FIRST thing in this file. Gradle
+// requires it, and Sloth's Load plugin is pulled in through it.
+//
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = 'https://repo.dairy.foundation/releases' }
+    }
+    dependencies {
+        classpath 'dev.frozenmilk:Load:0.2.4'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+// Include common definitions from above.
+apply from: '../build.common.gradle'
+apply from: '../build.dependencies.gradle'
+
+// Sloth's hot-reload plugin. Must come after the Android plugin.
+apply plugin: 'dev.frozenmilk.sinister.sloth.load'
+
+android {
+    namespace = 'org.firstinspires.ftc.teamcode.examples'
+
+    packagingOptions {
+        jniLibs.useLegacyPackaging = true
+    }
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'      // define the main source directory
+                exclude '**/legacy/**'      // previous seasons: kept for reference, not built
+            }
+        }
+    }
+}
+
+repositories {
+    maven { url = 'https://repo.dairy.foundation/releases' }
+}
+
+dependencies {
+    implementation project(':FtcRobotController')
+    annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+
+    // Examples-only libraries. Keep team-specific dependencies HERE, not in the
+    // shared build.dependencies.gradle, so one module's libraries cannot break another's.
+    implementation 'dev.frozenmilk.sinister:Sloth:0.2.4'
+}
