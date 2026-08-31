@@ -33,8 +33,19 @@ android {
     }
 }
 
+repositories {
+    maven { url = 'https://maven.pedropathing.com' }
+    maven { url = 'https://mymaven.bylazar.com/releases' }
+}
+
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+
+    // Team 22258-only libraries. Keep team-specific dependencies HERE, not in the
+    // shared build.dependencies.gradle, so one team's libraries cannot break another's.
+    implementation 'com.pedropathing:ftc:2.0.4'
+    implementation 'com.pedropathing:telemetry:1.0.0'
+    implementation 'com.bylazar:fullpanels:1.0.6'
 }
 
