@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 //
-// build.gradle in TeamCode
+// build.gradle in Team22256
 //
 // Most of the definitions for building your module reside in a common, shared
 // file 'build.common.gradle'. Being factored in this way makes it easier to
@@ -23,9 +23,39 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'      // define the main source directory
+                exclude '**/legacy/**'      // previous seasons: kept for reference, not built
+            }
+        }
+    }
+}
+
+repositories {
+    maven { url = 'https://maven.brott.dev/' }          // FTC Dashboard + RoadRunner
+    maven { url = 'https://maven.pedropathing.com' }
+    maven { url = 'https://mymaven.bylazar.com/releases' }
 }
 
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+
+    // Team 22256-only libraries. Keep team-specific dependencies HERE, not in the
+    // shared build.dependencies.gradle, so one team's libraries cannot break another's.
+    implementation 'org.ftclib.ftclib:core:2.1.1'
+    implementation 'com.acmerobotics.roadrunner:ftc:0.1.19'
+    implementation 'com.acmerobotics.roadrunner:core:1.0.1'
+    implementation 'com.acmerobotics.roadrunner:actions:1.0.1'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.4.16'
+    implementation 'com.pedropathing:ftc:2.0.6'
+    implementation 'com.pedropathing:telemetry:1.0.0'
+    implementation 'com.bylazar:fullpanels:1.0.10'
+    implementation 'dev.nextftc:ftc:1.0.1'
+    implementation 'dev.nextftc:control:1.0.0'
+    implementation 'dev.nextftc:hardware:1.0.1'
+    implementation 'dev.nextftc:bindings:1.0.1'
+    implementation 'dev.nextftc.extensions:pedro:1.0.0'
 }
