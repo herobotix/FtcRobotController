@@ -156,8 +156,12 @@ sometimes it does, and that's fine, it just isn't a solo decision.
 Your code goes in:
 
 ```
-TeamNNNNN/src/main/java/org/firstinspires/ftc/teamNNNNN/
+TeamNNNNN/src/main/java/org/firstinspires/ftc/teamcode/teamNNNNN/
 ```
+
+Note the `teamcode` in that path. It is not decorative — the Sloth hot-reload library
+only reloads classes under `org.firstinspires.ftc.teamcode`, so code placed outside it
+builds and deploys but never hot reloads. Keep new packages inside this tree.
 
 ### Adding a library (Pedro Pathing, NextFTC, RoadRunner, FTCLib…)
 
@@ -175,7 +179,7 @@ and neither can break the other. `Team22256/build.gradle` is a good example to c
 Previous seasons are kept inside each module at:
 
 ```
-TeamNNNNN/src/main/java/org/firstinspires/ftc/teamNNNNN/legacy/<season>/
+TeamNNNNN/src/main/java/org/firstinspires/ftc/teamcode/teamNNNNN/legacy/<season>/
 ```
 
 Every module's `build.gradle` excludes `**/legacy/**`, so this code is there to read and
@@ -381,7 +385,7 @@ extends that to 26. Pinning the Gradle JDK to 17 already avoids this.
 | --- | --- | --- |
 | `gradle.properties` | `-Xmx4096M` instead of `-Xmx1024M` | D8 runs out of heap dexing four team modules at once. Upstream only builds one. |
 | `README.md` | Ours; upstream's moved to `doc/` | Students land here first. |
-| `TeamCode/` | Removed | Replaced by the four `TeamNNNNN` modules. |
+| `TeamCode/` | Module removed | Replaced by the four `TeamNNNNN` modules. The *package* `org.firstinspires.ftc.teamcode` is still used, and team code lives inside it — Sloth requires that. |
 
 Team-specific libraries live in each module's own `build.gradle`, so
 `build.common.gradle` and `build.dependencies.gradle` stay byte-identical to upstream
