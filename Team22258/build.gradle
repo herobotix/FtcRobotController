@@ -26,8 +26,8 @@ android {
     sourceSets {
         main {
             java {
-                srcDir 'src/main/java'  // define the main source directory
-                exclude '**/team22258/2023/**'  // exclude this directory and all its contents
+                srcDir 'src/main/java'      // define the main source directory
+                exclude '**/legacy/**'      // previous seasons: kept for reference, not built
             }
         }
     }

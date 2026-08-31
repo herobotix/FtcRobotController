@@ -23,6 +23,14 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'      // define the main source directory
+                exclude '**/legacy/**'      // previous seasons: kept for reference, not built
+            }
+        }
+    }
 }
 
 repositories {
