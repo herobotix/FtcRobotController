@@ -67,4 +67,28 @@ dependencies {
     // (1.0.12 = upstream's latest), whereas Slothboard is pinned to Dashboard 0.5.1 while
     // upstream Dashboard is on 0.6.0.
     implementation 'com.bylazar.sloth:fullpanels:0.2.4.1+1.0.12'
+
+    // Pedro Pathing and NextFTC -- the libraries the teams actually use, included here
+    // so this module proves they coexist with Sloth and Panels.
+    //
+    // Both come from Maven Central, which build.gradle already declares for every
+    // module, so no extra repository is needed. (The teams' modules list a
+    // maven.pedropathing.com repo; that host only serves up to 2.0.1 and is not what
+    // resolves 2.x -- Maven Central is.)
+    //
+    // Versions deliberately match Team22256's working set rather than the newest
+    // published. dev.nextftc.extensions:pedro:1.0.0 is the NextFTC/Pedro bridge and was
+    // built against nextftc 1.0.0-beta.2 and pedropathing 2.0.0; chasing Pedro 2.1.2 or
+    // NextFTC 1.1.0 risks an API mismatch there until that bridge is updated.
+    implementation 'com.pedropathing:ftc:2.0.6'
+    implementation 'com.pedropathing:telemetry:1.0.0'
+    implementation 'dev.nextftc:ftc:1.0.1'
+    implementation 'dev.nextftc:control:1.0.0'
+    implementation 'dev.nextftc:hardware:1.0.1'
+    implementation 'dev.nextftc:bindings:1.0.1'
+    implementation 'dev.nextftc.extensions:pedro:1.0.0'
+
+    // Limelight needs no dependency -- com.qualcomm.hardware.limelightvision is part of
+    // the FTC SDK (11.2.1). Panels also serves a Limelight proxy on ports 5800/5801/
+    // 5805/5807 for tuning pipelines over the network.
 }
