@@ -45,7 +45,7 @@ android {
 }
 
 repositories {
-    maven { url = 'https://repo.dairy.foundation/releases' }
+    maven { url = 'https://repo.dairy.foundation/releases' }   // Sloth + Slothboard
 }
 
 dependencies {
@@ -55,4 +55,16 @@ dependencies {
     // Examples-only libraries. Keep team-specific dependencies HERE, not in the
     // shared build.dependencies.gradle, so one module's libraries cannot break another's.
     implementation 'dev.frozenmilk.sinister:Sloth:0.2.4'
+
+    // FTControl Panels -- web dashboard for running OpModes, live telemetry and tuning
+    // config variables. Lets an OpMode be started with no Driver Station.
+    //
+    // This is the Sloth-paired build ('com.bylazar.sloth', not plain 'com.bylazar'): it
+    // swaps Panels' own classpath scanning for Sinister's, so OpModes and config values
+    // survive a hot reload. Version format is <sloth>+<panels>.
+    //
+    // Chosen over FTC Dashboard because the Sloth pairing tracks upstream Panels exactly
+    // (1.0.12 = upstream's latest), whereas Slothboard is pinned to Dashboard 0.5.1 while
+    // upstream Dashboard is on 0.6.0.
+    implementation 'com.bylazar.sloth:fullpanels:0.2.4.1+1.0.12'
 }
