@@ -119,7 +119,7 @@ mentor can diagnose a broken setup.
 | --- | --- | --- |
 | Android Studio | **Quail 3, 2026.1.3** (floor: 2025.1.2) | you install it |
 | Gradle JDK | **Eclipse Temurin 17** (newest 17.0.x) | Settings → Gradle → Gradle JDK, per laptop |
-| Gradle | 9.1.0 | `gradle/wrapper/gradle-wrapper.properties` |
+| Gradle | 8.14.3 (**not** upstream's 9.1.0 — see below) | `gradle/wrapper/gradle-wrapper.properties` |
 | Android Gradle Plugin | 8.13.2 | `build.gradle` |
 | FTC SDK | 11.2.1 | `build.dependencies.gradle` |
 | compileSdk / minSdk / targetSdk | 34 / 24 / 28 | `build.common.gradle` |
@@ -129,6 +129,32 @@ Android Studio will offer to upgrade the **Android Gradle Plugin**, and separate
 **Gradle wrapper**. **Say no to both** and tell a mentor. Those versions come from the
 FTC SDK, not from us — accepting either pushes us off what FIRST ships and breaks anyone
 still on an older Studio. It's a whole-club decision.
+
+#### Why Gradle is 8.14.3 and not 9.1.0
+
+This is the one place we deliberately differ from the FTC SDK. Upstream ships Gradle
+**9.1.0**; we pin **8.14.3**.
+
+Gradle 9.0 removed the `Project.exec` API. The Sloth hot-reload plugin still calls it, so
+on Gradle 9 its tasks fail with:
+
+```
+'org.gradle.process.ExecResult org.gradle.api.Project.exec(org.gradle.api.Action)'
+```
+
+That is not limited to hot reload. Sloth wires `removeSlothRemote` into `installDebug`,
+so on Gradle 9 a module using Sloth **cannot install at all**. `assembleDebug` still
+succeeds, which makes it a confusing failure to diagnose.
+
+Sloth is opt-in per team, but the Gradle wrapper is repo-wide — there is one version for
+the whole project, not one per module. Pinning 8.14.3 everywhere means any team can adopt
+Sloth without a toolchain change, and every team runs an identical toolchain, which
+matters more for supporting several teams at once than matching upstream exactly.
+
+8.14.3 is the last of the Gradle 8.x line and satisfies AGP 8.13.2, so nothing else is
+given up. The pin can be lifted once Sloth publishes a release containing its
+`ExecOperations` fix (merged upstream in May 2026 but unreleased as of September 2026 —
+see Dairy-Foundation/Sloth issue #11).
 
 ---
 
