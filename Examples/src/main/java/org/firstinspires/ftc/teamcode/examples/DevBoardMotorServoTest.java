@@ -74,6 +74,14 @@ public class DevBoardMotorServoTest extends LinearOpMode {
     public static boolean MOTOR_ENABLED = true;
     public static boolean SERVO_ENABLED = true;
 
+    /**
+     * Stop automatically after this many seconds. 0 means run until Stop is pressed.
+     * Self-stopping matters here: Stop clicks in the Panels UI can be swallowed by the
+     * OpMode dropdown overlay, so do not rely on the button as the only way to halt a
+     * spinning motor. The hub's power switch is the real emergency stop.
+     */
+    public static double RUN_SECONDS = 20.0;
+
     /** Change this and run deploySloth to confirm hot reload. */
     public static String RELOAD_TAG = "original";
 
@@ -121,9 +129,22 @@ public class DevBoardMotorServoTest extends LinearOpMode {
         waitForStart();
 
         ElapsedTime phaseTimer = new ElapsedTime();
+        ElapsedTime runTimer = new ElapsedTime();
         int phase = 0;
 
+        // Steadiness statistics, gathered only near peak power where the commanded
+        // power is roughly constant. At a steady command, a true-running shaft holds a
+        // steady velocity; a bent shaft, a loose coupling or a binding bearing makes the
+        // velocity ripple and the current fluctuate. Spread is that ripple as a
+        // percentage of the mean, so it can be compared across runs.
+        int samples = 0;
+        double vSum = 0, vSumSq = 0, vMin = Double.MAX_VALUE, vMax = 0;
+        double iSum = 0, iMax = 0;
+
         while (opModeIsActive()) {
+            if (RUN_SECONDS > 0 && runTimer.seconds() >= RUN_SECONDS) {
+                break;
+            }
             // Normalised position within this phase, 0..1.
             double t = phaseTimer.seconds() / PHASE_SECONDS;
             if (t >= 1.0) {
@@ -154,7 +175,22 @@ public class DevBoardMotorServoTest extends LinearOpMode {
                 servo.setPosition(servoPos);
             }
 
+            // Collect statistics only in the top 10% of the power profile.
+            if (motor != null && MOTOR_ENABLED && Math.abs(shape) > 0.9) {
+                double v = Math.abs(motor.getVelocity());
+                double amps = motor.getCurrent(
+                        org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit.AMPS);
+                samples++;
+                vSum += v;
+                vSumSq += v * v;
+                if (v < vMin) vMin = v;
+                if (v > vMax) vMax = v;
+                iSum += amps;
+                if (amps > iMax) iMax = amps;
+            }
+
             out.addData("Reload tag", RELOAD_TAG);
+            out.addData("Elapsed", "%.1f / %.0f s", runTimer.seconds(), RUN_SECONDS);
             out.addData("Phase", "%d (%s)", phase, forward ? "FORWARD" : "REVERSE");
             out.addData("Phase progress", "%.0f%%", t * 100);
             out.addData("Motor power", "%+.3f", motor != null && MOTOR_ENABLED ? power : 0.0);
@@ -175,6 +211,21 @@ public class DevBoardMotorServoTest extends LinearOpMode {
             }
 
             out.addData("Battery", "%.2f V", battery.getVoltage());
+
+            if (samples > 1) {
+                double vMean = vSum / samples;
+                double var = (vSumSq / samples) - (vMean * vMean);
+                double vSd = Math.sqrt(Math.max(0, var));
+                out.addLine("");
+                out.addData("-- steadiness at peak power, n", samples);
+                out.addData("   velocity mean", "%.0f ticks/s", vMean);
+                out.addData("   velocity sd", "%.0f ticks/s (%.1f%% of mean)",
+                        vSd, vMean > 0 ? 100.0 * vSd / vMean : 0.0);
+                out.addData("   velocity range", "%.0f to %.0f (spread %.1f%%)",
+                        vMin, vMax, vMean > 0 ? 100.0 * (vMax - vMin) / vMean : 0.0);
+                out.addData("   current mean/max", "%.2f / %.2f A", iSum / samples, iMax);
+            }
+
             out.update();
 
             sleep(20);
@@ -183,6 +234,22 @@ public class DevBoardMotorServoTest extends LinearOpMode {
         // Always leave the hardware safe, however the OpMode ended.
         if (motor != null) {
             motor.setPower(0);
+        }
+
+        // Final summary, left on screen after the OpMode ends so the run can be compared
+        // with the previous one.
+        if (samples > 1) {
+            double vMean = vSum / samples;
+            double vSd = Math.sqrt(Math.max(0, (vSumSq / samples) - (vMean * vMean)));
+            out.addLine("");
+            out.addData("FINAL steadiness, n", samples);
+            out.addData("  velocity mean", "%.0f ticks/s", vMean);
+            out.addData("  velocity sd", "%.0f (%.1f%% of mean)",
+                    vSd, vMean > 0 ? 100.0 * vSd / vMean : 0.0);
+            out.addData("  velocity range", "%.0f to %.0f (spread %.1f%%)",
+                    vMin, vMax, vMean > 0 ? 100.0 * (vMax - vMin) / vMean : 0.0);
+            out.addData("  current mean/max", "%.2f / %.2f A", iSum / samples, iMax);
+            out.update();
         }
     }
 }
