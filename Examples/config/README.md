@@ -11,9 +11,20 @@ The 3D-printed dev/test board. **Control Hub only — no Expansion Hub.**
 | --- | --- | --- | --- |
 | Motor | 0 | `test_motor` | REV UltraPlanetary HD Hex Motor |
 | Servo | 0 | `test_servo` | REV Smart Robot Servo (REV-41-1097) |
+| Touch sensor | Digital **1** | `test_touch` | REV Touch Sensor |
+| Distance sensor | I2C bus 0 | `test_distance` | REV 2m Distance Sensor (VL53L0X, addr 0x29) |
 | IMU | I2C 0 | `imu` | Control Hub internal BHI260AP |
 
-Used by the `Dev Board: Motor + Servo Test` OpMode.
+Used by the `Dev Board: Motor + Servo Test` and `Dev Board: Sensor Control Test` OpModes.
+
+> **The touch sensor is on digital channel 1, not 0.** Plugged into the "0,1" digital
+> port, a REV Touch Sensor is wired to pin **1** — the 4-wire JST cable leaves pin 0
+> disconnected. Configure it on 0 and it silently never reads, with no error to explain
+> why. This catches people every season.
+
+> The distance sensor shares I2C bus 0 with the Control Hub's internal IMU. That is fine
+> — they have different addresses (0x29 vs the IMU's) — and both were confirmed loading
+> together on 2026-09-08.
 
 > The Smart Robot Servo ships as a standard **270° positional** servo, which is why it is
 > configured as `<Servo>` rather than `<ContinuousRotationServo>`. It *can* be switched to

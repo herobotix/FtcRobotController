@@ -4,6 +4,8 @@
         <LynxModule name="Control Hub" port="173">
             <RevRoboticsUltraplanetaryHDHexMotor name="test_motor" port="0" />
             <Servo name="test_servo" port="0" />
+            <RevTouchSensor name="test_touch" port="1" />
+            <REV_VL53L0X_RANGE_SENSOR name="test_distance" port="0" bus="0" />
             <ControlHubImuBHI260AP name="imu" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>
