@@ -9,12 +9,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**Version 1.2.22*/
+/**Version 2.0.0*/
 @Configurable
 public class IOTAKE {
   // Intake/Outtake Class
   
-  // Flywheel Definitions
+  // Flywheel Definitions TODO: Make Outtake firing RPM distance-based.
   public enum FlywheelState {
     OFF,
     MIN,
@@ -29,7 +29,7 @@ public class IOTAKE {
     MAX_RPM = 4420,
     BIG_RPM = 4470;
   
-  boolean flywheelDirection = true;
+  boolean flywheelDirection = true; // TODO: Make Flywheel Direction Enum-based.
   private FlywheelState flywheelState = FlywheelState .OFF ;
   
   public final int secondsPerMinute
@@ -77,29 +77,29 @@ public class IOTAKE {
     // Initialization Code
     
     // Map Hardware
-    ItkMotor = hardwareMap.get(DcMotor.class, "ItkMotor");
-    lFlywheelMotor = hardwareMap.get(DcMotorEx.class, "lFlywheelMotor");
-    rFlywheelMotor = hardwareMap.get(DcMotorEx.class, "rFlywheelMotor");
-    lServo = hardwareMap.get(Servo.class, "lServo");
-    rServo = hardwareMap.get(Servo.class, "rServo");
+    ItkMotor       = hardwareMap.get( DcMotor   .class, "ItkMotor"      );
+    lFlywheelMotor = hardwareMap.get( DcMotorEx .class, "lFlywheelMotor");
+    rFlywheelMotor = hardwareMap.get( DcMotorEx .class, "rFlywheelMotor");
+    lServo         = hardwareMap.get( Servo     .class, "lServo"        );
+    rServo         = hardwareMap.get( Servo     .class, "rServo"        );
     
     // Set Motor Behaviors
-    ItkMotor.setDirection( DcMotor.Direction .FORWARD );
-    lFlywheelMotor.setDirection( DcMotor.Direction .FORWARD );
-    lFlywheelMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
-    rFlywheelMotor.setDirection( DcMotor.Direction .REVERSE );
-    rFlywheelMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
+    ItkMotor       .setDirection( DcMotor.Direction .FORWARD );
+    lFlywheelMotor .setDirection( DcMotor.Direction .FORWARD );
+    rFlywheelMotor .setDirection( DcMotor.Direction .REVERSE );
+    lFlywheelMotor .setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
+    rFlywheelMotor .setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
     
     // Stop, Reset, & Run using Motor Encoders
-    lFlywheelMotor.setMode( DcMotor.RunMode .STOP_AND_RESET_ENCODER );
-    rFlywheelMotor.setMode( DcMotor.RunMode .STOP_AND_RESET_ENCODER );
+    lFlywheelMotor .setMode( DcMotor.RunMode .STOP_AND_RESET_ENCODER );
+    rFlywheelMotor .setMode( DcMotor.RunMode .STOP_AND_RESET_ENCODER );
     PIDFCoefficients flywheelPIDF = new PIDFCoefficients(flywheelP, flywheelI, flywheelD, flywheelF);
-    lFlywheelMotor.setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
-    lFlywheelMotor.setMode( DcMotor.RunMode .RUN_USING_ENCODER );
-    lFlywheelMotor.setVelocity(0);
-    rFlywheelMotor.setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
-    rFlywheelMotor.setMode( DcMotor.RunMode .RUN_USING_ENCODER );
-    rFlywheelMotor.setVelocity(0);
+    lFlywheelMotor .setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
+    rFlywheelMotor .setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
+    lFlywheelMotor .setMode( DcMotor.RunMode .RUN_USING_ENCODER );
+    rFlywheelMotor .setMode( DcMotor.RunMode .RUN_USING_ENCODER );
+    lFlywheelMotor .setVelocity(0);
+    rFlywheelMotor .setVelocity(0);
   }
   public void Run(Gamepad gamepad)                            {
     //Intake/Outtake Code

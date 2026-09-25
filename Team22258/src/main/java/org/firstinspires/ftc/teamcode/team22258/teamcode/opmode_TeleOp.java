@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
-@TeleOp(name = "Opmode (TeleOp) [1.2.20]")
+@TeleOp(name = "Opmode (TeleOp) [2.0.0]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
@@ -112,10 +112,10 @@ public class opmode_TeleOp extends LinearOpMode {
         targetRot = robotYawRadians;
         
       // Set Motor Behaviors
-        FLMotor.setDirection( DcMotor.Direction .REVERSE );
-        FRMotor.setDirection( DcMotor.Direction .FORWARD );
-        BLMotor.setDirection( DcMotor.Direction .FORWARD );
-        BRMotor.setDirection( DcMotor.Direction .FORWARD );
+        FLMotor .setDirection( DcMotor.Direction .REVERSE );
+        FRMotor .setDirection( DcMotor.Direction .FORWARD );
+        BLMotor .setDirection( DcMotor.Direction .FORWARD );
+        BRMotor .setDirection( DcMotor.Direction .FORWARD );
         
       // Classes
         Limelight = new  LIMELIGHT()  ;
@@ -209,9 +209,9 @@ public class opmode_TeleOp extends LinearOpMode {
         
     }
     private void doTelemetry()  {
-      // Telemetry Data
+      // Preform Telemetry
       
-      // Movement
+      // Do Telemetry for Movement Code
         panelsTelemetry.addLine("Movement ─");
         panelsTelemetry.debug("Head Power", powHead );
         panelsTelemetry.debug("Side Power", powSide );
@@ -220,11 +220,11 @@ public class opmode_TeleOp extends LinearOpMode {
         panelsTelemetry.debug("Current Robot Yaw",  robotYawRadians / (2*Math.PI) );
         panelsTelemetry.addLine("");
         
-      // Do for Classes
+      // Do Telemetry for Classes
         Limelight .doTelemetry( panelsTelemetry, fieldCentric );
         IOtake    .doTelemetry( panelsTelemetry               );
         
-      // Update
+      // Update Telemetry
         panelsTelemetry.update( telemetry );
         
     }
