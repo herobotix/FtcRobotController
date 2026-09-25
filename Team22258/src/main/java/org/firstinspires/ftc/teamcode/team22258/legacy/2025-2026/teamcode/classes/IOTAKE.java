@@ -52,9 +52,9 @@ public class IOTAKE {
     // VMAX tps right 2620
     // Feedforward = 32767 / 2620 = 12.5
     public static double
-      flywheelP =  20,
-      flywheelI =  0,
-      flywheelD =  0,
+      flywheelP =   20,
+      flywheelI =    0,
+      flywheelD =    0,
       flywheelF = 12.5;
     
   // Launch Gate Definitions
@@ -110,8 +110,8 @@ public class IOTAKE {
       // Outtake Gate
         if (gamepad.rightBumperWasPressed()) {
           switch (outtakeServoState) {
-            case OPEN: outtakeServoState = (OuttakeServoState.CLOSED ); break;
-            case CLOSED: outtakeServoState = (OuttakeServoState.OPEN ); break;
+            case OPEN   : outtakeServoState = (OuttakeServoState .CLOSED ); break;
+            case CLOSED : outtakeServoState = (OuttakeServoState .OPEN   ); break;
           }
         }
         runOtkGate(outtakeServoState);

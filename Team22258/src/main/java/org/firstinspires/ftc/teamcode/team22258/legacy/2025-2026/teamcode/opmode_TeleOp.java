@@ -41,16 +41,16 @@ public class opmode_TeleOp extends LinearOpMode {
       powTurn;
     
   // Position Definitions
-    double robotYawRadians;
-    double targetRot;
-    private IMU rIMU;
+    double  robotYawRadians;
+    double  targetRot      ;
+    private IMU rIMU       ;
     
   // Indicator Light Definition
     private Servo indicatorLight;
     
   // Class Definitions
     private LIMELIGHT Limelight;
-    private IOTAKE IOtake;
+    private IOTAKE IOtake      ;
   
   // Telemetry Definition
     private TelemetryManager panelsTelemetry;
@@ -72,15 +72,6 @@ public class opmode_TeleOp extends LinearOpMode {
     }
     
   // Main Functions
-    private void OnLoop()       {
-      //Looped Code
-        Limelight.Run(gamepad1, telemetry);
-        Fn_Inputs();
-        Fn_Move();
-        IOtake.Run(gamepad2);
-        doTelemetry();
-        LoopEnd();
-  }
     private void OnInit()       {
       // Initialization Code
       
@@ -112,10 +103,10 @@ public class opmode_TeleOp extends LinearOpMode {
         targetRot = robotYawRadians;
         
       // Set Motor Behaviors
-        FLMotor.setDirection( DcMotor.Direction .REVERSE );
-        FRMotor.setDirection( DcMotor.Direction .FORWARD );
-        BLMotor.setDirection( DcMotor.Direction .FORWARD );
-        BRMotor.setDirection( DcMotor.Direction .FORWARD );
+        FLMotor .setDirection( DcMotor.Direction .REVERSE );
+        FRMotor .setDirection( DcMotor.Direction .FORWARD );
+        BLMotor .setDirection( DcMotor.Direction .FORWARD );
+        BRMotor .setDirection( DcMotor.Direction .FORWARD );
         
       // Classes
         Limelight = new  LIMELIGHT()  ;
@@ -128,14 +119,23 @@ public class opmode_TeleOp extends LinearOpMode {
       //Run On START
       
       //Limelight
-        Limelight.Start();
+        Limelight .Start();
         
+    }
+    private void OnLoop()       {
+      //Looped Code
+      Limelight.Run(gamepad1, telemetry);
+      Fn_Inputs();
+      Fn_Move();
+      IOtake.Run(gamepad2);
+      doTelemetry();
+      LoopEnd();
     }
     private void OnStop()       {
       //Run On STOP
       
       //Limelight
-      Limelight.Stop();
+      Limelight .Stop();
       
   }
   
@@ -144,25 +144,25 @@ public class opmode_TeleOp extends LinearOpMode {
     // Inputs Code
     
     // Reset Robot Rotation Value
-      if (gamepad1.start) {rIMU.resetYaw();}
+      if (gamepad1 .start ) {rIMU .resetYaw();}
       
     // Inputs
-      fieldCentric = gamepad1.bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
-      powHead = -gamepad1.left_stick_y;
-      powSide = gamepad1.left_stick_x;
+      fieldCentric = gamepad1 .bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
+      powHead = -gamepad1 .left_stick_y ;
+      powSide =  gamepad1 .left_stick_x ;
       powTurn = (
-        (Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):
-        (gamepad1.right_stick_x)
+        (Limelight .getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight .getPowTurn()):
+        (gamepad1 .right_stick_x )
       );
       
     // GoBilda RGB indicator light, PWM values from GoBilda product page
       if(indicatorLight != null) {
-          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
-              indicatorLight.setPosition(0.0);
-          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
-              indicatorLight.setPosition(0.611);
-          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
-              indicatorLight.setPosition(0.29);
+          if (Limelight         .getTargetLock() == LIMELIGHT.TargetLock .OFF ) {
+            indicatorLight  .setPosition(0.0);
+          } else if (Limelight  .getTargetLock() == LIMELIGHT.TargetLock .BLUE ) {
+            indicatorLight  .setPosition(0.611);
+          } else if (Limelight  .getTargetLock() == LIMELIGHT.TargetLock .RED ) {
+            indicatorLight  .setPosition(0.29);
           }
       }
   }
