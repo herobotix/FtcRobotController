@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
-@TeleOp(name = "Opmode (TeleOp) [2.0.0]")
+@TeleOp(name = "Opmode (TeleOp) [2.0.1]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
@@ -49,8 +49,8 @@ public class opmode_TeleOp extends LinearOpMode {
     private Servo indicatorLight;
     
   // Class Definitions
-    private LIMELIGHT Limelight;
-    private IOTAKE IOtake;
+    //private LIMELIGHT Limelight;
+    //private IOTAKE IOtake;
   
   // Telemetry Definition
     private TelemetryManager panelsTelemetry;
@@ -74,10 +74,10 @@ public class opmode_TeleOp extends LinearOpMode {
   // Main Functions
     private void OnLoop()       {
       //Looped Code
-        Limelight.Run(gamepad1, telemetry);
+        //Limelight.Run(gamepad1, telemetry);
         Fn_Inputs();
         Fn_Move();
-        IOtake.Run(gamepad2);
+        //IOtake.Run(gamepad2);
         doTelemetry();
         LoopEnd();
   }
@@ -118,24 +118,24 @@ public class opmode_TeleOp extends LinearOpMode {
         BRMotor .setDirection( DcMotor.Direction .FORWARD );
         
       // Classes
-        Limelight = new  LIMELIGHT()  ;
-        Limelight .Init( hardwareMap );
-        IOtake    = new  IOTAKE()     ;
-        IOtake    .Init( hardwareMap );
+        //Limelight = new  LIMELIGHT()  ;
+        //Limelight .Init( hardwareMap );
+        //IOtake    = new  IOTAKE()     ;
+        //IOtake    .Init( hardwareMap );
         
     }
     private void OnStart()      {
       //Run On START
       
       //Limelight
-        Limelight.Start();
+        //Limelight.Start();
         
     }
     private void OnStop()       {
       //Run On STOP
       
-      //Limelight
-      Limelight.Stop();
+  //Limelight
+    //Limelight.Stop();
       
   }
   
@@ -151,12 +151,12 @@ public class opmode_TeleOp extends LinearOpMode {
       powHead = -gamepad1.left_stick_y;
       powSide = gamepad1.left_stick_x;
       powTurn = (
-        (Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):
+        /*(Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):*/
         (gamepad1.right_stick_x)
       );
       
     // GoBilda RGB indicator light, PWM values from GoBilda product page
-      if(indicatorLight != null) {
+      /*if(indicatorLight != null) {
           if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
               indicatorLight.setPosition(0.0);
           } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
@@ -164,7 +164,7 @@ public class opmode_TeleOp extends LinearOpMode {
           } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
               indicatorLight.setPosition(0.29);
           }
-      }
+      }*/
   }
     private void Fn_Move()      {
       //Movement Code
@@ -221,8 +221,8 @@ public class opmode_TeleOp extends LinearOpMode {
         panelsTelemetry.addLine("");
         
       // Do Telemetry for Classes
-        Limelight .doTelemetry( panelsTelemetry, fieldCentric );
-        IOtake    .doTelemetry( panelsTelemetry               );
+        //Limelight .doTelemetry( panelsTelemetry, fieldCentric );
+        //IOtake    .doTelemetry( panelsTelemetry               );
         
       // Update Telemetry
         panelsTelemetry.update( telemetry );
@@ -236,9 +236,9 @@ public class opmode_TeleOp extends LinearOpMode {
         FRMP = (0);
         BLMP = (0);
         BRMP = (0);
-        Limelight.setPowTurn(0);
-        IOtake.setTargetFlywheelVelocity(0.);
-        IOtake.setIntakeMotorPower(0.);
+        //Limelight.setPowTurn(0);
+        //IOtake.setTargetFlywheelVelocity(0.);
+        //IOtake.setIntakeMotorPower(0.);
         
     }
     
