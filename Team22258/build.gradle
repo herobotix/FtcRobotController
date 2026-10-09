@@ -1,18 +1,5 @@
 apply plugin: 'com.android.application'
 
-//
-// build.gradle in TeamCode
-//
-// Most of the definitions for building your module reside in a common, shared
-// file 'build.common.gradle'. Being factored in this way makes it easier to
-// integrate updates to the FTC into your code. If you really need to customize
-// the build definitions, you can place those customizations in this file, but
-// please think carefully as to whether such customizations are really necessary
-// before doing so.
-
-
-// Custom definitions may go here
-
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
@@ -23,11 +10,36 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging = true
     }
-    sourceSets {
-        main {
-            java {
-                srcDir 'src/main/java'      // define the main source directory
-                exclude '**/legacy/**'      // previous seasons: kept for reference, not built
+
+    // 1. Define the dimension name
+    flavorDimensions "robotVersion"
+
+    // 2. Define your two robot iterations dynamically
+    productFlavors {
+        v1 {
+            dimension "robotVersion"
+            sourceSets {
+                main {
+                    java {
+                        srcDirs = ['src/main/java'] // Point to the root java directory
+                        include '**/team22258/**'   // Force inclusion of V1
+                        exclude '**/team22258_V2/**' // Completely hide and ignore V2
+                        exclude '**/legacy/**'
+                    }
+                }
+            }
+        }
+        v2 {
+            dimension "robotVersion"
+            sourceSets {
+                main {
+                    java {
+                        srcDirs = ['src/main/java'] // Point to the root java directory
+                        include '**/team22258_V2/**' // Force inclusion of V2
+                        exclude '**/team22258/**'    // Completely hide and ignore V1
+                        exclude '**/legacy/**'
+                    }
+                }
             }
         }
     }
@@ -48,4 +60,3 @@ dependencies {
     implementation 'com.pedropathing:telemetry:1.0.0'
     implementation 'com.bylazar:fullpanels:1.0.6'
 }
-
