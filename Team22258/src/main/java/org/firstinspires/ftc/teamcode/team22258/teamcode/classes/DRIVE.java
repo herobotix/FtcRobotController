@@ -26,7 +26,7 @@ public class DRIVE {
             BLMP,
             BRMP;
 
-    // Driving Definitions
+  // Driving Definitions
     boolean fieldCentric
             = false;
     double
@@ -35,47 +35,48 @@ public class DRIVE {
             powSide,
             powTurn;
 
-    // Position Definitions
+  // Position Definitions
     double robotYawRadians;
     double targetRot;
 
-public DRIVE(DcMotor FLMotor, DcMotor FRMotor, DcMotor BLMotor, DcMotor BRMotor, IMU rIMU){
-        this.FLMotor = FLMotor;
-        this.FRMotor = FRMotor;
-        this.BLMotor = BLMotor;
-        this.BRMotor = BRMotor;
-        this.rIMU = rIMU;
-}
+    public DRIVE(DcMotor FLMotor, DcMotor FRMotor, DcMotor BLMotor, DcMotor BRMotor, IMU rIMU){
+            this.FLMotor = FLMotor;
+            this.FRMotor = FRMotor;
+            this.BLMotor = BLMotor;
+            this.BRMotor = BRMotor;
+            this.rIMU = rIMU;
+    }
 
-public void Init(HardwareMap hardwareMap){
-    FLMotor        = hardwareMap.get( DcMotor .class, "FLMotor"       );
-    FRMotor        = hardwareMap.get( DcMotor .class, "FRMotor"       );
-    BLMotor        = hardwareMap.get( DcMotor .class, "BLMotor"       );
-    BRMotor        = hardwareMap.get( DcMotor .class, "BRMotor"       );
+    public void Init(HardwareMap hardwareMap){
+        FLMotor        = hardwareMap.get( DcMotor .class, "FLMotor"       );
+        FRMotor        = hardwareMap.get( DcMotor .class, "FRMotor"       );
+        BLMotor        = hardwareMap.get( DcMotor .class, "BLMotor"       );
+        BRMotor        = hardwareMap.get( DcMotor .class, "BRMotor"       );
 
-    IMU.Parameters parameters =
-            new IMU.Parameters(new RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection .UP,
-                    RevHubOrientationOnRobot.UsbFacingDirection  .BACKWARD
-            )
-            );
-    rIMU.initialize(parameters);
+        IMU.Parameters parameters =
+                new IMU.Parameters(new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection .UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection  .BACKWARD
+                )
+                );
+        rIMU.initialize(parameters);
 
-    // Set Robot Rotation Value
-    robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw( AngleUnit.RADIANS );
-    targetRot = robotYawRadians;
+      // Set Robot Rotation Value
+        robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw( AngleUnit.RADIANS );
+        targetRot = robotYawRadians;
 
-    // Set Motor Behaviors
-    FLMotor .setDirection( DcMotor.Direction .REVERSE );
-    FRMotor .setDirection( DcMotor.Direction .FORWARD );
-    BLMotor .setDirection( DcMotor.Direction .FORWARD );
-    BRMotor .setDirection( DcMotor.Direction .FORWARD );
+      // Set Motor Behaviors
+        FLMotor .setDirection( DcMotor.Direction .REVERSE );
+        FRMotor .setDirection( DcMotor.Direction .FORWARD );
+        BLMotor .setDirection( DcMotor.Direction .FORWARD );
+        BRMotor .setDirection( DcMotor.Direction .FORWARD );
+
     }
 
     public void input(Gamepad gamepad1){
         if (gamepad1.start) {rIMU.resetYaw();}
 
-        // Inputs
+      // Inputs
         fieldCentric = gamepad1.bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
         powHead = -gamepad1.left_stick_y;
         powSide = gamepad1.left_stick_x;
@@ -86,24 +87,24 @@ public void Init(HardwareMap hardwareMap){
     }
 
     public void move(){
-        //Movement Code
+      //Movement Code
 
-        // Get Robot Rotation Value
+      // Get Robot Rotation Value
         robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit .RADIANS );
 
-        // Field Centric
+      // Field Centric
         if (fieldCentric) {
             powHead = powSide * Math.sin(robotYawRadians) + powHead * Math.cos(robotYawRadians);
             powSide = powSide * Math.cos(robotYawRadians) + powHead * Math.sin(robotYawRadians);
         }
 
-        // Drive & Strafe & Rotate
+      // Drive & Strafe & Rotate
         FLMP = powHead + powSide + powTurn;
         FRMP = powHead - powSide - powTurn;
         BLMP = powHead - powSide + powTurn;
         BRMP = powHead + powSide - powTurn;
 
-        // Power Control
+      // Power Control
         MPN = (
                 Math.max(
                         Math.max(
@@ -120,7 +121,7 @@ public void Init(HardwareMap hardwareMap){
             FLMP /= MPN;
         }
 
-        // Trigger Motors
+      // Trigger Motors
         FLMotor.setPower(FLMP);
         FRMotor.setPower(FRMP);
         BLMotor.setPower(BLMP);
