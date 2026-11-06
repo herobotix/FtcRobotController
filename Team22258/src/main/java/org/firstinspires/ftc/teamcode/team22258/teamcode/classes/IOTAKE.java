@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**Version 2.0.0*/
+/**Version 2.0.1*/
 @Configurable
 public class IOTAKE {
   // Intake/Outtake Class
@@ -24,10 +24,8 @@ public class IOTAKE {
   }
   public static double
     OFF_RPM =    0,
-    MIN_RPM = 3450,
-    MID_RPM = 3900,
-    MAX_RPM = 4420,
-    BIG_RPM = 4470;
+    MIN_RPM = 3000,
+    MAX_RPM = 3200;
   
   boolean flywheelDirection = true; // TODO: Make Flywheel Direction Enum-based.
   private FlywheelState flywheelState = FlywheelState .OFF ;
@@ -44,8 +42,7 @@ public class IOTAKE {
     
   }
   
-  private DcMotorEx lFlywheelMotor;
-  private DcMotorEx rFlywheelMotor;
+  private DcMotorEx FlywheelMotor;
   double targetFlywheelVelocity;
   
   // VMAX tps left 2620
@@ -58,74 +55,33 @@ public class IOTAKE {
     flywheelF = 12.5;
   
   // Launch Gate Definitions
-  private Servo lServo;
-  private Servo rServo;
+  private Servo GateServo;
   public enum OuttakeServoState {
     OPEN,
     CLOSED
   }
-  OuttakeServoState outtakeServoState
+  OuttakeServoState GateServoState
     = OuttakeServoState .CLOSED ;
   
   // Intake Definitions
-  private DcMotor ItkMotor;
+  private DcMotor IntakeMotor;
   double ItkMP
     = 0;
   
   // Primary Functions
   public void Init(HardwareMap hardwareMap)                   {
     // Initialization Code
-    
-    // Map Hardware
-    ItkMotor       = hardwareMap.get( DcMotor   .class, "ItkMotor"      );
-    lFlywheelMotor = hardwareMap.get( DcMotorEx .class, "lFlywheelMotor");
-    rFlywheelMotor = hardwareMap.get( DcMotorEx .class, "rFlywheelMotor");
-    lServo         = hardwareMap.get( Servo     .class, "lServo"        );
-    rServo         = hardwareMap.get( Servo     .class, "rServo"        );
-    
-    // Set Motor Behaviors
-    ItkMotor       .setDirection( DcMotor.Direction .FORWARD );
-    lFlywheelMotor .setDirection( DcMotor.Direction .FORWARD );
-    rFlywheelMotor .setDirection( DcMotor.Direction .REVERSE );
-    lFlywheelMotor .setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
-    rFlywheelMotor .setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
-    
-    // Stop, Reset, & Run using Motor Encoders
-    lFlywheelMotor .setMode( DcMotor.RunMode .STOP_AND_RESET_ENCODER );
-    rFlywheelMotor .setMode( DcMotor.RunMode .STOP_AND_RESET_ENCODER );
-    PIDFCoefficients flywheelPIDF = new PIDFCoefficients(flywheelP, flywheelI, flywheelD, flywheelF);
-    lFlywheelMotor .setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
-    rFlywheelMotor .setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
-    lFlywheelMotor .setMode( DcMotor.RunMode .RUN_USING_ENCODER );
-    rFlywheelMotor .setMode( DcMotor.RunMode .RUN_USING_ENCODER );
-    lFlywheelMotor .setVelocity(0);
-    rFlywheelMotor .setVelocity(0);
+      initIntakeMotor(hardwareMap);
+      initFlywheel(hardwareMap);
+      initGate(hardwareMap);
   }
   public void Run(Gamepad gamepad)                            {
     //Intake/Outtake Code
-    
-    // Intake
-    runIntake(gamepad.right_trigger - gamepad.left_trigger);
-    
-    // Outtake Gate
-    if (gamepad.rightBumperWasPressed()) {
-      switch (outtakeServoState) {
-        case OPEN   : outtakeServoState = (OuttakeServoState .CLOSED ); break;
-        case CLOSED : outtakeServoState = (OuttakeServoState .OPEN   ); break;
-      }
-    }
-    runOtkGate(outtakeServoState);
-    
-    // Outtake Flywheel
-    if (gamepad.x) { flywheelState = FlywheelState .OFF ;}
-    if (gamepad.a) { flywheelState = FlywheelState .MIN ;}
-    if (gamepad.b) { flywheelState = FlywheelState .MID ;}
-    if (gamepad.y) { flywheelState = FlywheelState .MAX ;}
-    if (gamepad.leftBumperWasPressed()) flywheelDirection = !flywheelDirection;
-    runFlywheel(flywheelState);
-    
+      runIntake   (gamepad);
+      runGate     (gamepad);
+      runFlywheel (gamepad);
   }
-  public void doTelemetry(TelemetryManager panelsTelemetry)  {
+  public void doTelemetry(TelemetryManager panelsTelemetry)   {
     //Telemetry Code
     
     // IO-take
@@ -139,7 +95,7 @@ public class IOTAKE {
     
     // Outtake
     panelsTelemetry.debug("Outtake Gate:", (
-      (outtakeServoState == OuttakeServoState.OPEN )? ("Open:"):
+      (GateServoState == OuttakeServoState.OPEN )? ("Open:"):
         ("Closed:"))
     );
     panelsTelemetry.debug("Target Outtake RPM: ",(
@@ -149,7 +105,7 @@ public class IOTAKE {
             ( "OFF" ))
     );
     panelsTelemetry.debug("Current Outtake RPM",
-      rFlywheelMotor.getVelocity() / TPSPerRPM()
+      FlywheelMotor.getVelocity() / TPSPerRPM()
     );
     
     panelsTelemetry.addLine("");
@@ -157,27 +113,54 @@ public class IOTAKE {
   }
   
   // Secondary Functions
-  public void runIntake(double power)                         {
-    setIntakeMotorPower( power );
-    ItkMotor  .setPower( power );
+  private void initIntakeMotor(HardwareMap hardwareMap)       {
+    // Initialize Intake Motor
+    
+    // Map Hardware
+      IntakeMotor = hardwareMap.get( DcMotor .class, "IntakeMotor");
+    
+    // Set Motor Behaviors
+      IntakeMotor.setDirection( DcMotor.Direction .FORWARD );
   }
-  public void runFlywheel(FlywheelState flywheelState)        {
-    //Code to run Flywheel motors.
+  private void initFlywheel(HardwareMap hardwareMap)          {
+    // Initialize Flywheel Motor
     
-    // Switch Velocity
-    switch(flywheelState) {
-      case OFF: targetFlywheelVelocity = OFF_RPM; break;
-      case MIN: targetFlywheelVelocity = MIN_RPM; break;
-      case MID: targetFlywheelVelocity = MID_RPM; break;
-      case MAX: targetFlywheelVelocity = MAX_RPM; break;
-      case BIG: targetFlywheelVelocity = BIG_RPM; break;
+    // Map Hardware
+    FlywheelMotor = hardwareMap.get( DcMotorEx .class,"FlywheelMotor");
+    
+    // Set Motor Behaviors
+    FlywheelMotor.setDirection( DcMotor.Direction .FORWARD );
+    FlywheelMotor.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior .FLOAT );
+    
+    // Stop, Reset, & Run using Motor Encoders
+    FlywheelMotor.setMode( DcMotor.RunMode .STOP_AND_RESET_ENCODER );
+    PIDFCoefficients flywheelPIDF = new PIDFCoefficients(flywheelP, flywheelI, flywheelD, flywheelF);
+    FlywheelMotor.setPIDFCoefficients(DcMotor.RunMode .RUN_USING_ENCODER, flywheelPIDF);
+    FlywheelMotor.setMode( DcMotor.RunMode .RUN_USING_ENCODER );
+    FlywheelMotor.setVelocity(0);
+  }
+  private void initGate(HardwareMap hardwareMap)              {
+    // Initialize Gate Servo
+      GateServo = hardwareMap.get( Servo .class,"GateServo");
+  }
+  public void runIntake(Gamepad gamepad)                      {
+    setIntakeMotorPower(gamepad.right_trigger - gamepad.left_trigger);
+  }
+  public void runGate(Gamepad gamepad)                        {
+    if (gamepad.rightBumperWasPressed()) {
+      switch (GateServoState) {
+        case OPEN   : GateServoState = (OuttakeServoState .CLOSED ); break;
+        case CLOSED : GateServoState = (OuttakeServoState .OPEN   ); break;
+      }
     }
-    targetFlywheelVelocity = targetFlywheelVelocity * -(flywheelDirection?1:-1);
-    
-    // Set Velocity
-    lFlywheelMotor.setVelocity( targetFlywheelVelocity * TPSPerRPM() );
-    rFlywheelMotor.setVelocity( targetFlywheelVelocity * TPSPerRPM() );
-    
+    setGatePosition(GateServoState);
+  }
+  public void runFlywheel(Gamepad gamepad)                    {
+    if (gamepad.x || gamepad.a) { flywheelState = FlywheelState .OFF ;}
+    if (gamepad.b)              { flywheelState = FlywheelState .MIN ;}
+    if (gamepad.y)              { flywheelState = FlywheelState .MAX ;}
+    if (gamepad.leftBumperWasPressed()) flywheelDirection = !flywheelDirection;
+    setFlywheelState(flywheelState);
   }
   
   // Variable Functions
@@ -187,15 +170,28 @@ public class IOTAKE {
   }
   public void setIntakeMotorPower(double power)               {
     ItkMP = power;
-    
+    IntakeMotor.setPower( power );
   }
-  public void runOtkGate(OuttakeServoState outtakeServoState) {
-    lServo.setPosition(
-      (outtakeServoState == OuttakeServoState.OPEN )?0:1
+  public void setGatePosition(OuttakeServoState inputtedState){
+    GateServoState = inputtedState;
+    GateServo.setPosition(
+      (inputtedState == OuttakeServoState.OPEN )?0:1
     );
-    rServo.setPosition(
-      (outtakeServoState == OuttakeServoState.OPEN )?1:0
-    );
+  }
+  public void setFlywheelState(FlywheelState flywheelState)   {
+    //Code to run Flywheel motors.
+    
+    // Switch Velocity
+    switch(flywheelState) {
+      case OFF: setTargetFlywheelVelocity(OFF_RPM); break;
+      case MIN: setTargetFlywheelVelocity(MIN_RPM); break;
+      case MAX: setTargetFlywheelVelocity(MAX_RPM); break;
+    }
+    setTargetFlywheelVelocity(targetFlywheelVelocity * -(flywheelDirection?1:-1));
+    
+    // Set Velocity
+    FlywheelMotor.setVelocity( targetFlywheelVelocity * TPSPerRPM() );
+    
   }
   
 }

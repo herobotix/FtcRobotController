@@ -10,11 +10,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.LIMELIGHT;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
-@TeleOp(name = "Opmode (TeleOp) [2.0.1]")
+@TeleOp(name = "Opmode (TeleOp) [2.0.2]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
@@ -50,7 +49,7 @@ public class opmode_TeleOp extends LinearOpMode {
     
   // Class Definitions
     //private LIMELIGHT Limelight;
-    //private IOTAKE IOtake;
+    private IOTAKE IOtake;
   
   // Telemetry Definition
     private TelemetryManager panelsTelemetry;
@@ -77,7 +76,7 @@ public class opmode_TeleOp extends LinearOpMode {
         //Limelight.Run(gamepad1, telemetry);
         Fn_Inputs();
         Fn_Move();
-        //IOtake.Run(gamepad2);
+        IOtake.Run(gamepad2);
         doTelemetry();
         LoopEnd();
   }
@@ -120,8 +119,8 @@ public class opmode_TeleOp extends LinearOpMode {
       // Classes
         //Limelight = new  LIMELIGHT()  ;
         //Limelight .Init( hardwareMap );
-        //IOtake    = new  IOTAKE()     ;
-        //IOtake    .Init( hardwareMap );
+        IOtake    = new  IOTAKE()     ;
+        IOtake    .Init( hardwareMap );
         
     }
     private void OnStart()      {
@@ -222,7 +221,7 @@ public class opmode_TeleOp extends LinearOpMode {
         
       // Do Telemetry for Classes
         //Limelight .doTelemetry( panelsTelemetry, fieldCentric );
-        //IOtake    .doTelemetry( panelsTelemetry               );
+        IOtake    .doTelemetry( panelsTelemetry               );
         
       // Update Telemetry
         panelsTelemetry.update( telemetry );
@@ -237,8 +236,8 @@ public class opmode_TeleOp extends LinearOpMode {
         BLMP = (0);
         BRMP = (0);
         //Limelight.setPowTurn(0);
-        //IOtake.setTargetFlywheelVelocity(0.);
-        //IOtake.setIntakeMotorPower(0.);
+        IOtake.setTargetFlywheelVelocity(0.);
+        IOtake.setIntakeMotorPower(0.);
         
     }
     

@@ -408,7 +408,7 @@ abstract public class AUTO extends LinearOpMode {
         //Prep For Firing
         
         // Activate Flywheel
-        IOtake.runFlywheel(IOTAKE.FlywheelState.BIG);
+        IOtake.setFlywheelState(IOTAKE.FlywheelState.BIG);
         
         // Path Control
         follower.followPath(getPath(), true);
@@ -424,9 +424,9 @@ abstract public class AUTO extends LinearOpMode {
         //Align Code
         
         // Close gate and stop both Flywheel and Intake
-        IOtake.runOtkGate(IOTAKE.OuttakeServoState.CLOSED);
-        IOtake.runFlywheel(IOTAKE.FlywheelState.OFF);
-        IOtake.runIntake(0 );
+        IOtake.setGatePosition(IOTAKE.OuttakeServoState.CLOSED);
+        IOtake.setFlywheelState(IOTAKE.FlywheelState.OFF);
+        IOtake.setIntakeMotorPower(0 );
         
         // Path Control
         follower.followPath(getPath(),true);
@@ -437,7 +437,7 @@ abstract public class AUTO extends LinearOpMode {
         //Intake Code
         
         // Activate Intake
-        IOtake.runIntake(1 );
+        IOtake.setIntakeMotorPower(1 );
         
         // Path Control
         follower.followPath(getPath(),true);
@@ -474,8 +474,8 @@ abstract public class AUTO extends LinearOpMode {
           (fireNum == 2) ||
           (fireNum == 4)
       ) {
-        IOtake.runOtkGate(IOTAKE.OuttakeServoState.OPEN);
-        IOtake.runIntake(1);
+        IOtake.setGatePosition(IOTAKE.OuttakeServoState.OPEN);
+        IOtake.setIntakeMotorPower(1);
         fireNum++;
       }
       if (
@@ -487,8 +487,8 @@ abstract public class AUTO extends LinearOpMode {
           )
       ) {
         pathTimer.resetTimer();
-        IOtake.runOtkGate(IOTAKE.OuttakeServoState.CLOSED);
-        IOtake.runIntake(0);
+        IOtake.setGatePosition(IOTAKE.OuttakeServoState.CLOSED);
+        IOtake.setIntakeMotorPower(0);
         fireNum++;
         if (fireNum == 6) {
           nextPathState();
