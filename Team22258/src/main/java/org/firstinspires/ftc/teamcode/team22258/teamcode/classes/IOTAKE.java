@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**Version 2.0.1*/
+/**Version 2.0.2*/
 @Configurable
 public class IOTAKE {
   // Intake/Outtake Class
@@ -24,7 +24,7 @@ public class IOTAKE {
   }
   public static double
     OFF_RPM =    0,
-    MIN_RPM = 3000,
+    MIN_RPM = 2600,
     MAX_RPM = 3200;
   
   boolean flywheelDirection = true; // TODO: Make Flywheel Direction Enum-based.

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.IOTAKE;
 import com.bylazar.configurables.annotations.Configurable;
 
-@TeleOp(name = "Opmode (TeleOp) [2.0.2]")
+@TeleOp(name = "Opmode (TeleOp) [2.0.3]")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
@@ -45,7 +45,7 @@ public class opmode_TeleOp extends LinearOpMode {
     private IMU rIMU;
     
   // Indicator Light Definition
-    private Servo indicatorLight;
+    //private Servo indicatorLight;
     
   // Class Definitions
     //private LIMELIGHT Limelight;
@@ -95,7 +95,7 @@ public class opmode_TeleOp extends LinearOpMode {
         BLMotor        = hardwareMap.get( DcMotor .class, "BLMotor"       );
         BRMotor        = hardwareMap.get( DcMotor .class, "BRMotor"       );
         rIMU           = hardwareMap.get( IMU     .class, "rIMU"          );
-        indicatorLight = hardwareMap.get( Servo   .class, "indicatorLight");
+        //indicatorLight = hardwareMap.get( Servo   .class, "indicatorLight");
   
       // Set Robot Orientation (IMU)
         IMU.Parameters parameters =
