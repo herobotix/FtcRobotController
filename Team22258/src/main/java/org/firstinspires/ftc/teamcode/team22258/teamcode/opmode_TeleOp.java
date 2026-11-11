@@ -2,54 +2,37 @@ package org.firstinspires.ftc.teamcode.team22258.teamcode;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.DRIVE;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.IOTAKE;
+import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.RIMU;
+
 import com.bylazar.configurables.annotations.Configurable;
 
-@TeleOp(name = "Opmode (TeleOp) [2.0.3]")
+@TeleOp(name = "Opmode (TeleOp)")
 @Configurable
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
   
-  // Drivetrain Definitions
-    private DcMotor
-      FLMotor,
-      FRMotor,
-      BLMotor,
-      BRMotor;
-    double
-      FLMP,
-      FRMP,
-      BLMP,
-      BRMP;
     
   // Driving Definitions
     boolean fieldCentric
       = false;
     double
-          MPN,
       powHead,
       powSide,
       powTurn;
-    
-  // Position Definitions
-    double robotYawRadians;
-    double targetRot;
-    private IMU rIMU;
     
   // Indicator Light Definition
     //private Servo indicatorLight;
     
   // Class Definitions
+    private RIMU      rIMU  ;
+    private DRIVE     Drive ;
     //private LIMELIGHT Limelight;
-    private IOTAKE IOtake;
+    private IOTAKE    IOtake;
   
   // Telemetry Definition
     private TelemetryManager panelsTelemetry;
@@ -74,11 +57,11 @@ public class opmode_TeleOp extends LinearOpMode {
     private void OnLoop()       {
       //Looped Code
         //Limelight.Run(gamepad1, telemetry);
-        Fn_Inputs();
-        Fn_Move();
-        IOtake.Run(gamepad2);
-        doTelemetry();
-        LoopEnd();
+        Fn_Inputs   (                      );
+        Drive .Run  ( rIMU.getYawRadians() );
+        IOtake.Run  ( gamepad2             );
+        doTelemetry (                      );
+        LoopEnd     (                      );
   }
     private void OnInit()       {
       // Initialization Code
@@ -90,33 +73,13 @@ public class opmode_TeleOp extends LinearOpMode {
         panelsTelemetry.update(telemetry);
         
       // Map Hardware
-        FLMotor        = hardwareMap.get( DcMotor .class, "FLMotor"       );
-        FRMotor        = hardwareMap.get( DcMotor .class, "FRMotor"       );
-        BLMotor        = hardwareMap.get( DcMotor .class, "BLMotor"       );
-        BRMotor        = hardwareMap.get( DcMotor .class, "BRMotor"       );
-        rIMU           = hardwareMap.get( IMU     .class, "rIMU"          );
         //indicatorLight = hardwareMap.get( Servo   .class, "indicatorLight");
-  
-      // Set Robot Orientation (IMU)
-        IMU.Parameters parameters =
-          new IMU.Parameters(new RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection .UP,
-            RevHubOrientationOnRobot.UsbFacingDirection  .BACKWARD
-          )
-        );
-        rIMU.initialize(parameters);
-        
-      // Set Robot Rotation Value
-        robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw( AngleUnit .RADIANS );
-        targetRot = robotYawRadians;
-        
-      // Set Motor Behaviors
-        FLMotor .setDirection( DcMotor.Direction .REVERSE );
-        FRMotor .setDirection( DcMotor.Direction .FORWARD );
-        BLMotor .setDirection( DcMotor.Direction .FORWARD );
-        BRMotor .setDirection( DcMotor.Direction .FORWARD );
         
       // Classes
+        rIMU = new RIMU()        ;
+        rIMU.Init( hardwareMap );
+        Drive     = new DRIVE()       ;
+        Drive     .Init( hardwareMap );
         //Limelight = new  LIMELIGHT()  ;
         //Limelight .Init( hardwareMap );
         IOtake    = new  IOTAKE()     ;
@@ -133,10 +96,10 @@ public class opmode_TeleOp extends LinearOpMode {
     private void OnStop()       {
       //Run On STOP
       
-  //Limelight
-    //Limelight.Stop();
-      
-  }
+      //Limelight
+        //Limelight.Stop();
+        
+    }
   
   // In-Loop Functions
     private void Fn_Inputs()    {
@@ -165,61 +128,12 @@ public class opmode_TeleOp extends LinearOpMode {
           }
       }*/
   }
-    private void Fn_Move()      {
-      //Movement Code
-      
-      // Get Robot Rotation Value
-        robotYawRadians = rIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit .RADIANS );
-        
-      // Field Centric
-        if (fieldCentric) {
-          powHead = powSide * Math.sin(robotYawRadians) + powHead * Math.cos(robotYawRadians);
-          powSide = powSide * Math.cos(robotYawRadians) + powHead * Math.sin(robotYawRadians);
-        }
-      
-      // Drive & Strafe & Rotate
-        FLMP = powHead + powSide + powTurn;
-        FRMP = powHead - powSide - powTurn;
-        BLMP = powHead - powSide + powTurn;
-        BRMP = powHead + powSide - powTurn;
-        
-      // Power Control
-        MPN = (
-          Math.max(
-            Math.max(
-              Math.max( Math.abs(FLMP), Math.abs(FRMP) ),
-              Math.max( Math.abs(BLMP), Math.abs(BRMP) )
-            ),
-            (1)
-          )
-        );
-        if (MPN > 1){
-          BRMP /= MPN;
-          BLMP /= MPN;
-          FRMP /= MPN;
-          FLMP /= MPN;
-        }
-        
-      // Trigger Motors
-        FLMotor.setPower(FLMP);
-        FRMotor.setPower(FRMP);
-        BLMotor.setPower(BLMP);
-        BRMotor.setPower(BRMP);
-        
-    }
     private void doTelemetry()  {
       // Preform Telemetry
       
-      // Do Telemetry for Movement Code
-        panelsTelemetry.addLine("Movement ─");
-        panelsTelemetry.debug("Head Power", powHead );
-        panelsTelemetry.debug("Side Power", powSide );
-        panelsTelemetry.debug("Turn Power", powTurn );
-        panelsTelemetry.debug("Target Robot Yaw",   targetRot       / (2*Math.PI) );
-        panelsTelemetry.debug("Current Robot Yaw",  robotYawRadians / (2*Math.PI) );
-        panelsTelemetry.addLine("");
-        
       // Do Telemetry for Classes
+        rIMU.doTelemetry( panelsTelemetry               );
+        Drive     .doTelemetry( panelsTelemetry               );
         //Limelight .doTelemetry( panelsTelemetry, fieldCentric );
         IOtake    .doTelemetry( panelsTelemetry               );
         
@@ -231,10 +145,7 @@ public class opmode_TeleOp extends LinearOpMode {
       //Loop End Code
       
       // Zero Values
-        FLMP = (0);
-        FRMP = (0);
-        BLMP = (0);
-        BRMP = (0);
+        Drive.LoopEnd();
         //Limelight.setPowTurn(0);
         IOtake.setTargetFlywheelVelocity(0.);
         IOtake.setIntakeMotorPower(0.);
