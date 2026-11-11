@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@Autonomous(name = "Opmode (Auto) [2.0.0]")
+@Autonomous(name = "Opmode (Auto) [2.0.1]")
 @Configurable
 public class opmode_Auto extends LinearOpMode {
   //Robot-Controlled Opmode
   
   // Panels' Variables
     public static double
-      Head0 = 1., Side0 = 0., Turn0 = 0., Time0 = 3.,
+      Head0 = .5, Side0 = 0., Turn0 = 0., Time0 = .5,
       Head1 = 0., Side1 = 0., Turn1 = 0., Time1 = 0.,
       Head2 = 0., Side2 = 0., Turn2 = 0., Time2 = 0.;
     
