@@ -24,7 +24,7 @@ public class IOTAKE {
   }
   public static double
     OFF_RPM =    0,
-    MIN_RPM = 2600,
+    MIN_RPM = 2750,
     MAX_RPM = 3200;
   
   boolean flywheelDirection = true; // TODO: Make Flywheel Direction Enum-based.
@@ -95,8 +95,8 @@ public class IOTAKE {
     
     // Outtake
     panelsTelemetry.debug("Outtake Gate:", (
-      (GateServoState == OuttakeServoState.OPEN )? ("Open:"):
-        ("Closed:"))
+      (GateServoState == OuttakeServoState.OPEN )? ("Open"):
+        ("Closed"))
     );
     panelsTelemetry.debug("Target Outtake RPM: ",(
       (flywheelState == FlywheelState .MIN )? ( "Min" ):
@@ -175,7 +175,7 @@ public class IOTAKE {
   public void setGatePosition(OuttakeServoState inputtedState){
     GateServoState = inputtedState;
     GateServo.setPosition(
-      (inputtedState == OuttakeServoState.OPEN )?0:1
+      (inputtedState == OuttakeServoState.OPEN )?1:0
     );
   }
   public void setFlywheelState(FlywheelState flywheelState)   {
@@ -187,7 +187,7 @@ public class IOTAKE {
       case MIN: setTargetFlywheelVelocity(MIN_RPM); break;
       case MAX: setTargetFlywheelVelocity(MAX_RPM); break;
     }
-    setTargetFlywheelVelocity(targetFlywheelVelocity * -(flywheelDirection?1:-1));
+    setTargetFlywheelVelocity(targetFlywheelVelocity * (flywheelDirection?1:-1));
     
     // Set Velocity
     FlywheelMotor.setVelocity( targetFlywheelVelocity * TPSPerRPM() );

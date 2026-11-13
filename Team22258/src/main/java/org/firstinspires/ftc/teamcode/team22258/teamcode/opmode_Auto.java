@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@Autonomous(name = "Opmode (Auto) [2.0.1]")
+@Autonomous(name = "Opmode (Auto)")
 @Configurable
 public class opmode_Auto extends LinearOpMode {
   //Robot-Controlled Opmode
@@ -53,7 +53,7 @@ public class opmode_Auto extends LinearOpMode {
     
   // Run Function
     @Override
-    public void runOpMode()     {
+    public void runOpMode()                                     {
       //Begin
       
       // Init & Wait
@@ -64,7 +64,7 @@ public class opmode_Auto extends LinearOpMode {
     }
     
   // Main Functions
-    private void OnInit()       {
+    private void OnInit()                                       {
       // Initialization Code
       
       // Telemetry
@@ -99,17 +99,18 @@ public class opmode_Auto extends LinearOpMode {
         BRMotor .setDirection( DcMotor.Direction .FORWARD );
         
     }
-    private void OnStart()      {
+    private void OnStart()                                      {
       //Run On START
       
       // Do Stuff
-        Move(Head0, Side0, Turn0, Time0);
-        Move(Head1, Side1, Turn1, Time1);
-        Move(Head2, Side2, Turn2, Time2);
+        Move(Head0, Side0, Turn0); wait(Time0);
+        Move(Head1, Side1, Turn1); wait(Time1);
+        Move(Head2, Side2, Turn2); wait(Time2);
+        
     }
   
   // Secondary Functions
-    private void Move(double iHead, double iSide, double iTurn, double seconds)  {
+    private void Move(double iHead, double iSide, double iTurn) {
       //Movement Code
       
       //Inputs
@@ -154,14 +155,12 @@ public class opmode_Auto extends LinearOpMode {
         FRMotor.setPower(FRMP);
         BLMotor.setPower(BLMP);
         BRMotor.setPower(BRMP);
-      
-      // wait
-        wait(seconds);
-      
+        
       // Telemetry
         doTelemetry();
+        
     }
-    private void doTelemetry()                                   {
+    private void doTelemetry()                                  {
       // Preform Telemetry
       
       // Do Telemetry for Movement Code
@@ -176,7 +175,7 @@ public class opmode_Auto extends LinearOpMode {
         panelsTelemetry.update( telemetry );
         
     }
-    private void wait(double seconds) {
+    private void wait(double seconds)                           {
       //wait (time in seconds)
         long milliseconds = (long) (1000 * seconds);
         sleep( milliseconds );

@@ -16,15 +16,6 @@ import com.bylazar.configurables.annotations.Configurable;
 public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
   
-    
-  // Driving Definitions
-    boolean fieldCentric
-      = false;
-    double
-      powHead,
-      powSide,
-      powTurn;
-    
   // Indicator Light Definition
     //private Servo indicatorLight;
     
@@ -109,10 +100,10 @@ public class opmode_TeleOp extends LinearOpMode {
       if (gamepad1.start) {rIMU.resetYaw();}
       
     // Inputs
-      fieldCentric = gamepad1.bWasPressed() == (!fieldCentric); // Field-Centrism Toggle
-      powHead = -gamepad1.left_stick_y;
-      powSide = gamepad1.left_stick_x;
-      powTurn = (
+      Drive.fieldCentric = gamepad1.bWasPressed() == (!Drive.fieldCentric); // Field-Centrism Toggle
+      Drive.powHead = -gamepad1.left_stick_y;
+      Drive.powSide = gamepad1.left_stick_x;
+      Drive.powTurn = (
         /*(Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):*/
         (gamepad1.right_stick_x)
       );
