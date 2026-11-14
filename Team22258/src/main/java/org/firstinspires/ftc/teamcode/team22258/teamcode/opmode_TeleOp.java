@@ -101,11 +101,11 @@ public class opmode_TeleOp extends LinearOpMode {
       
     // Inputs
       Drive.fieldCentric = gamepad1.bWasPressed() == (!Drive.fieldCentric); // Field-Centrism Toggle
-      Drive.powHead = -gamepad1.left_stick_y;
-      Drive.powSide = gamepad1.left_stick_x;
+      Drive.powHead = gamepad1.left_stick_y;
+      Drive.powSide = -gamepad1.left_stick_x;
       Drive.powTurn = (
         /*(Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):*/
-        (gamepad1.right_stick_x)
+        (-gamepad1.right_stick_x)
       );
       
     // GoBilda RGB indicator light, PWM values from GoBilda product page
