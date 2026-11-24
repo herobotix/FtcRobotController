@@ -3,7 +3,6 @@ package org .firstinspires .ftc .teamcode .team22258 .teamcode .classes;
 import com .bylazar  .configurables .annotations .Configurable    ;
 import com .bylazar  .telemetry                  .TelemetryManager;
 import com .qualcomm .robotcore     .hardware    .DcMotor         ;
-import com .qualcomm .robotcore     .hardware    .Gamepad         ;
 import com .qualcomm .robotcore     .hardware    .HardwareMap     ;
 
 @Configurable
@@ -21,14 +20,11 @@ public class INTAKE {
         IntakeMotor.setDirection( DcMotor.Direction .FORWARD );
         
     }
-    public void   Run                 ( Gamepad gamepad                  )  {
-      // Run Intake
-        setIntakeMotorPower(gamepad.right_trigger - gamepad.left_trigger);
+    public void   Run                 ( double power                     )  {
+      // Set Intake Motor Power
+        ItkMP = power;
+        IntakeMotor.setPower( power );
         
-    }
-    public void   setIntakeMotorPower ( double power                     )  {
-      ItkMP = power;
-      IntakeMotor.setPower( power );
     }
     public double getIntakeMotorPower (                                  )  {
       // Get Intake Motor Power
@@ -36,16 +32,13 @@ public class INTAKE {
         
     }
     public void   doTelemetry         ( TelemetryManager panelsTelemetry )  {
-      //Telemetry Code
-      
-      // Intake
-      panelsTelemetry.debug(
-        ( "Intake Power |" ),
-        ( ItkMP )
-      );
-      
-      panelsTelemetry.addLine("");
-      
+      // Preform Telemetry for Intake
+        panelsTelemetry.debug(
+          ( "Intake Power |" ),
+          ( ItkMP )
+        );
+        panelsTelemetry.addLine("");
+        
     }
     
 }

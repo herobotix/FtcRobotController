@@ -19,11 +19,12 @@ public class OTKGATE {
     OuttakeGateServoState GateServoState = (
       OuttakeGateServoState .CLOSED
     );
-  
+    
   // Functions
     public void Init            ( HardwareMap hardwareMap             ) {
       // Initialize Gate Servo
-      GateServo = hardwareMap.get( Servo .class,"GateServo");
+        GateServo = hardwareMap.get( Servo .class,"GateServo");
+        
     }
     public void Run             ( Gamepad gamepad                     ) {
       //Intake/Outtake Code
@@ -34,22 +35,24 @@ public class OTKGATE {
           }
         }
         setGatePosition(GateServoState);
+        
     }
     public void doTelemetry     ( TelemetryManager panelsTelemetry    ) {
-      // Outtake Gate Telemetry Code
-      panelsTelemetry.debug("Outtake Gate:", (
-        (GateServoState == OuttakeGateServoState.OPEN )? ("Open"):
-          ("Closed"))
-      );
-      
-      panelsTelemetry.addLine("");
-      
+      // Preform Telemetry for Otkgate
+        panelsTelemetry.debug("Outtake Gate:", (
+          (GateServoState == OuttakeGateServoState.OPEN )? ("Open"):
+            ("Closed"))
+        );
+        panelsTelemetry.addLine("");
+        
     }
     public void setGatePosition ( OuttakeGateServoState inputtedState ) {
-    GateServoState = inputtedState;
-    GateServo.setPosition(
-      (inputtedState == OuttakeGateServoState.OPEN )?1:0
-    );
-  }
-  
+      // Set the State of the Outtake Gate
+        GateServoState = inputtedState;
+        GateServo.setPosition(
+          (inputtedState == OuttakeGateServoState.OPEN )?1:0
+        );
+        
+    }
+    
 }

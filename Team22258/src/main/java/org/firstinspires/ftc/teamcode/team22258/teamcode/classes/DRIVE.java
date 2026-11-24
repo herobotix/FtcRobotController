@@ -16,7 +16,7 @@ public class DRIVE {
     public  boolean fieldCentric = false;
     
   // Functions
-    public void Init        (HardwareMap      hardwareMap     ) {
+    public void Init         ( HardwareMap      hardwareMap                            )  {
       // Initialization Code
       
       // Map Hardware
@@ -32,15 +32,18 @@ public class DRIVE {
         BRMotor .setDirection( DcMotor.Direction .FORWARD );
         
     }
-    public void Run         (double           robotYawRadians ) {
+    public void Run          ( double iHead, double iSide, double iTurn, double iAngle )  {
       //Movement Code
-        
-      // Field Centric
-        if (fieldCentric) {
-          powHead = powSide * Math.sin(robotYawRadians) + powHead * Math.cos(robotYawRadians);
-          powSide = powSide * Math.cos(robotYawRadians) + powHead * Math.sin(robotYawRadians);
-        }
       
+      // Inputs & Field Centric
+        if (fieldCentric) {
+          powHead = iSide * Math.sin(iAngle) + iHead * Math.cos(iAngle);
+          powSide = iSide * Math.cos(iAngle) + iHead * Math.sin(iAngle);
+        }
+        else              {
+          powHead = iHead; powSide = iSide; powTurn = iTurn;
+        }
+        
       // Drive & Strafe & Rotate
         FLMP = powHead + powSide + powTurn;
         FRMP = powHead - powSide - powTurn;
@@ -48,31 +51,18 @@ public class DRIVE {
         BRMP = powHead + powSide - powTurn;
         
       // Power Control
-      double MPN = (
-        Math.max(
-          Math.max(
-            Math.max( Math.abs(FLMP), Math.abs(FRMP) ),
-            Math.max( Math.abs(BLMP), Math.abs(BRMP) )
-          ),
-          (1)
-        )
-      );
-      if (MPN > 1){
-        BRMP /= MPN;
-        BLMP /= MPN;
-        FRMP /= MPN;
-        FLMP /= MPN;
-      }
-      
-    // Trigger Motors
-      FLMotor.setPower(FLMP);
-      FRMotor.setPower(FRMP);
-      BLMotor.setPower(BLMP);
-      BRMotor.setPower(BRMP);
-      
+        double  MPN = maxABS(BRMP,BLMP,FRMP,FLMP, 1. );
+        BRMP /= MPN ; BLMP /= MPN ; FRMP /= MPN ; FLMP /= MPN ;
+        
+      // Trigger Motors
+        FLMotor.setPower(FLMP);
+        FRMotor.setPower(FRMP);
+        BLMotor.setPower(BLMP);
+        BRMotor.setPower(BRMP);
+        
     }
-    public void doTelemetry (TelemetryManager panelsTelemetry ) {
-      // Preform Telemetry for Movement Code
+    public  void doTelemetry ( TelemetryManager panelsTelemetry                        )  {
+      // Preform Telemetry for Drive
         panelsTelemetry.addLine("Movement ─");
         panelsTelemetry.debug("Head Power", powHead );
         panelsTelemetry.debug("Side Power", powSide );
@@ -80,12 +70,24 @@ public class DRIVE {
         panelsTelemetry.addLine("");
         
     }
-    public void LoopEnd     (                                 ) {
+    public  void LoopEnd     (                                                         )  {
       //Loop End Code / Zero Values
         FLMP = (0);
         FRMP = (0);
         BLMP = (0);
         BRMP = (0);
+        
+    }
+    private double maxABS    ( double ... iDoubles                                     )  {
+      // Finds the max of the absolute values of multiple doubles.
+        double output = 0;
+        for (double iDouble : iDoubles) {
+          output = Math.max(
+            Math.abs(iDouble),
+            output
+          );
+        }
+        return output;
         
     }
     

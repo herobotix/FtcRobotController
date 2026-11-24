@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.DRIVE;
+import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.INTAKE;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.IOTAKE;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.RIMU;
 
@@ -22,7 +23,8 @@ public class opmode_TeleOp extends LinearOpMode {
   // Class Definitions
     private RIMU      rIMU  ;
     private DRIVE     Drive ;
-    //private LIMELIGHT Limelight;
+    private INTAKE    Intake;
+  /*private LIMELIGHT Limelight;*/
     private IOTAKE    IOtake;
   
   // Telemetry Definition
@@ -50,6 +52,7 @@ public class opmode_TeleOp extends LinearOpMode {
         //Limelight.Run(gamepad1, telemetry);
         Fn_Inputs   (                      );
         Drive .Run  ( rIMU.getYawRadians() );
+        Intake.Run  ( gamepad2             );
         IOtake.Run  ( gamepad2             );
         doTelemetry (                      );
         LoopEnd     (                      );
@@ -67,12 +70,14 @@ public class opmode_TeleOp extends LinearOpMode {
         //indicatorLight = hardwareMap.get( Servo   .class, "indicatorLight");
         
       // Classes
-        rIMU = new RIMU()        ;
-        rIMU.Init( hardwareMap );
+        rIMU      = new RIMU()        ;
+        rIMU      .Init( hardwareMap );
         Drive     = new DRIVE()       ;
         Drive     .Init( hardwareMap );
-        //Limelight = new  LIMELIGHT()  ;
-        //Limelight .Init( hardwareMap );
+        Intake     = new INTAKE()     ;
+        Intake    .Init( hardwareMap );
+      /*Limelight = new  LIMELIGHT()  ;
+        Limelight .Init( hardwareMap );*/
         IOtake    = new  IOTAKE()     ;
         IOtake    .Init( hardwareMap );
         
@@ -94,30 +99,34 @@ public class opmode_TeleOp extends LinearOpMode {
   
   // In-Loop Functions
     private void Fn_Inputs()    {
-    // Inputs Code
-    
-    // Reset Robot Rotation Value
-      if (gamepad1.start) {rIMU.resetYaw();}
+      // Inputs Code
       
-    // Inputs
-      Drive.fieldCentric = gamepad1.bWasPressed() == (!Drive.fieldCentric); // Field-Centrism Toggle
-      Drive.powHead = -gamepad1.left_stick_y;
-      Drive.powSide = gamepad1.left_stick_x;
-      Drive.powTurn = (
-        /*(Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):*/
-        (gamepad1.right_stick_x)
-      );
-      
-    // GoBilda RGB indicator light, PWM values from GoBilda product page
-      /*if(indicatorLight != null) {
-          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
-              indicatorLight.setPosition(0.0);
-          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
-              indicatorLight.setPosition(0.611);
-          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
-              indicatorLight.setPosition(0.29);
-          }
-      }*/
+      // rIMU Inputs
+        if (gamepad1.start) {rIMU.resetYaw();} // Reset Robot Rotation Value
+        
+      // Drive Inputs
+        Drive.fieldCentric = gamepad1.bWasPressed() == (!Drive.fieldCentric); // Field-Centrism Toggle
+        Drive.Run  (
+          (-gamepad1.left_stick_y), //iHead
+          (gamepad1.left_stick_x) , //iSide
+          /*(Limelight.getTargetLock() != LIMELIGHT.TargetLock .OFF )? (Limelight.getPowTurn()):*/
+          (gamepad1.right_stick_x), //iTurn
+          (rIMU.getYawRadians())
+        );
+        
+      // Intake Inputs
+        Intake.Run(gamepad2.right_trigger - gamepad2.left_trigger);
+        
+      // GoBilda RGB indicator light, PWM values from GoBilda product page
+        /*if(indicatorLight != null) {
+            if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
+                indicatorLight.setPosition(0.0);
+            } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
+                indicatorLight.setPosition(0.611);
+            } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
+                indicatorLight.setPosition(0.29);
+            }
+        }*/
   }
     private void doTelemetry()  {
       // Preform Telemetry
