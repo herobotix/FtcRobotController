@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.DRIVE;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.INTAKE;
-import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.IOTAKE;
+import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.OTKFLYWHEEL;
+import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.OTKGATE;
 import org.firstinspires.ftc.teamcode.team22258.teamcode.classes.RIMU;
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -18,21 +19,20 @@ public class opmode_TeleOp extends LinearOpMode {
   //Driver-Controlled Opmode
   
   // Indicator Light Definition
-    //private Servo indicatorLight;
+  /*private Servo indicatorLight;*/
     
-  // Class Definitions
-    private RIMU      rIMU  ;
-    private DRIVE     Drive ;
-    private INTAKE    Intake;
-  /*private LIMELIGHT Limelight;*/
-    private IOTAKE    IOtake;
-  
-  // Telemetry Definition
-    private TelemetryManager panelsTelemetry;
+  // Definitions
+    private TelemetryManager panelsTelemetry ;
+    private RIMU             rIMU            ;
+    private DRIVE            Drive           ;
+    private INTAKE           Intake          ;
+    private OTKGATE          Gate            ;
+    private OTKFLYWHEEL      Flywheel        ;
+  /*private LIMELIGHT        Limelight       ;*/
     
   // Run Function
     @Override
-    public void runOpMode()     {
+    public void runOpMode    () {
       //Begin
       
       // Init & Wait
@@ -47,17 +47,13 @@ public class opmode_TeleOp extends LinearOpMode {
     }
     
   // Main Functions
-    private void OnLoop()       {
+    private void OnLoop      () {
       //Looped Code
-        //Limelight.Run(gamepad1, telemetry);
-        Fn_Inputs   (                      );
-        Drive .Run  ( rIMU.getYawRadians() );
-        Intake.Run  ( gamepad2             );
-        IOtake.Run  ( gamepad2             );
-        doTelemetry (                      );
-        LoopEnd     (                      );
+        Fn_Inputs   ();
+        doTelemetry ();
+        LoopEnd     ();
   }
-    private void OnInit()       {
+    private void OnInit      () {
       // Initialization Code
       
       // Telemetry
@@ -76,20 +72,22 @@ public class opmode_TeleOp extends LinearOpMode {
         Drive     .Init( hardwareMap );
         Intake     = new INTAKE()     ;
         Intake    .Init( hardwareMap );
+        Gate = new OTKGATE()    ;
+        Gate.Init( hardwareMap );
+        Flywheel  = new OTKFLYWHEEL() ;
+        Flywheel  .Init( hardwareMap );
       /*Limelight = new  LIMELIGHT()  ;
         Limelight .Init( hardwareMap );*/
-        IOtake    = new  IOTAKE()     ;
-        IOtake    .Init( hardwareMap );
         
     }
-    private void OnStart()      {
+    private void OnStart     () {
       //Run On START
       
       //Limelight
         //Limelight.Start();
         
     }
-    private void OnStop()       {
+    private void OnStop      () {
       //Run On STOP
       
       //Limelight
@@ -98,7 +96,7 @@ public class opmode_TeleOp extends LinearOpMode {
     }
   
   // In-Loop Functions
-    private void Fn_Inputs()    {
+    private void Fn_Inputs   () {
       // Inputs Code
       
       // rIMU Inputs
@@ -117,38 +115,62 @@ public class opmode_TeleOp extends LinearOpMode {
       // Intake Inputs
         Intake.Run(gamepad2.right_trigger - gamepad2.left_trigger);
         
+      // Gate Inputs
+        if ( gamepad2 .rightBumperWasPressed() ) {
+          switch ( Gate.getGatePosition() ) {
+            case OPEN   : Gate.setGatePosition( OTKGATE.GatePosition .CLOSED ); break;
+            case CLOSED : Gate.setGatePosition( OTKGATE.GatePosition .OPEN   ); break;
+          }
+        }
+        
+      // Flywheel Inputs
+             if ( gamepad2.x || gamepad2.a    ) { Flywheel.setFlywheelState(OTKFLYWHEEL.FlywheelState.OFF ) ;}
+        else if ( gamepad2.b                  ) { Flywheel.setFlywheelState(OTKFLYWHEEL.FlywheelState.MIN ) ;}
+        else if ( gamepad2.y                  ) { Flywheel.setFlywheelState(OTKFLYWHEEL.FlywheelState.MAX ) ;}
+        if ( gamepad2.leftBumperWasPressed()  ) {
+          switch ( Flywheel.flywheelDirection ) {
+            case FORWARDS: Flywheel.flywheelDirection = OTKFLYWHEEL.FlywheelDirection.REVERSED; break;
+            case REVERSED: Flywheel.flywheelDirection = OTKFLYWHEEL.FlywheelDirection.FORWARDS; break;
+          }
+        }
+        
+      // Limelight Inputs
+      /*Limelight.Run(gamepad1, telemetry);*/
+        
       // GoBilda RGB indicator light, PWM values from GoBilda product page
-        /*if(indicatorLight != null) {
-            if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
-                indicatorLight.setPosition(0.0);
-            } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
-                indicatorLight.setPosition(0.611);
-            } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
-                indicatorLight.setPosition(0.29);
-            }
+      /*if(indicatorLight != null) {
+          if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.OFF) {
+              indicatorLight.setPosition(0.0);
+          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.BLUE) {
+              indicatorLight.setPosition(0.611);
+          } else if (Limelight.getTargetLock() == LIMELIGHT.TargetLock.RED) {
+              indicatorLight.setPosition(0.29);
+          }
         }*/
   }
-    private void doTelemetry()  {
+    private void doTelemetry () {
       // Preform Telemetry
       
       // Do Telemetry for Classes
-        rIMU.doTelemetry( panelsTelemetry               );
+        rIMU      .doTelemetry( panelsTelemetry               );
         Drive     .doTelemetry( panelsTelemetry               );
-        //Limelight .doTelemetry( panelsTelemetry, fieldCentric );
-        IOtake    .doTelemetry( panelsTelemetry               );
+        Intake    .doTelemetry( panelsTelemetry               );
+        Gate      .doTelemetry( panelsTelemetry               );
+        Flywheel  .doTelemetry( panelsTelemetry               );
+      /*Limelight .doTelemetry( panelsTelemetry, fieldCentric );*/
         
       // Update Telemetry
         panelsTelemetry.update( telemetry );
         
     }
-    private void LoopEnd()      {
+    private void LoopEnd     () {
       //Loop End Code
       
       // Zero Values
         Drive.LoopEnd();
         //Limelight.setPowTurn(0);
-        IOtake.setTargetFlywheelVelocity(0.);
-        IOtake.setIntakeMotorPower(0.);
+        Flywheel.setFlywheelState(OTKFLYWHEEL.FlywheelState.OFF);
+        Intake  .Run(0.);
         
     }
     

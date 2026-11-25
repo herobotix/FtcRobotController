@@ -14,14 +14,25 @@ public class OTKFLYWHEEL {
   
   // Definitions
     private DcMotorEx FlywheelMotor;
+    public static double
+      flywheelP =   20,
+      flywheelI =    0,
+      flywheelD =    0,
+      flywheelF = 12.5; // Feedforward = 32767 / 2620 = 12.5 // VMAX tps 2620
     public static double // TODO: Make Outtake firing RPM distance-based.
       OFF_RPM =    0,
       MIN_RPM = 2750,
       MAX_RPM = 3200;
     public enum FlywheelState                                                   {
-      OFF,
-      MIN,
-      MAX
+      OFF("Off"),
+      MIN("Min"),
+      MAX("Max");
+      
+      final String string;
+      
+      FlywheelState(String string) {
+        this.string = string;
+      }
     }
     public enum FlywheelDirection                                               {
       FORWARDS(+1),
@@ -32,10 +43,10 @@ public class OTKFLYWHEEL {
       }
     }
     private FlywheelState flywheelState = FlywheelState .OFF ;
-    FlywheelDirection flywheelDirection = FlywheelDirection .FORWARDS ;
+    public FlywheelDirection flywheelDirection = FlywheelDirection .FORWARDS ;
     
   // Functions
-    public  void   Init                    ( HardwareMap hardwareMap          ) {
+    public  void          Init                    ( HardwareMap hardwareMap          ) {
       // Initialize Flywheel
       
       // Map Hardware
@@ -47,11 +58,6 @@ public class OTKFLYWHEEL {
         FlywheelMotor.setMode              ( DcMotor.RunMode           .STOP_AND_RESET_ENCODER );
         
       // flywheel PIDF Coefficients
-        final double
-          flywheelP =   20,
-          flywheelI =    0,
-          flywheelD =    0,
-          flywheelF = 12.5; // Feedforward = 32767 / 2620 = 12.5 // VMAX tps 2620
         PIDFCoefficients flywheelPIDF = new PIDFCoefficients(
           flywheelP, flywheelI, flywheelD, flywheelF
         );
@@ -60,21 +66,7 @@ public class OTKFLYWHEEL {
         FlywheelMotor.setVelocity(0);
         
     }
-    public  void   Run                     ( Gamepad gamepad                  ) {
-      // Run Outtake Flywheel
-             if (gamepad.x || gamepad.a)  { setFlywheelState(FlywheelState .OFF ) ;}
-        else if (gamepad.b)               { setFlywheelState(FlywheelState .MIN ) ;}
-        else if (gamepad.y)               { setFlywheelState(FlywheelState .MAX ) ;}
-        if (gamepad.leftBumperWasPressed()) {
-          switch (flywheelDirection) {
-            case FORWARDS: flywheelDirection = FlywheelDirection .REVERSED; break;
-            case REVERSED: flywheelDirection = FlywheelDirection .FORWARDS; break;
-          }
-        }
-        
-        
-    }
-    public  void   setFlywheelState        ( FlywheelState inputflywheelState ) {
+    public  void          setFlywheelState        ( FlywheelState inputflywheelState ) {
       // Set the Flywheel's State
         switch(flywheelState = inputflywheelState) {
           case OFF: setFlywheelVelocity(OFF_RPM); break;
@@ -83,37 +75,30 @@ public class OTKFLYWHEEL {
         }
         
     }
-    private void   setFlywheelVelocity     ( double speed                     ) {
+    private void          setFlywheelVelocity     ( double speed                     ) {
       // Set Velocity of the Flywheel
         FlywheelMotor.setVelocity( speed * flywheelDirection.value * TPSPerRPM() );
         
     }
-    public  void   doTelemetry             ( TelemetryManager panelsTelemetry ) {
-      //Telemetry Code
-      
-      // Outtake
-      panelsTelemetry.debug("Target Outtake RPM: ",(
-        (flywheelState == FlywheelState.MIN )? ( "Min" ):
-        (flywheelState == FlywheelState.MAX )? ( "Max" ):
-        ( "OFF" )
-      ));
-      panelsTelemetry.debug("Current Outtake RPM",
-        FlywheelMotor.getVelocity() / TPSPerRPM()
-      );
-      
-      panelsTelemetry.addLine("");
-      
+    public  void          doTelemetry             ( TelemetryManager panelsTelemetry ) {
+      // Preform Telemetry for Otkflywheel
+        panelsTelemetry.debug("Target  Outtake RPM: ", getFlywheelState().string);
+        panelsTelemetry.debug("Current Outtake RPM: ",
+          FlywheelMotor.getVelocity() / TPSPerRPM()
+        );
+        panelsTelemetry.addLine("");
+        
     }
-    public  double TPSPerRPM               (                                  ) {
-    //Ticks Per Second / Revolutions Per Minute
-    final int secondsPerMinute = 60;
-    final double TicksPerRevolutionOfFlywheel = 28;
-    return TicksPerRevolutionOfFlywheel / secondsPerMinute;
-    
-  }
-    public  FlywheelState getFlywheelState (                                  ) {
-    // Get Outtake Flywheel State
-    return flywheelState;
-  }
+    public  double        TPSPerRPM               (                                  ) {
+      //Ticks Per Second / Revolutions Per Minute
+        final int secondsPerMinute = 60;
+        final double TicksPerRevolutionOfFlywheel = 28;
+        return TicksPerRevolutionOfFlywheel / secondsPerMinute;
+        
+    }
+    public  FlywheelState getFlywheelState        (                                  ) {
+      // Get Outtake Flywheel State
+        return flywheelState;
+    }
   
 }
